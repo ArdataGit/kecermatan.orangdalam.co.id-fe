@@ -6,8 +6,10 @@ import {
   IconDeviceAnalytics,
   IconDiscount2,
   IconIcons,
+  IconTicket,
   IconNotebook,
   IconReportMoney,
+  IconInfoCircle
 } from '@tabler/icons-react';
 
 const menuList = [
@@ -23,6 +25,21 @@ const menuList = [
         icon: <IconIcons />,
         title: 'Home Page',
         link: '/manage-home-section',
+      },
+      {
+        link: '/dashboard-notification',
+        title: 'Dashboard Notification',
+        icon: <IconBell size={20} />,
+      },
+      {
+        link: '/feedbacks',
+        title: 'Feedback User',
+        icon: <IconInfoCircle size={20} />,
+      },
+      {
+        link: '/manage-ticket',
+        title: 'Manage Ticket',
+        icon: <IconTicket size={20} />,
       },
     ],
   },
@@ -64,6 +81,11 @@ const menuList = [
         icon: <IconReportMoney />,
         title: 'Penjualan',
         link: '/manage-penjualan',
+      },
+      {
+        icon: <IconReportMoney />,
+        title: 'Rekap Penjualan',
+        link: '/rekap-penjualan',
       },
       {
         icon: <IconCalendarEvent />,

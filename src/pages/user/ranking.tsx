@@ -1,18 +1,18 @@
-import TableWrapper from '@/components/table';
-import useGetList from '@/hooks/use-get-list';
-import { useEffect, useState } from 'react';
-import { Tag } from 'tdesign-react';
-import { getData } from '@/utils/axios';
-import { useParams } from 'react-router-dom';
-import BreadCrumb from '@/components/breadcrumb';
+import TableWrapper from "@/components/table";
+import useGetList from "@/hooks/use-get-list";
+import { useEffect, useState } from "react";
+import { Tag } from "tdesign-react";
+import { getData } from "@/utils/axios";
+import { useParams } from "react-router-dom";
+import BreadCrumb from "@/components/breadcrumb";
 
-import moment from 'moment/min/moment-with-locales';
-import { konversiDetikKeWaktu } from '@/const';
+import moment from "moment/min/moment-with-locales";
+import { konversiDetikKeWaktu } from "@/const";
 
 enum AlignType {
-  Center = 'center',
-  Left = 'left',
-  Right = 'right',
+  Center = "center",
+  Left = "left",
+  Right = "right",
 }
 
 export default function Ranking({ isBimbel }: any) {
@@ -22,11 +22,11 @@ export default function Ranking({ isBimbel }: any) {
   const { id, paketId, paketFK } = useParams();
 
   const listTryout = useGetList({
-    url: 'user/tryout/ranking',
+    url: "user/tryout/ranking",
     initialParams: {
       skip: 0,
       take: 10,
-      sortBy: 'createdAt',
+      sortBy: "createdAt",
       descending: true,
       id: paketId,
       paketPembelianTryoutId: isBimbel ? 0 : paketFK,
@@ -36,8 +36,8 @@ export default function Ranking({ isBimbel }: any) {
 
   const columns = [
     {
-      title: 'Posisi',
-      colKey: 'posisi',
+      title: "Posisi",
+      colKey: "posisi",
       width: 100,
       align: AlignType.Center,
       cell: (prop: any) => (
@@ -45,28 +45,28 @@ export default function Ranking({ isBimbel }: any) {
       ),
     },
     {
-      title: 'Nama Peserta',
-      colKey: 'name',
+      title: "Nama Peserta",
+      colKey: "name",
       width: 250,
       cell: ({ row }: any) => (
         <div>
           <p className="text-md font-bold">{row.name}</p>
           <p className="text-xs text-gray-400 font-light">
-            {moment(row.createdAt).format('dddd')},{' '}
-            {moment(row.createdAt).format('LL')} <br /> Pukul{' '}
-            {moment(row.createdAt).format('HH:mm')}
+            {moment(row.createdAt).format("dddd")},{" "}
+            {moment(row.createdAt).format("LL")} <br /> Pukul{" "}
+            {moment(row.createdAt).format("HH:mm")}
           </p>
         </div>
       ),
     },
     {
-      title: 'Passing Grade',
-      colKey: 'nama',
+      title: "Passing Grade",
+      colKey: "nama",
       cell: ({ row }: any) => (
         <div className="flex gap-2">
           {row?.pointCategory?.map((item: any) => (
             <Tag
-              theme={item.all_point >= item.maxPoint ? 'success' : 'danger'}
+              theme={item.all_point >= item.maxPoint ? "success" : "danger"}
               size="large"
               variant="light"
             >
@@ -77,8 +77,8 @@ export default function Ranking({ isBimbel }: any) {
       ),
     },
     {
-      title: 'Status',
-      colKey: 'status',
+      title: "Status",
+      colKey: "status",
       width: 130,
       align: AlignType.Center,
       cell: ({ row }: any) => {
@@ -87,18 +87,18 @@ export default function Ranking({ isBimbel }: any) {
         );
         return (
           <Tag
-            theme={filter?.length < 1 ? 'success' : 'danger'}
+            theme={filter?.length < 1 ? "success" : "danger"}
             size="large"
             variant="light"
           >
-            {filter?.length < 1 ? 'Lulus' : 'Tidak Lulus'}
+            {filter?.length < 1 ? "Lulus" : "Tidak Lulus"}
           </Tag>
         );
       },
     },
     {
-      title: 'Durasi Pengerjaan',
-      colKey: 'durasi',
+      title: "Durasi Pengerjaan",
+      colKey: "durasi",
       width: 130,
       align: AlignType.Center,
       cell: ({ row }: any) => (
@@ -106,11 +106,11 @@ export default function Ranking({ isBimbel }: any) {
       ),
     },
     {
-      title: 'Skor',
-      colKey: 'point',
+      title: "Skor",
+      colKey: "point",
       width: 130,
       align: AlignType.Center,
-      cell: ({ row }: any) => <div>{row.point || '0'}</div>,
+      cell: ({ row }: any) => <div>{row.point || "0"}</div>,
     },
   ];
 
@@ -120,7 +120,7 @@ export default function Ranking({ isBimbel }: any) {
 
   const getDetailClass = async () => {
     await getData(`user/find-my-class/${id}`).then((res) => {
-      if (res.error) window.location.href = '/paket-pembelian';
+      if (res.error) window.location.href = "/paket-pembelian";
       setData({ ...res });
     });
     await getData(`user/find-latihan/${paketId}`).then((res) => {
@@ -136,33 +136,33 @@ export default function Ranking({ isBimbel }: any) {
       {isBimbel ? (
         <BreadCrumb
           page={[
-            { name: 'Paket saya', link: '/my-class' },
+            { name: "Paket saya", link: "/my-class" },
             {
-              name: data?.paketPembelian?.nama || 'Nama Kelas',
-              link: '/my-class',
+              name: data?.paketPembelian?.nama || "Nama Kelas",
+              link: "/my-class",
             },
-            { name: 'Bimbel', link: `/my-class/${id}/bimbel` },
+            { name: "Bimbel", link: `/my-class/${id}/bimbel` },
             {
-              name: tryout?.nama || 'Bimbel',
+              name: tryout?.nama || "Bimbel",
               link: `/my-class/${id}/bimbel/mini-test/${paketFK}/${paketId}`,
             },
-            { name: 'Ranking', link: '#' },
+            { name: "Ranking", link: "#" },
           ]}
         />
       ) : (
         <BreadCrumb
           page={[
-            { name: 'Paket saya', link: '/my-class' },
+            { name: "Paket saya", link: "/my-class" },
             {
-              name: data?.paketPembelian?.nama || 'Nama Kelas',
-              link: '/my-class',
+              name: data?.paketPembelian?.nama || "Nama Kelas",
+              link: "/my-class",
             },
-            { name: 'Tryout', link: `/my-class/${id}/tryout` },
+            { name: "Tryout", link: `/my-class/${id}/tryout` },
             {
-              name: tryout?.nama || 'Tryout',
+              name: tryout?.nama || "Tryout",
               link: `/my-class/${id}/tryout/${paketFK}/${paketId}`,
             },
-            { name: 'Ranking', link: '#' },
+            { name: "Ranking", link: "#" },
           ]}
         />
       )}

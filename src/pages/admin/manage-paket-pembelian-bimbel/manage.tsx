@@ -1,12 +1,12 @@
-import Form from '@/components/form';
-import Input from '@/components/input';
-import useGetList from '@/hooks/use-get-list';
-import { patchData, postData } from '@/utils/axios';
-import FetchAPI from '@/utils/fetch-api';
-import moment from 'moment';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Button, Dialog } from 'tdesign-react';
+import Form from "@/components/form";
+import Input from "@/components/input";
+import useGetList from "@/hooks/use-get-list";
+import { patchData, postData } from "@/utils/axios";
+import FetchAPI from "@/utils/fetch-api";
+import moment from "moment";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { Button, Dialog } from "tdesign-react";
 
 export default function ManagePaketPembelian({
   setVisible,
@@ -23,13 +23,13 @@ export default function ManagePaketPembelian({
     const payload = {
       ...data,
       paketPembelianId: id,
-      date: moment(data.date, 'DD/MM/YYYY HH:mm'),
+      date: moment(data.date, "DD/MM/YYYY HH:mm"),
     };
 
     FetchAPI(
       detail.id
         ? patchData(`admin/paket-pembelian-bimbel/update/${detail.id}`, payload)
-        : postData('admin/paket-pembelian-bimbel/insert', payload)
+        : postData("admin/paket-pembelian-bimbel/insert", payload)
     )
       .then(() => {
         params.refresh();
@@ -45,19 +45,20 @@ export default function ManagePaketPembelian({
     setVisible(false);
     setDetail({});
   };
+
   const listLatihan = useGetList({
-    url: 'admin/paket-latihan/get',
+    url: "admin/paket-latihan/get",
     initialParams: {
       skip: 0,
-      take: 10,
-      sortBy: 'createdAt',
+      take: 0,
+      sortBy: "createdAt",
       descending: true,
     },
   });
 
   return (
     <Dialog
-      header={detail.id ? 'Edit Bimbel ' : 'Tambah Bimbel '}
+      header={detail.id ? "Edit Bimbel" : "Tambah Bimbel"}
       visible
       onClose={handleClose}
       className="w-[800px]"
@@ -65,7 +66,7 @@ export default function ManagePaketPembelian({
     >
       <Form
         onSubmit={handleSubmit}
-        className="space-y-6 "
+        className="space-y-6"
         defaultValues={detail}
       >
         <Input
@@ -73,7 +74,7 @@ export default function ManagePaketPembelian({
           name="nama"
           type="text"
           validation={{
-            required: 'Judul tidak boleh kosong',
+            required: "Judul tidak boleh kosong",
           }}
         />
         <Input title="Nama Mentor" name="mentor" type="text" />
@@ -83,7 +84,7 @@ export default function ManagePaketPembelian({
           name="date"
           type="date"
           validation={{
-            required: 'Tanggal harus di isi',
+            required: "Tanggal harus di isi",
           }}
           enableTimePicker
         />
@@ -92,12 +93,12 @@ export default function ManagePaketPembelian({
           name="status"
           type="select"
           validation={{
-            required: 'Status tidak boleh kosong',
+            required: "Status tidak boleh kosong",
           }}
           options={[
-            { label: 'Belum Dimulai', value: 'BELUM' },
-            { label: 'Berlangsung', value: 'SEDANG' },
-            { label: 'Selesai', value: 'SELESAI' },
+            { label: "Belum Dimulai", value: "BELUM" },
+            { label: "Berlangsung", value: "SEDANG" },
+            { label: "Selesai", value: "SELESAI" },
           ]}
         />
         <div className="grid grid-cols-2 gap-4">
@@ -110,10 +111,10 @@ export default function ManagePaketPembelian({
               value: item.id,
             }))}
           />
-
           <Input title="Link Materi" name="materiLink" type="text" />
           <Input title="Link Rekaman" name="rekamanLink" type="text" />
           <Input title="Link Video" name="videoLink" type="text" />
+          
         </div>
         <div className="flex justify-end gap-2">
           <Button

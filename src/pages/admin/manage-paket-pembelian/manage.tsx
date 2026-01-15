@@ -140,7 +140,16 @@ export default function ManagePaketPembelian({
             size="medium"
           />
         </div>
-
+		<Input
+          title="Link WhatsApp"
+          name="linkWa"
+          type="text"
+          validation={{
+            pattern: {
+              message: "Link harus berupa URL WhatsApp yang valid (contoh: https://wa.me/6281234567890)",
+            },
+          }}
+        />
         <Input title="Langkah Langkah Panduan" name="panduan" type="ckeditor" />
         <Input title="Keterangan" name="keterangan" type="ckeditor" />
 

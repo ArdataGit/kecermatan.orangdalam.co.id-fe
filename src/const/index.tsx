@@ -1,23 +1,23 @@
-export { default as routes } from './routes';
-export { default as menuListUser } from './menu-list-user';
-export { default as menuListAdmin } from './menu-list-admin';
+export { default as routes } from "./routes";
+export { default as menuListUser } from "./menu-list-user";
+export { default as menuListAdmin } from "./menu-list-admin";
 
-export const SERVER_URL_API = 'https://bimbel.fungsional.id/server/api';
-export const SERVER_URL = 'https://bimbel.fungsional.id/server/';
-export const FRONTEND_URL = 'https://bimbel.fungsional.id';
+// export const SERVER_URL_API = 'https://bimbel.fungsional.id/server/api';
+// export const SERVER_URL = 'https://bimbel.fungsional.id/server/';
+// export const FRONTEND_URL = 'https://bimbel.fungsional.id';
 
-// export const SERVER_URL_API = 'http://localhost:8001/api';
-// export const SERVER_URL = 'http://localhost:8001';
-// export const FRONTEND_URL = 'http://localhost:5173';
+export const SERVER_URL_API = "http://localhost:8002/api";
+export const SERVER_URL = "http://localhost:8002";
+export const FRONTEND_URL = "http://localhost:5173";
 
-export { adminRoutes } from './route-admin';
+export { adminRoutes } from "./route-admin";
 
 export const countDiscount = (
   type: string,
   price: number,
   discount: number
 ) => {
-  if (type === 'PERSEN') {
+  if (type === "PERSEN") {
     return price * (discount / 100);
   } else {
     return discount;
@@ -25,12 +25,12 @@ export const countDiscount = (
 };
 
 export const handleOpenLink = (link: string) => {
-  if (!link.startsWith('http://') && !link.startsWith('https://')) {
-    link = 'https://' + link;
+  if (!link.startsWith("http://") && !link.startsWith("https://")) {
+    link = "https://" + link;
   }
 
   // Membuka link dalam jendela baru
-  return window.open(link, '_blank');
+  return window.open(link, "_blank");
 };
 
 export const hitungJumlahBankSoal = (data: any) => {
@@ -68,7 +68,7 @@ export const hitungJumlahBankSoal = (data: any) => {
 };
 
 export const konversiDetikKeWaktu = (detik: any) => {
-  if (!detik) return '00:00';
+  if (!detik) return "00:00";
   // Menghitung jam, menit, dan detik
   let jam: string = Math.floor(detik / 3600).toString();
   const sisaDetik = detik % 3600;
@@ -81,11 +81,11 @@ export const konversiDetikKeWaktu = (detik: any) => {
   detikSisa = detikSisa.length < 2 ? `0${detikSisa}` : detikSisa.toString();
 
   // Membuat format waktu
-  let formatWaktu = '';
-  if (jam > '0') {
-    formatWaktu += jam + ':';
+  let formatWaktu = "";
+  if (jam > "0") {
+    formatWaktu += jam + ":";
   }
-  formatWaktu += menit + ':' + detikSisa;
+  formatWaktu += menit + ":" + detikSisa;
 
   return formatWaktu;
 };

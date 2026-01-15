@@ -2,25 +2,27 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface HomeProps {
-  setData: (data: []) => void;
-  section?: [];
+  setData: (data: Partial<HomeProps>) => void;
+  section?: any[];
   users?: number;
   pembelian?: number;
   soal?: number;
   event?: number;
-  notifikasi?: [];
+  notifikasi?: any[];
 }
 
 export const useHomeStore = create<HomeProps>()(
   persist(
     (set) => ({
-      setData: (props: any) => {
+      setData: (props: Partial<HomeProps>) => {
         set({
-          users: props.users,
-          pembelian: props.pembelian,
-          soal: props.soal,
+          paketSaya: props.paketSaya,
+          paketTersedia: props.paketTersedia,
+          riwayatPembelian: props.riwayatPembelian,
           section: props.section,
           event: props.event,
+          user: props.user,
+          soal: props.soal,
           notifikasi: props.notifikasi,
         });
       },

@@ -221,7 +221,7 @@ export default function PembahasanTryout({ isBimbel }: any) {
                 </p>
               </div>
             </div>
-            <div className="w-full md:w-6/12 xl:w-8/12 min-h-[400px] bg-white px-4 md:px-10 py-10 rounded-2xl flex flex-wrap">
+            <div className="w-full paketrekomendasiplace md:w-6/12 xl:w-8/12 min-h-[400px] bg-white px-4 md:px-10 py-10 rounded-2xl flex flex-wrap">
               <div className="w-full xl:w-3/12">
                 <h1 className="text-base xl:text-xl font-bold mb-5">
                   Passing Grade
@@ -257,6 +257,46 @@ export default function PembahasanTryout({ isBimbel }: any) {
                   }))}
                 />
               </div>
+                {/* Paket Rekomendasi */}
+              {detail?.pointCategory?.some(
+                (e: any) => e.all_point < e.kkm && e?.paketRekomendasi?.id
+              ) && (
+                <div className="mt-8">
+                  <h2 className="text-xl font-bold mb-4">Rekomendasi Belajar</h2>
+                  <div className="space-y-4">
+                    {detail.pointCategory
+                      .filter((e: any) => e.all_point < e.kkm && e?.paketRekomendasi?.id)
+                      .map((e: any) => (
+                        <div
+                          key={e.category}
+                          className="p-4 rounded-xl border-l-4 border-yellow-500 bg-yellow-50 shadow-sm hover:shadow-md transition cursor-pointer"
+                          onClick={() => {
+                            const query = encodeURIComponent(e.paketRekomendasi.nama);
+                            window.location.href = `/paket-pembelian?search=${query}`;
+                          }}
+                        >
+                          <p className="text-sm text-gray-800 mb-2">
+                            Nilai <span className="font-semibold">{e.category}</span> kamu belum
+                            mencapai KKM ({e.all_point}/{e.kkm}).  
+                            Disarankan untuk mempelajari paket berikut:
+                          </p>
+                          <h3 className="text-lg font-semibold text-blue-900">
+                            {e.paketRekomendasi.nama}
+                          </h3>
+                          {e.paketRekomendasi.deskripsi && (
+                            <p className="text-sm text-gray-600 mb-1">
+                              {e.paketRekomendasi.deskripsi}
+                            </p>
+                          )}
+                          <p className="text-base font-bold text-green-600">
+                            Rp {e.paketRekomendasi.harga?.toLocaleString("id-ID")}
+                          </p>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
             </div>
           </div>
         </div>

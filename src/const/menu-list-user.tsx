@@ -2,6 +2,8 @@ import {
   IconBuildingStore,
   IconCalendarEvent,
   IconHome2,
+  IconTicket,
+IconBrandCashapp
 } from '@tabler/icons-react';
 
 const menuList = [
@@ -20,6 +22,11 @@ const menuList = [
         link: '/paket-pembelian',
         count: 'pembelian',
       },
+	  {
+        link: '/my-tickets',
+        title: 'My Tickets',
+        icon: <IconTicket size={20} />,
+      },
       // {
       //   icon: <IconBrandTrello />,
       //   title: 'Kelas saya',
@@ -30,6 +37,11 @@ const menuList = [
         title: 'Event',
         link: '/event',
         count: 'event',
+      },      {
+        icon: <IconBrandCashapp />,
+        title: 'Riwayat Pembelian',
+        link: '/paket-pembelian/riwayat',
+        //count: 'event',
       },
     ],
   },

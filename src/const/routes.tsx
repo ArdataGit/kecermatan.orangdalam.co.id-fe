@@ -1,4 +1,4 @@
-import NotFound from '@/pages/not-found';
+import NotFound from "@/pages/not-found";
 
 import {
   Outlet,
@@ -6,16 +6,16 @@ import {
   Routes,
   useLocation,
   useNavigate,
-} from 'react-router-dom';
-import App from '@/App';
-import { useEffect } from 'react';
-import Login from '@/pages/auth/login';
-import Register from '@/pages/auth/register';
-import { useAuthStore } from '@/stores/auth-store';
-import { adminRoutes } from '@/const';
-import { userRoutes } from './route-user';
-import ForgotPassword from '@/pages/auth/forgot-password';
-import ResetPassword from '@/pages/auth/reset-password';
+} from "react-router-dom";
+import App from "@/App";
+import { useEffect } from "react";
+import Login from "@/pages/auth/login";
+import Register from "@/pages/auth/register";
+import { useAuthStore } from "@/stores/auth-store";
+import { adminRoutes } from "@/const";
+import { userRoutes } from "./route-user";
+import ForgotPassword from "@/pages/auth/forgot-password";
+import ResetPassword from "@/pages/auth/reset-password";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -28,9 +28,9 @@ const AdminRoutesLayouts: React.FC<LayoutProps> = ({ children }) => {
   const role = useAuthStore((state) => state?.user?.role);
 
   useEffect(() => {
-    if (!token || role !== 'ADMIN') {
+    if (!token || role !== "ADMIN") {
       localStorage.clear();
-      navigate('/auth/login', { replace: true });
+      navigate("/auth/login", { replace: true });
     }
   }, [location.pathname]);
 
@@ -43,12 +43,14 @@ const UserRoutesLayouts: React.FC<LayoutProps> = ({ children }) => {
   const role = useAuthStore((state) => state?.user?.role);
 
   useEffect(() => {
-    if (!token || role !== 'USER') {
-      localStorage.clear();
-      navigate('/auth/login', { replace: true });
-    }
-  }, [location.pathname]);
+    // tunggu sampai token/role ada, atau dianggap belum login
+    if (token === undefined && role === undefined) return;
 
+    if (!token || role !== "USER") {
+      const redirectTo = location.pathname + location.search;
+      navigate(`/auth/login?${redirectTo}`, { replace: true });
+    }
+  }, [token, role, location.pathname, location.search, navigate]);
   return <App>{children}</App>;
 };
 
@@ -59,7 +61,7 @@ const UnAuthenticationLayouts: React.FC<LayoutProps> = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      navigate(role === 'USER' ? '/' : '/Dashboard', { replace: true });
+      navigate(role === "USER" ? "/" : "/Dashboard", { replace: true });
     }
   }, [location.pathname]);
 
@@ -69,6 +71,7 @@ const UnAuthenticationLayouts: React.FC<LayoutProps> = ({ children }) => {
 export default function RoutesList() {
   return (
     <Routes>
+      {/* Admin routes */}
       <Route
         element={
           <AdminRoutesLayouts>
@@ -78,6 +81,8 @@ export default function RoutesList() {
       >
         {adminRoutes}
       </Route>
+
+      {/* User protected routes */}
       <Route
         element={
           <UserRoutesLayouts>
@@ -85,20 +90,16 @@ export default function RoutesList() {
           </UserRoutesLayouts>
         }
       >
-        {userRoutes}
+        {userRoutes} {/* Hanya route yang perlu login sebagai USER */}
       </Route>
-      <Route
-        element={
-          <UnAuthenticationLayouts>
-            <Outlet />
-          </UnAuthenticationLayouts>
-        }
-      >
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/register" element={<Register />} />
-        <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-        <Route path="/auth/reset-password/:jwt" element={<ResetPassword />} />
-      </Route>
+
+      {/* Auth pages (login, register, forgot) - tidak di UserRoutesLayouts */}
+      <Route path="/auth/login" element={<Login />} />
+      <Route path="/auth/register/:affCode?" element={<Register />} />
+      <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+      <Route path="/auth/reset-password/:jwt" element={<ResetPassword />} />
+
+      {/* Not found */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

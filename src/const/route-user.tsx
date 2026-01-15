@@ -1,22 +1,24 @@
-import { Route } from 'react-router-dom';
+import { Route } from "react-router-dom";
 
 // import Empty from '@/pages/empty';
-import Langganan from '@/pages/user/paket-pembelian';
-import RiwayatLangganan from '@/pages/user/riwayat-langganan';
-import MyLangganan from '@/pages/user/my-class';
-import HomeUser from '@/pages/user/home';
-import Profile from '@/pages/profile';
-import Bimbel from '@/pages/user/bimbel';
-import Event from '@/pages/user/event';
-import Materi from '@/pages/user/materi';
-import ListTryout from '@/pages/user/list-tryout';
-import Tryout from '@/pages/user/tryout';
-import RiwayatTryout from '@/pages/user/riwayat-tryout';
-import Empty from './empty';
-import PembahasanTryout from '@/pages/user/pembahasan-tryout';
-import StatisticTryout from '@/pages/user/statistic-tryout';
-import Ranking from '@/pages/user/ranking';
-import EventDetail from '@/pages/user/event-detail';
+import Langganan from "@/pages/user/paket-pembelian";
+import RiwayatLangganan from "@/pages/user/riwayat-langganan";
+import MyLangganan from "@/pages/user/my-class";
+import HomeUser from "@/pages/user/home";
+import Profile from "@/pages/profile";
+import Bimbel from "@/pages/user/bimbel";
+import Event from "@/pages/user/event";
+import Materi from "@/pages/user/materi";
+import ListTryout from "@/pages/user/list-tryout";
+import Tryout from "@/pages/user/tryout";
+import RiwayatTryout from "@/pages/user/riwayat-tryout";
+import Empty from "./empty";
+import PembahasanTryout from "@/pages/user/pembahasan-tryout";
+import StatisticTryout from "@/pages/user/statistic-tryout";
+import Ranking from "@/pages/user/ranking";
+import EventDetail from "@/pages/user/event-detail";
+import TicketForm from "@/pages/user/TicketForm";
+import MyTickets from "@/pages/user/ticket";
 
 export const userRoutes = [
   <Route path="/" element={<HomeUser />} />,
@@ -83,4 +85,6 @@ export const userRoutes = [
   />,
 
   <Route path="/my-class" element={<MyLangganan />} />,
+  <Route path="/tickets/create" element={<TicketForm />} />,
+  <Route path="/my-tickets" element={<MyTickets />} />,
 ];

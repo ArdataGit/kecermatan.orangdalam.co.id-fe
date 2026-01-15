@@ -2,9 +2,10 @@ import Form from '@/components/form';
 import Input from '@/components/input';
 import { patchData, postData } from '@/utils/axios';
 import FetchAPI from '@/utils/fetch-api';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Dialog } from 'tdesign-react';
+import useGetList from '@/hooks/use-get-list';
 
 export default function ManageKategori({
   setVisible,
@@ -15,10 +16,37 @@ export default function ManageKategori({
   const [loading, setLoading] = useState(false);
   const paramss = useParams();
 
+  // opsi paket pembelian
+  const [paketPembelianOptions, setPaketPembelianOptions] = useState<
+    { label: string; value: number | null }[]
+  >([{ label: 'Pilih Paket Pembelian', value: null }]);
+
+  // ambil list paket pembelian
+  const getDataPembelian = useGetList({
+    url: 'admin/paket-pembelian/get',
+    initialParams: {
+      skip: 0,
+      take: 0,
+      sortBy: 'createdAt',
+      descending: true,
+    },
+  });
+
+  useEffect(() => {
+    const options = getDataPembelian.list.map((item: any) => ({
+      label: item.nama,
+      value: item.id,
+    }));
+    const allOptions = [{ label: 'Pilih Paket Pembelian', value: null }, ...options];
+    setPaketPembelianOptions(allOptions);
+  }, [getDataPembelian]);
+
   const handleSubmit = async (data: any) => {
     setLoading(true);
 
     data.parentCategoryId = paramss.id;
+    data.paketRekomendasiId = data.paketRekomendasiId || null; // tambahkan paket rekomendasi
+
     FetchAPI(
       detail.id
         ? patchData(`admin/bank-soal-kategori/update/${detail.id}`, data)
@@ -50,7 +78,10 @@ export default function ManageKategori({
       <Form
         onSubmit={handleSubmit}
         className="space-y-6"
-        defaultValues={detail}
+        defaultValues={{
+          ...detail,
+          paketRekomendasiId: detail.paketRekomendasiId || null,
+        }}
       >
         <Input
           title="Judul"
@@ -74,6 +105,18 @@ export default function ManageKategori({
             { label: 'Point', value: 'POINT' },
           ]}
         />
+
+        {/* Paket Rekomendasi */}
+        <Input
+          title="Paket Rekomendasi"
+          name="paketRekomendasiId"
+          type="select"
+          options={paketPembelianOptions}
+          validation={{
+            valueAsNumber: true,
+          }}
+        />
+
         <Input title="Keterangan" name="keterangan" type="multiple" />
 
         <div className="flex justify-end gap-2">

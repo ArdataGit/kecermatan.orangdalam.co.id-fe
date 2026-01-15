@@ -1,11 +1,12 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type UserProps = {
   email: string;
   role: string;
   name: string;
   gambar: string | undefined;
+  id: number;
 };
 
 type LoginDataProps = {
@@ -15,10 +16,6 @@ type LoginDataProps = {
   user: UserProps;
 };
 
-export const loginStore = {
-  isHasShow: false,
-};
-
 interface AuthProps {
   login: (data: LoginDataProps) => void;
   logout: () => void;
@@ -26,26 +23,34 @@ interface AuthProps {
   token?: string;
   myClass?: any;
   setMyClass: (myClass: any) => void;
+  isHasShow: boolean; // Add isHasShow to the store
+  setIsHasShow: (value: boolean) => void; // Add setter for isHasShow
 }
 
 export const useAuthStore = create<AuthProps>()(
   persist(
     (set) => ({
+      isHasShow: false, // Initialize isHasShow
       login: ({ data }: any) => {
         set({
           user: data.user,
           token: data.token,
+          isHasShow: false, // Reset isHasShow on login
         });
       },
       logout: () => {
         set({
           user: undefined,
           token: undefined,
+          myClass: undefined,
+          isHasShow: false, // Reset isHasShow on logout
         });
         const deleteLocalStorage = () => {
           const keys = Object.keys(localStorage);
           for (const key of keys) {
-            localStorage.removeItem(key);
+            if (key !== "authentication") {
+              localStorage.removeItem(key); // Clear other keys, preserve Zustand state
+            }
           }
         };
         deleteLocalStorage();
@@ -53,17 +58,11 @@ export const useAuthStore = create<AuthProps>()(
       setMyClass: (myClass: any) => {
         set({ myClass });
       },
-      // setUsername: (newUserName) => {
-      //   set({ username: newUserName });
-      // },
-      // setServiceRating: (serviceProps) => {
-      //   set({ serviceRating: serviceProps });
-      // },
-      // setServiceReview: (reviewStatus) => {
-      //   set({ serviceReview: reviewStatus });
-      // },
+      setIsHasShow: (value: boolean) => {
+        set({ isHasShow: value });
+      },
     }),
-    { name: 'authentication' }
+    { name: "authentication" }
   )
 );
 

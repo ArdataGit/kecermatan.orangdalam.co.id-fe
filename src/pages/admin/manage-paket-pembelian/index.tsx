@@ -1,8 +1,9 @@
 import TableWrapper from '@/components/table';
 import useGetList from '@/hooks/use-get-list';
-import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { IconPencil, IconPlus, IconTrash, IconCopy } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Button, ImageViewer, Popconfirm } from 'tdesign-react';
+import toast from 'react-hot-toast';
 import ManagePaketPembelian from './manage';
 import FetchAPI from '@/utils/fetch-api';
 import { deleteData } from '@/utils/axios';
@@ -105,6 +106,22 @@ export default function UserIndex() {
         return <p>{row?._count?.Pembelian}</p>;
       },
     },
+	{
+      title: 'Link Wa',
+      colKey: 'linkWa',
+      filter: {
+        type: FilterType.Input,
+        resetValue: '',
+        confirmEvents: ['onEnter'],
+        props: { placeholder: 'Input Link Wa' },
+        showConfirmAndReset: true,
+      },
+      cell: ({ row }: any) => {
+        return (
+          <p className={!row.isActive ? 'text-red-500' : ''}>{row.linkWa}</p>
+        );
+      },
+    },
     {
       title: 'Materi',
       colKey: 'materi',
@@ -184,8 +201,21 @@ export default function UserIndex() {
       align: AlignType.Center,
       colKey: 'action',
       cell: ({ row }: any) => {
+        const handleCopyLink = () => {
+          const url = `https://bimbel.fungsional.id/paket-pembelian?search=${row.nama}`;
+          navigator.clipboard.writeText(url);
+          toast.success('Link berhasil disalin!');
+        };
         return (
           <div className="flex justify-center gap-5">
+             <Button
+              shape="circle"
+              theme="primary"
+              variant="outline"
+              onClick={handleCopyLink}
+            >
+              <IconCopy size={14} />
+            </Button>
             <Button
               shape="circle"
               theme="default"

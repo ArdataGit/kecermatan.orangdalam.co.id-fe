@@ -284,12 +284,13 @@ export default function UserIndex() {
                 <span className="text-sm font-semibold relative">
                   Masuk group dan baca petunjuk Bimbel
                 </span>
-                <button
-                  className="self-center p-0 m-0 relative mt-2 rounded-sm text-white bg-primary px-4 py-1.5 border border-primary hover:shadow-md flex items-center text-sm"
-                  onClick={() => setVisible(true)}
-                >
-                  Baca disini
-                </button>
+                <Button
+                    className="self-center p-0 m-0 relative mt-2 rounded-sm text-white bg-primary px-4 py-1.5 border border-primary hover:shadow-md flex items-center text-sm"
+                    disabled={!data?.paketPembelian?.linkWa}
+                    onClick={() => handleOpenLink(data?.paketPembelian?.linkWa)}
+                  >
+                    Masuk Grup
+                  </Button>
               </div>
             </h1>
 

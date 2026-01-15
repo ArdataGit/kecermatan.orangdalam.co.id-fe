@@ -1,44 +1,194 @@
 import CKeditor from "@/components/ckeditor";
 import { useHomeStore } from "@/stores/home-stores";
+import { useAuthStore } from "@/stores/auth-store";
 import { imageLink } from "@/utils/image-link";
 import { IconBuildingBank, IconUsersGroup } from "@tabler/icons-react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Rate } from "tdesign-react";
-import { Link } from "react-router-dom";
+import { getData, postData } from "@/utils/axios";
+import { MessagePlugin } from "tdesign-react";
+import { useEffect, useState } from "react";
+import Form from "@/components/form";
+import Input from "@/components/input";
+import Button from "@/components/button";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
+  const navigate = useNavigate();
   const data = useHomeStore((state) => state);
-  /** const socials = [
-    {
-      link: "#",
-      icons: "/img/instagram.webp",
-    },
-    {
-      link: "#",
-      icons: "/img/whatsapp.webp",
-      className: "size-10",
-    },
-    {
-      link: "#",
-      icons: "/img/fb.svg",
-    },
-  ];
-**/
-  const groups = [
-    {
-      link: "#",
-      icons: "/img/whatsapp.webp",
-      name: "WhatsApp",
-    },
-    {
-      link: "#",
-      icons: "/img/telegram.webp",
-      name: "Telegram",
-    },
-  ];
+  const { user, token, isHasShow, setIsHasShow } = useAuthStore();
+  const [notification, setNotification] = useState(null);
+  const [feedbackModal, setFeedbackModal] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!token);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!token);
+  }, [token]);
+
+   useEffect(() => {
+    const load = async () => {
+      try {
+        // Fetch notification
+        const notificationRes = await getData("dashboard-notification");
+        const list = notificationRes?.list || [];
+        const activeNotification = list.find((item) => item.status === "active") || null;
+        setNotification(activeNotification);
+
+        // Debug log
+        console.log("Auth State:", { isLoggedIn, user, isHasShow });
+
+        // Check feedback only if logged in, user exists, and modal hasn't been shown
+        if (isLoggedIn && user?.id && !isHasShow) {
+          const [settingsRes, feedbackRes] = await Promise.all([
+            getData("/user/feedback-settings"),
+            getData(`/user/feedbacksUser?userId=${user.id}`),
+          ]);
+
+          // Debug respons mentah
+          console.log("Raw feedback settings response:", settingsRes);
+          console.log("Raw feedback user response:", feedbackRes);
+
+          const isFeedbackActive = settingsRes?.[0]?.isActive || false;
+          const hasFeedback = feedbackRes?.hasFeedback || false;
+
+          // Debug hasil parsing
+          console.log("Parsed values:", {
+            isFeedbackActive,
+            hasFeedback,
+            settingsRes,
+            feedbackRes,
+          });
+
+          if (isFeedbackActive && !hasFeedback) {
+            console.log("➡️ Kondisi terpenuhi: Feedback modal akan ditampilkan");
+            setFeedbackModal({
+              title: "Berikan Feedback Anda",
+              message: "Kami ingin mendengar pendapat Anda untuk meningkatkan layanan kami!",
+            });
+            setIsHasShow(true);
+          } else {
+            console.log("❌ Kondisi tidak terpenuhi, modal tidak ditampilkan", {
+              isFeedbackActive,
+              hasFeedback,
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Error loading data:", err);
+        MessagePlugin.error("Gagal ambil data");
+      }
+    };
+
+    load();
+  }, [isLoggedIn, user?.id, isHasShow, setIsHasShow]);
+
+
+  // Handle feedback form submission
+  const handleFeedbackSubmit = async (formData) => {
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        userId: user.id,
+        pekerjaan: formData.pekerjaan || "",
+        rating: Number(formData.rating),
+        saran: formData.saran || "",
+      };
+      await postData("/user/feedbacks", payload);
+      MessagePlugin.success("Feedback berhasil disimpan");
+      setFeedbackModal(null); // Close modal on success
+    } catch (err) {
+      console.error("Error submitting feedback:", err);
+      MessagePlugin.error(err.message || "Gagal menyimpan feedback");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Render feedback modal with form
+  const renderFeedbackModal = () => {
+  if (!feedbackModal) return null;
+
+  const createdAt = user?.createdAt ? new Date(user.createdAt) : null;
+  const now = new Date();
+  const daysUsed = createdAt ? Math.floor((now - createdAt) / (1000 * 60 * 60 * 24)) : 0;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <h3 className="text-lg font-semibold mb-4">{feedbackModal.title}</h3>
+        <p className="text-sm text-gray-600 mb-2">{feedbackModal.message}</p>
+
+        {/* Tambahan: Lama penggunaan */}
+        <p className="text-sm text-gray-500 mb-4">
+          Kamu sudah menggunakan website ini selama <b>{daysUsed}</b> hari
+        </p>
+
+        <Form onSubmit={handleFeedbackSubmit} className="space-y-4">
+          <Input
+            title="Pekerjaan"
+            name="pekerjaan"
+            type="text"
+            placeholder="Masukkan pekerjaan (opsional)"
+            validation={{ required: false }}
+          />
+          <Input
+            title="Rating (1-5)"
+            name="rating"
+            type="number"
+            placeholder="Masukkan rating (1-5)"
+            validation={{
+              required: "Rating wajib diisi",
+              min: { value: 1, message: "Rating minimal 1" },
+              max: { value: 5, message: "Rating maksimal 5" },
+            }}
+          />
+          <Input
+            title="Saran"
+            name="saran"
+            type="textarea"
+            placeholder="Masukkan saran (opsional)"
+            validation={{ required: false }}
+          />
+          <div className="flex justify-end space-x-2">
+            <Button
+              type="button"
+              theme="default"
+              onClick={() => setFeedbackModal(null)}
+              disabled={isSubmitting}
+            >
+              Tutup
+            </Button>
+            <Button type="submit" isLoading={isSubmitting}>
+              Kirim Feedback
+            </Button>
+          </div>
+        </Form>
+      </div>
+    </div>
+  );
+};
+
+
   return (
     <div className="w-[100%] overflow-hidden">
+      {renderFeedbackModal()}
+      {notification && (
+        <div className="mx-5 my-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
+          <h2 className="text-lg font-semibold text-indigo-950 mb-1">{notification.title}</h2>
+          <p className="text-sm text-gray-600 mb-2">{notification.description}</p>
+          {notification.link && (
+            <a
+              href={notification.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-blue-600 underline"
+            >
+              Lihat selengkapnya
+            </a>
+          )}
+        </div>
+      )}
       <Carousel
         autoPlay
         infiniteLoop
@@ -50,149 +200,108 @@ export default function HomePage() {
         className="p-5 rounded-sm"
       >
         {data?.section
-          ?.filter((e: any) => e.tipe === "BANNER")
-          ?.map((e: any) => (
+          ?.filter((e) => e.tipe === "BANNER")
+          ?.map((e) => (
             <div
               className="cursor-grab"
               onClick={() => {
                 if (e.url) window.open(e.url, "_blank");
               }}
+              key={e.id}
             >
-              <img className="rounded-md" src={imageLink(e.gambar)} />
+              <img className="rounded-md" src={imageLink(e.gambar)} alt={e.title || "Banner"} />
             </div>
           ))}
       </Carousel>
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-x-7 gap-y-7 mx-5">
-        <div className="item-stat bg-white rounded-2xl p-5">
+  {/* Paket Saya */}
+        <div
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition"
+          onClick={() => navigate("/my-class")}
+        >
           <div className="flex flex-row mb-7 justify-between">
             <div className="bg-violet-700 rounded-full w-fit p-3">
               <IconBuildingBank className="text-white" />
             </div>
           </div>
-          <h3 className="text-2xl text-indigo-950 font-bold">{data?.soal}</h3>
-          <p className="text-sm text-gray-500">Bank Soal</p>
+          <h3 className="text-2xl text-indigo-950 font-bold">{data?.paketSaya}</h3>
+          <p className="text-sm text-gray-500">Paket Saya</p>
         </div>
-        <div className="item-stat bg-white rounded-2xl p-5">
+
+        {/* Paket Tersedia */}
+        <div
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition"
+          onClick={() => navigate("/paket-pembelian")}
+        >
           <div className="flex flex-row mb-7 justify-between">
             <div className="bg-blue-700 rounded-full w-fit p-3">
               <IconUsersGroup className="text-white" />
             </div>
           </div>
-          <h3 className="text-2xl text-indigo-950 font-bold">{data?.users}</h3>
-          <p className="text-sm text-gray-500">Pengguna Aktif</p>
+          <h3 className="text-2xl text-indigo-950 font-bold">{data?.paketTersedia}</h3>
+          <p className="text-sm text-gray-500">Paket Tersedia</p>
         </div>
-        <div className="item-stat bg-white rounded-2xl p-5">
+
+        {/* Event */}
+        <div
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition"
+          onClick={() => navigate("/paket-pembelian")}
+        >
           <div className="flex flex-row mb-7 justify-between">
             <div className="bg-orange-500 rounded-full w-fit p-3">
               <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3.17004 7.43994L12 12.5499L20.77 7.46991"
-                  stroke="#fff    "
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 21.6099V12.5399"
-                  stroke="#fff  "
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M9.92999 2.48L4.59 5.45003C3.38 6.12003 2.39001 7.80001 2.39001 9.18001V14.83C2.39001 16.21 3.38 17.89 4.59 18.56L9.92999 21.53C11.07 22.16 12.94 22.16 14.08 21.53L19.42 18.56C20.63 17.89 21.62 16.21 21.62 14.83V9.18001C21.62 7.80001 20.63 6.12003 19.42 5.45003L14.08 2.48C12.93 1.84 11.07 1.84 9.92999 2.48Z"
-                  stroke="#fff    "
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M17 13.24V9.58002L7.51001 4.09998"
-                  stroke="#fff    "
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="#fff"
+        strokeWidth="2"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 6v12m8-6H4m2-7h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2z"
+        />
+      </svg>
             </div>
           </div>
-          <h3 className="text-2xl text-indigo-950 font-bold">
-            {data?.pembelian}
-          </h3>
-          <p className="text-sm text-gray-500">Paket Tersedia</p>
+          <h3 className="text-2xl text-indigo-950 font-bold">{data?.soal}</h3>
+          <p className="text-sm text-gray-500">Bank Soal</p>
         </div>
-        <div className="item-stat bg-white rounded-2xl p-5">
+
+        {/* Riwayat Pembelian */}
+        <div
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition"
+          
+        >
           <div className="flex flex-row mb-7 justify-between">
             <div className="bg-cyan-700 rounded-full w-fit p-3">
               <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="#fff"
+                strokeWidth="2"
               >
                 <path
-                  d="M8 2V5"
-                  stroke="#fff"
-                  strokeWidth="2"
-                  stroke-miterlimit="10"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                />
-                <path
-                  d="M16 2V5"
-                  stroke="#fff"
-                  strokeWidth="2"
-                  stroke-miterlimit="10"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M7 13H15"
-                  stroke="#fff"
-                  strokeWidth="2"
-                  stroke-miterlimit="10"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M7 17H12"
-                  stroke="#fff"
-                  strokeWidth="2"
-                  stroke-miterlimit="10"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M16 3.5C19.33 3.68 21 4.95 21 9.65V15.83C21 19.95 20 22.01 15 22.01H9C4 22.01 3 19.95 3 15.83V9.65C3 4.95 4.67 3.69 8 3.5H16Z"
-                  stroke="#fff"
-                  strokeWidth="2"
-                  stroke-miterlimit="10"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  d="M17 20v-2a4 4 0 00-3-3.87m-7 5.87v-2a4 4 0 013-3.87m10-4a4 4 0 11-8 0 4 4 0 018 0zm-10 0a4 4 0 11-8 0 4 4 0 018 0z"
                 />
               </svg>
             </div>
           </div>
-          <h3 className="text-2xl text-indigo-950 font-bold">{data?.event}</h3>
-          <p className="text-sm text-gray-500">Event</p>
+          <h3 className="text-2xl text-indigo-950 font-bold">{data?.user}</h3>
+          <p className="text-sm text-gray-500"> Siswa Tergabung</p>
         </div>
       </div>
-
-      <div className="grid   rounded-xl  md:grid-cols-2 gap-2 ">
+      <div className="grid rounded-xl md:grid-cols-2 gap-2">
         {data?.section
-          ?.filter((e: any) => e.tipe === "CUSTOM")
-          ?.map((e: any) => (
-            <div className="mx-5 bg-white mt-5 px-10 rounded-xl ">
-              <h3 className="pt-10 text-xl text-center font-medium mb-5">
-                {e.title}
-              </h3>
+          ?.filter((e) => e.tipe === "CUSTOM")
+          ?.map((e) => (
+            <div className="mx-5 bg-white mt-5 px-10 rounded-xl" key={e.id}>
+              <h3 className="pt-10 text-xl text-center font-medium mb-5">{e.title}</h3>
               <CKeditor
                 content={e.keterangan}
                 readOnly
@@ -200,86 +309,6 @@ export default function HomePage() {
               />
             </div>
           ))}
-      </div>
-      <div className="mx-5 bg-white mt-5 px-10 rounded-xl pb-20">
-        <h3 className="pt-10 text-xl text-center font-medium">
-          Apa kata para Alumni
-        </h3>
-
-        <div className="grid   rounded-xl md:mx-5 mt-10 md:grid-cols-2 gap-2 bg-white">
-          {data?.section
-            ?.filter((e: any) => e.tipe === "REVIEW")
-            ?.map((e: any) => (
-              <figure
-                className={`flex flex-col items-center justify-center p-8 text-center  bg-white border-b border-gray-200  border rounded-xl`}
-              >
-                <blockquote className="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 ">
-                  <div className="flex justify-center mb-4">
-                    <Rate value={e.bintang} disabled />
-                  </div>
-                  <CKeditor
-                    content={e.keterangan}
-                    readOnly
-                    className="mb-5 inline-block w-full"
-                  />
-                </blockquote>
-                <figcaption className="flex items-center justify-center ">
-                  <img
-                    className="rounded-full w-9 h-9"
-                    src={imageLink(e.gambar)}
-                    alt="profile picture"
-                  />
-                  <div className="space-y-0.5 font-medium text-left rtl:text-right ms-3">
-                    <div>{e.title}</div>
-                    <div className="text-sm text-gray-500 ">{e.pekerjaan}</div>
-                  </div>
-                </figcaption>
-              </figure>
-            ))}
-        </div>
-      </div>
-{/*
-      <div className="mx-5 bg-white  pt-5 mt-5 px-10 flex flex-wrap items-start gap-5 rounded-xl pb-10">
-        <div>
-          <h1 className="text-xl">Ikuti Social Media</h1>
-          <div className="flex gap-6 mt-4 flex-wrap items-center max-sm:justify-center">
-            {socials.map((link, i) => (
-              <Link className="" key={i} to={link.link}>
-                <img
-                  src={link.icons}
-                  className={`object-cover object-center ${
-                    link.className ?? "size-8"
-                  }`}
-                  alt=""
-                />
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-*/}
-      <div className="mx-5 bg-white  pt-5 mt-5 px-10 flex flex-wrap items-start gap-5 rounded-xl pb-10">
-        <div>
-          <h1 className="text-xl">Ikuti Grup Kami</h1>
-          <div className="flex flex-col gap-2 mt-4 flex-wrap max-sm:justify-center">
-            {groups.map((link, i) => (
-              <Link
-                className="flex gap-2 items-center justify-between text-sm px-4 py-2 rounded-md border border-slate-300"
-                key={i}
-                to={link.link}
-              >
-                <h1>Ikuti Group {link.name} Kami</h1>
-                <img
-                  src={link.icons}
-                  className={`${
-                    link.name == "WhatsApp" ? "!size-[1.80rem]" : ""
-                  } size-6 !min-w-5 object-cover object-center`}
-                  alt=""
-                />
-              </Link>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import FetchAPI from "@/utils/fetch-api";
 import { useState } from "react";
 import { Button, Dialog } from "tdesign-react";
 
-export default function ManageUser({
+export default function ManageAffiliate({
   setVisible,
   params,
   detail,
@@ -16,10 +16,15 @@ export default function ManageUser({
   const handleSubmit = async (data: any) => {
     setLoading(true);
 
+    // Auto-generate password = email jika create
+    if (!detail.id && data.email) {
+      data.password = data.email; // Akan di-hash di backend
+    }
+
     FetchAPI(
       detail.id
-        ? patchData(`admin/users/update/${detail.id}`, data)
-        : postData("admin/users/insert", data)
+        ? patchData(`api/affiliate/${detail.id}/update`, data)
+        : postData("api/affiliate/create", data)
     )
       .then(() => {
         params.refresh();
@@ -36,9 +41,15 @@ export default function ManageUser({
     setDetail({});
   };
 
+  const defaultValues = {
+    ...detail,
+    affiliateStatus: detail.affiliateStatus || "active",
+    jenisKelamin: detail.jenisKelamin || "L",
+  };
+
   return (
     <Dialog
-      header={detail.id ? "Edit User" : "Tambah User"}
+      header={detail.id ? "Edit Affiliate" : "Tambah Affiliate"}
       visible
       onClose={handleClose}
       className="w-[800px]"
@@ -47,7 +58,7 @@ export default function ManageUser({
       <Form
         onSubmit={handleSubmit}
         className="space-y-6"
-        defaultValues={detail}
+        defaultValues={defaultValues}
       >
         <div className="flex gap-5">
           <Input
@@ -71,6 +82,7 @@ export default function ManageUser({
             }}
           />
         </div>
+
         <div className="flex gap-5">
           <Input
             type="password"
@@ -89,7 +101,7 @@ export default function ManageUser({
             }
           />
           <Input
-            title="Nomor Telepon"
+            title="Nomor Whatsapp"
             startAdornment="+62"
             placeholder="81234567890"
             name="noWA"
@@ -98,15 +110,65 @@ export default function ManageUser({
               required: "Nomor telepon harus di isi",
               pattern: {
                 value: /^8[0-9]{9,11}$/,
-                message: "Format nomor telphone tidak sesuai",
+                message: "Format nomor telepon tidak sesuai",
               },
             }}
           />
         </div>
+
+        <div className="flex gap-5">
+          <Input
+            title="Jenis Kelamin"
+            name="jenisKelamin"
+            type="select"
+            validation={{ required: "Jenis kelamin harus dipilih" }}
+            options={[
+              { label: "Laki-laki", value: "L" },
+              { label: "Perempuan", value: "P" },
+            ]}
+          />
+          <Input
+            title="Kode Affiliate"
+            name="affiliateCode"
+            type="text"
+            validation={{
+              required: "Kode affiliate harus di isi",
+            }}
+          />
+        </div>
+
+        <Input
+          title="Link Affiliate"
+          name="affiliateLink"
+          type="url"
+          validation={{
+            required: "Link affiliate harus di isi",
+            pattern: {
+              value: /https?:\/\/.+/,
+              message: "Format URL tidak sesuai",
+            },
+          }}
+        />
+
+        <Input
+          title="Status Affiliate"
+          name="affiliateStatus"
+          type="select"
+          validation={{ required: "Status harus dipilih" }}
+          options={[
+            { label: "Aktif", value: "active" },
+            { label: "Tidak Aktif", value: "inactive" },
+          ]}
+        />
+
         <Input title="Alamat" name="alamat" type="multiple" />
-        <Input name="provinsi" title="Provinsi" type="text" />
-        <Input name="kabupaten" title="Kabupaten" type="text" />{" "}
-        <Input name="kecamatan" title="Kecamatan" type="text" />
+
+        <div className="flex gap-5">
+          <Input name="provinsi" title="Provinsi" type="text" />
+          <Input name="kabupaten" title="Kabupaten" type="text" />
+          <Input name="kecamatan" title="Kecamatan" type="text" />
+        </div>
+
         <div className="flex justify-end gap-2">
           <Button
             variant="outline"

@@ -20,9 +20,16 @@ import ManageEvent from '@/pages/admin/event';
 import ManageHomePage from '@/pages/admin/manage-home-section';
 import RiwayatTryoutAdmin from '@/pages/admin/riwayat-tryout-admin';
 import ManageNotification from '@/pages/admin/manage-notification';
+import TicketIndex from '@/pages/admin/ticket';
+import DashboardNotification from '@/pages/admin/notificationdash';
+import Feedback from '@/pages/admin/feedback';
+import Affiliate from '@/pages/admin/affiliate';
+import AffiliateCommission from '@/pages/admin/affiliate-commission';
+import RekapPenjualan from '@/pages/admin/rekap-penjualan';
 
 export const adminRoutes = [
   <Route path="/dashboard" element={<Dashboard />} />,
+  <Route path="/rekap-penjualan" element={<RekapPenjualan />} />,
   <Route path="/manage-user" element={<User />} />,
   <Route path="/manage-penjualan" element={<Penjualan />} />,
   <Route path="/manage-soal-category" element={<ManageSoalParentCategory />} />,
@@ -40,6 +47,10 @@ export const adminRoutes = [
   <Route path="/manage-pembelian" element={<ManagePaketPembelian />} />,
   <Route path="/manage-notifikasi" element={<ManageNotification />} />,
   <Route path="/manage-home-section" element={<ManageHomePage />} />,
+  <Route path="/dashboard-notification" element={<DashboardNotification />} />,
+  <Route path="/feedbacks" element={<Feedback />} />,
+  <Route path="/affiliate" element={<Affiliate />} />,
+  <Route path="/affiliate-commission" element={<AffiliateCommission />} />,
   <Route
     path="/manage-pembelian/:id/materi"
     element={<ManagePaketPembelianMateri />}
@@ -60,4 +71,6 @@ export const adminRoutes = [
     path="/manage-pembelian/:id/tryout/:paketPembelianTryoutId/:latihanId"
     element={<RiwayatTryoutAdmin />}
   />,
+
+  <Route path="/manage-ticket" element={<TicketIndex />} />,
 ];

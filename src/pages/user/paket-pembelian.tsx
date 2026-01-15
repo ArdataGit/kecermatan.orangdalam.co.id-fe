@@ -5,14 +5,19 @@ import useGetList from "@/hooks/use-get-list";
 import useDebounce from "@/hooks/useDebounce";
 import { getData } from "@/utils/axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
-
+// helper buat ambil query params
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 export default function PaketPembelian() {
+  const query = useQuery();
+  const searchFromUrl = query.get("search") || "";
   const [paymentModal, setPaymentModal] = useState(false);
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState<{ nama: string }[]>([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchFromUrl); // ✅ initial dari query
   const [alumniVoucher, setAlumniVoucher] = useState({});
   const [itemDetail, setItemDetail] = useState({});
   const { ref, inView } = useInView();
@@ -23,34 +28,29 @@ export default function PaketPembelian() {
     },
     url: "user/tryout/my-tryout",
   });
+  console.log("getClass", getClass);
   const getCategories = async () => {
     getData(`user/category/get`).then((res) => {
       setCategory(res);
     });
   };
-
   useEffect(() => {
     getClass.setParams((param: any) => ({ ...param, search: searchQ || "" }));
   }, [searchQ]);
-
   useEffect(() => {
     getCategories();
   }, []);
-
   const getAlumniVoucher = async () => {
     getData(`user/get-voucher-alumni`).then((res) => {
       setAlumniVoucher(res);
     });
   };
-
   useEffect(() => {
     getAlumniVoucher();
   }, []);
-
   useEffect(() => {
     if (inView) return setPage(page + 1);
   }, [inView]);
-
   useEffect(() => {
     getClass.setParams((param: any) => ({ ...param, take: page * 10 }));
   }, [page]);
@@ -67,6 +67,7 @@ export default function PaketPembelian() {
       <BreadCrumb
         page={[{ name: "Paket Pembelian", link: "/paket-pembelian" }]}
       />
+      {/* header section */}
       <div className="flex flex-col gap-y-5 md:flex-row md:items-center justify-start md:justify-between header-section w-full">
         <div className="title flex justify-between w-full items-start">
           <h1 className="text-2xl text-indigo-900 font-bold mb-5">
@@ -74,29 +75,30 @@ export default function PaketPembelian() {
           </h1>
           <Link
             to={"riwayat"}
-            className="text-sm md:text-md text-blue-700  items-center mb-5"
+            className="text-sm md:text-md text-blue-700 items-center mb-5"
           >
             Riwayat <span className="max-sm:hidden">Pembelian</span>
           </Link>
         </div>
       </div>
-      <div className="flex flex-wrap gap-x-3 mb-5 overflow-auto">
+      {/* category filter */}
+      <div className="flex flex-nowrap overflow-x-auto pb-2 scrollbar-hide sm:flex-wrap sm:pb-0 gap-x-3 mb-5">
         <button
-          className={` 
+          className={`
             py-3 px-6
-            mb-5
-            border 
+            border
             rounded
-            mr-2
             text-primary
             border-indigo-900
             hover:bg-indigo-900
-            hover:shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)]         
+            hover:shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)]
+            whitespace-nowrap flex-shrink-0
+            sm:whitespace-normal sm:flex-shrink sm:mr-2 sm:mb-5
             ${
               getClass.params.category === ""
                 ? " shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)] bg-indigo-900 text-white"
                 : " bg-white"
-            }   
+            }
             hover:text-white`}
           onClick={() => {
             getClass.setParams({
@@ -109,6 +111,7 @@ export default function PaketPembelian() {
         </button>
         {category?.map((item) => (
           <button
+            key={item.nama}
             onClick={() => {
               getClass.setParams({
                 ...getClass.params,
@@ -116,28 +119,27 @@ export default function PaketPembelian() {
               });
             }}
             className={`
-          
-            text-primary
-            py-3 px-6
-            mb-5
-
-            border 
-            rounded
-            mr-2
-            border-indigo-900
-            hover:bg-indigo-900
-            hover:shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)]         
-            ${
-              getClass.params.category === item.nama
-                ? " shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)] bg-indigo-900 text-white"
-                : " bg-white"
-            }   
-            hover:text-white`}
+              py-3 px-6
+              border
+              rounded
+              text-primary
+              border-indigo-900
+              hover:bg-indigo-900
+              hover:shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)]
+              whitespace-nowrap flex-shrink-0
+              sm:whitespace-normal sm:flex-shrink sm:mr-2 sm:mb-5
+              ${
+                getClass.params.category === item.nama
+                  ? " shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)] bg-indigo-900 text-white"
+                  : " bg-white"
+              }
+              hover:text-white`}
           >
             {item.nama}
           </button>
         ))}
       </div>
+      {/* search bar */}
       <div className="flex *:bg-slate-200 mt-4 mb-8 rounded-md border border-slate-300 mx-sm:w-fit w-full max-w-[25rem] overflow-hidden items-stretch">
         <input
           placeholder={"Cari disini"}
@@ -163,10 +165,11 @@ export default function PaketPembelian() {
           </svg>
         </div>
       </div>
-
+      {/* product list */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {getClass?.list?.map((item) => (
           <CardProduct
+            key={item.id}
             setVisible={setPaymentModal}
             item={item}
             alumniVoucher={alumniVoucher}
