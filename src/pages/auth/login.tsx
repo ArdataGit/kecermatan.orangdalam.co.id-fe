@@ -35,14 +35,19 @@ export default function Example() {
         }
 
         setTimeout(() => {
+          if (response.data.data.user.role === "ADMIN") {
+             if (redirect && redirect !== "/") {
+                navigate(redirect);
+                return;
+             }
+             return navigate("/dashboard");
+          }
+
           if (redirect) {
              navigate(redirect);
              return;
           }
 
-          if (response.data.data.user.role === "ADMIN") {
-            return navigate("/dashboard");
-          }
           return navigate("/");
         }, 1000);
         return;
