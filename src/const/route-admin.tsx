@@ -26,6 +26,9 @@ import Feedback from '@/pages/admin/feedback';
 import Affiliate from '@/pages/admin/affiliate';
 import AffiliateCommission from '@/pages/admin/affiliate-commission';
 import RekapPenjualan from '@/pages/admin/rekap-penjualan';
+import ManageSoalKecermatan from '@/pages/admin/manage-soal-kecermatan';
+import ManageKiasan from '@/pages/admin/manage-soal-kecermatan/detail';
+import ManageSoalKecermatanList from '@/pages/admin/manage-soal-kecermatan/soal';
 
 export const adminRoutes = [
   <Route path="/dashboard" element={<Dashboard />} />,
@@ -73,4 +76,7 @@ export const adminRoutes = [
   />,
 
   <Route path="/manage-ticket" element={<TicketIndex />} />,
+  <Route path="/manage-soal-kecermatan" element={<ManageSoalKecermatan />} />,
+  <Route path="/manage-soal-kecermatan/:id" element={<ManageKiasan />} />,
+  <Route path="/manage-soal-kecermatan/:id/soal/:kiasanId" element={<ManageSoalKecermatanList />} />,
 ];

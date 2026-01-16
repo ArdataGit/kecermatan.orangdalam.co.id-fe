@@ -9,7 +9,8 @@ import {
   IconTicket,
   IconNotebook,
   IconReportMoney,
-  IconInfoCircle
+  IconInfoCircle,
+  IconEye
 } from '@tabler/icons-react';
 
 const menuList = [
@@ -50,6 +51,11 @@ const menuList = [
         icon: <IconNotebook />,
         title: 'Bank Soal',
         link: '/manage-soal-category',
+      },
+      {
+        icon: <IconEye />,
+        title: 'Bank Soal Kecermatan',
+        link: '/manage-soal-kecermatan',
       },
       {
         icon: <IconClipboardData />,
