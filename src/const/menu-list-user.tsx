@@ -3,7 +3,8 @@ import {
   IconCalendarEvent,
   IconHome2,
   IconTicket,
-IconBrandCashapp
+  IconBrandCashapp,
+  IconEye
 } from '@tabler/icons-react';
 
 const menuList = [
@@ -15,6 +16,11 @@ const menuList = [
         title: 'Home',
         link: '/',
       },
+      // {
+      //   icon: <IconEye />,
+      //   title: 'Soal Kecermatan',
+      //   link: '/soal-kecermatan',
+      // },
 
       {
         icon: <IconBuildingStore />,

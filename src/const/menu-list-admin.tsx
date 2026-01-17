@@ -52,11 +52,11 @@ const menuList = [
         title: 'Bank Soal',
         link: '/manage-soal-category',
       },
-      {
-        icon: <IconEye />,
-        title: 'Bank Soal Kecermatan',
-        link: '/manage-soal-kecermatan',
-      },
+      // {
+      //   icon: <IconEye />,
+      //   title: 'Bank Soal Kecermatan',
+      //   link: '/manage-soal-kecermatan',
+      // },
       {
         icon: <IconClipboardData />,
         title: 'Paket Latihan',

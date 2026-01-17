@@ -16,6 +16,7 @@ import { adminRoutes } from "@/const";
 import { userRoutes } from "./route-user";
 import ForgotPassword from "@/pages/auth/forgot-password";
 import ResetPassword from "@/pages/auth/reset-password";
+import SoalKecermatanExam from "@/pages/user/soal-kecermatan-detail";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -52,6 +53,24 @@ const UserRoutesLayouts: React.FC<LayoutProps> = ({ children }) => {
     }
   }, [token, role, location.pathname, location.search, navigate]);
   return <App>{children}</App>;
+};
+
+const UserExamLayout: React.FC<LayoutProps> = ({ children }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const token = useAuthStore((state) => state.token);
+  const role = useAuthStore((state) => state?.user?.role);
+
+  useEffect(() => {
+    if (token === undefined && role === undefined) return;
+
+    if (!token || role !== "USER") {
+      const redirectTo = location.pathname + location.search;
+      navigate(`/auth/login?${redirectTo}`, { replace: true });
+    }
+  }, [token, role, location.pathname, location.search, navigate]);
+  // No App wrapper here
+  return <div className="font-['Poppins'] bg-[#f5f5f5] min-h-screen">{children}</div>;
 };
 
 const UnAuthenticationLayouts: React.FC<LayoutProps> = ({ children }) => {
@@ -91,6 +110,28 @@ export default function RoutesList() {
         }
       >
         {userRoutes} {/* Hanya route yang perlu login sebagai USER */}
+      </Route>
+
+       {/* User Exam Layout (No Sidebar/Navbar) */}
+      <Route
+        element={
+          <UserExamLayout>
+            <Outlet />
+          </UserExamLayout>
+        }
+      >
+        <Route path="/soal-kecermatan/:id" element={<SoalKecermatanExam />} />
+      </Route>
+
+      {/* Auth pages (login, register, forgot) - tidak di UserRoutesLayouts */}
+      <Route
+        element={
+          <UserExamLayout>
+            <Outlet />
+          </UserExamLayout>
+        }
+      >
+        <Route path="/soal-kecermatan/:id" element={<SoalKecermatanExam />} />
       </Route>
 
       {/* Auth pages (login, register, forgot) - tidak di UserRoutesLayouts */}

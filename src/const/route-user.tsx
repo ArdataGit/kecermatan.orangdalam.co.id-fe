@@ -19,9 +19,11 @@ import Ranking from "@/pages/user/ranking";
 import EventDetail from "@/pages/user/event-detail";
 import TicketForm from "@/pages/user/TicketForm";
 import MyTickets from "@/pages/user/ticket";
+import SoalKecermatanUser from "@/pages/user/soal-kecermatan";
 
 export const userRoutes = [
   <Route path="/" element={<HomeUser />} />,
+  <Route path="/soal-kecermatan" element={<SoalKecermatanUser />} />,
   <Route path="/profile" element={<Profile />} />,
   <Route path="/tryout-massal" element={<Empty />} />,
   <Route path="/event" element={<Event />} />,
