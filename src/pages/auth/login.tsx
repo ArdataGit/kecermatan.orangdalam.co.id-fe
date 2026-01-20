@@ -31,15 +31,12 @@ export default function Example() {
         let redirect = params.get("redirect");
 
         if (!redirect) {
-          const rawQuery = location.search.substring(1);
-          if (rawQuery.startsWith('/') && !rawQuery.startsWith('/?')) {
-            redirect = rawQuery;
-          }
+          redirect = location.search.substring(1);
         }
 
         setTimeout(() => {
           if (response.data.data.user.role === "ADMIN") {
-             if (redirect && redirect !== "/" && !redirect.includes("paket-pembelian")) {
+             if (redirect && redirect !== "/") {
                 navigate(redirect);
                 return;
              }

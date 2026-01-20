@@ -1,13 +1,16 @@
 
-import { getData } from '@/utils/axios';
+import { getData, postData } from '@/utils/axios';
 import { IconClock } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Loading } from 'tdesign-react';
+import { Button, Loading, Dialog } from 'tdesign-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useAuthStore } from '@/stores/auth-store';
+import toast from 'react-hot-toast';
 
 export default function SoalKecermatanExam() {
   const { id } = useParams();
+  const { user } = useAuthStore();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentKiasanIndex, setCurrentKiasanIndex] = useState(0);
@@ -15,6 +18,8 @@ export default function SoalKecermatanExam() {
   const [answers, setAnswers] = useState<any>({});
   const [timer, setTimer] = useState(0);
   const [finished, setFinished] = useState(false);
+  const hasSubmitted = useRef(false);
+  const [showConfirmFinish, setShowConfirmFinish] = useState(false);
 
   useEffect(() => {
     if (id) fetchData();
@@ -25,16 +30,50 @@ export default function SoalKecermatanExam() {
     if (!finished && timer > 0) {
       interval = setInterval(() => {
         setTimer((prev) => {
-             if (prev <= 1) {
-                 handleNext();
-                 return 0;
-             }
+             if (prev <= 0) return 0;
              return prev - 1;
         });
       }, 1000);
     }
     return () => clearInterval(interval);
   }, [finished, timer]);
+
+  useEffect(() => {
+      if (timer === 0 && !finished && data.length > 0) {
+          handleNextKiasan();
+      }
+      // eslint-disable-next-line
+  }, [timer, finished, data.length]);
+
+  useEffect(() => {
+    if (finished && !hasSubmitted.current && user) {
+        submitResult();
+    }
+  }, [finished, user]);
+
+  const submitResult = async () => {
+    hasSubmitted.current = true;
+    const totalBenzo = Object.values(answers).filter((a: any) => a.isCorrect).length;
+    // Calculate total questions from data (all kiasans)
+    const totalQuestions = data.reduce((acc: number, kiasan: any) => acc + (kiasan.SoalKecermatan?.length || 0), 0);
+    
+    const payload = {
+        kategoriSoalKecermatanId: Number(id),
+        userId: user?.id,
+        score: totalBenzo,
+        totalSoal: totalQuestions,
+        totalBenar: totalBenzo,
+        totalSalah: totalQuestions - totalBenzo
+    };
+
+    try {
+        await postData('user/paket-pembelian-kecermatan/kecermatan-ranking', payload);
+        toast.success('Hasil latihan berhasil disimpan');
+    } catch (error) {
+        console.error("Failed to submit ranking", error);
+        toast.error('Gagal menyimpan hasil latihan');
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -56,18 +95,26 @@ export default function SoalKecermatanExam() {
   const prepareKiasan = (index: number, listData: any[] = data) => {
       setCurrentKiasanIndex(index);
       setCurrentSoalIndex(0);
-      if (listData[index]?.SoalKecermatan?.length > 0) {
-          setTimer(listData[index].SoalKecermatan[0].waktu);
-      } else {
-           handleNextKiasan();
+      if (listData[index]) {
+          // Set timer per Kiasan (total_waktu is from backend)
+          setTimer(listData[index].total_waktu || 60); 
       }
   }
 
   const handleAnswer = (val: string) => {
-      // Save answer
-      // Logic: answers[kiasanId][soalId] = val
-      // For now just basic state
-      setAnswers({ ...answers, [`${currentKiasanIndex}-${currentSoalIndex}`]: val });
+      const currentKiasan = data[currentKiasanIndex];
+      const currentSoal = currentKiasan.SoalKecermatan[currentSoalIndex];
+      const isCorrect = val === currentSoal.jawaban;
+
+      setAnswers((prev: any) => ({ 
+          ...prev, 
+          [`${currentKiasanIndex}-${currentSoalIndex}`]: {
+              userAnswer: val,
+              isCorrect: isCorrect,
+              correctAnswer: currentSoal.jawaban,
+              soal: currentSoal.soal 
+          } 
+      }));
       handleNext();
   };
 
@@ -76,7 +123,7 @@ export default function SoalKecermatanExam() {
       if (currentSoalIndex < currentKiasan.SoalKecermatan.length - 1) {
           const nextIndex = currentSoalIndex + 1;
           setCurrentSoalIndex(nextIndex);
-          setTimer(currentKiasan.SoalKecermatan[nextIndex].waktu);
+          // Timer does NOT reset here anymore
       } else {
           handleNextKiasan();
       }
@@ -94,18 +141,76 @@ export default function SoalKecermatanExam() {
   if (!data.length) return <div className="p-8 text-center text-gray-500">Data Soal tidak ditemukan.</div>;
 
   if (finished) {
+      const totalScore = Object.values(answers).filter((a: any) => a.isCorrect).length;
+      const totalQuestions = Object.keys(answers).length; 
+
       return (
-          <div className="p-8 flex flex-col items-center justify-center min-h-[60vh]">
-              <h2 className="text-3xl font-bold mb-4 text-green-600">Selesai!</h2>
-              <p className="text-gray-600 mb-6">Anda telah menyelesaikan semua soal kecermatan.</p>
-              <Button href="/soal-kecermatan">Kembali ke Daftar</Button>
+          <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-8">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-6 text-center">
+                  <h2 className="text-3xl font-bold mb-2 text-indigo-900">Hasil Kecermatan</h2>
+                  <div className="text-6xl font-bold text-indigo-600 mb-2">{totalScore}</div>
+                  <p className="text-gray-500">dari {totalQuestions} soal</p>
+                  <div className="mt-6 flex justify-center gap-4">
+                        <Button href="/soal-kecermatan" variant="outline">Unlangi Latihan</Button>
+                        <Button href="/soal-kecermatan">Kembali ke Daftar</Button>
+                  </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="p-6 border-b border-gray-100">
+                      <h3 className="text-xl font-bold text-gray-800">Pembahasan</h3>
+                  </div>
+                  <div className="overflow-x-auto">
+                      <table className="w-full">
+                          <thead className="bg-gray-50">
+                              <tr>
+                                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Soal</th>
+                                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Jawaban Kamu</th>
+                                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Kunci</th>
+                                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                              </tr>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                              {Object.keys(answers).map((key, idx) => {
+                                  const ans = answers[key];
+                                  return (
+                                      <tr key={key}>
+                                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{idx + 1}</td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-lg font-bold text-gray-800">
+                                              {Array.isArray(ans.soal) ? ans.soal.join(' ') : ans.soal}
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold">
+                                              {ans.userAnswer}
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-indigo-600">
+                                              {ans.correctAnswer}
+                                          </td>
+                                          <td className="px-6 py-4 whitespace-nowrap text-center">
+                                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${ans.isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                  {ans.isCorrect ? 'Benar' : 'Salah'}
+                                              </span>
+                                          </td>
+                                      </tr>
+                                  );
+                              })}
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
           </div>
       )
   }
 
-
   const currentKiasan = data[currentKiasanIndex];
   const currentSoal = currentKiasan?.SoalKecermatan?.[currentSoalIndex];
+
+   const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
 
   if (!currentSoal) return <div>Loading Soal...</div>;
 
@@ -113,21 +218,16 @@ export default function SoalKecermatanExam() {
     <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-6 min-h-screen flex flex-col">
        {/* Header Info */}
        <div className="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
-           <div>
-               <span className="text-gray-500 text-sm">Kolom</span>
-               <div className="font-bold text-lg">{currentKiasanIndex + 1} / {data.length}</div>
-           </div>
+           <div className="w-32"></div>
            
            <div className="flex flex-col items-center">
                 <div className="text-3xl font-bold text-indigo-600 flex items-center gap-2">
-                    <IconClock /> {timer}
+                    <IconClock /> {formatTime(timer)}
                 </div>
-                <span className="text-xs text-gray-400">Detik</span>
            </div>
 
-           <div className="text-right">
-               <span className="text-gray-500 text-sm">Soal</span>
-               <div className="font-bold text-lg">{currentSoalIndex + 1} / {currentKiasan.SoalKecermatan.length}</div>
+           <div className="w-32 text-right">
+               <Button theme="danger" variant="outline" onClick={() => setShowConfirmFinish(true)}>Selesaikan Ujian</Button>
            </div>
        </div>
 
@@ -185,7 +285,18 @@ export default function SoalKecermatanExam() {
                    </button>
                ))}
            </div>
-       </div>
+           <Dialog
+            header="Konfirmasi Selesaikan Ujian"
+            body="Jika anda menyelesaikan ujian, anda tidak dapat lagi mengubah jawaban sebelumnya. Apakah anda yakin untuk menyelesaikan ujian ini?"
+            visible={showConfirmFinish}
+            onClose={() => setShowConfirmFinish(false)}
+            onConfirm={() => {
+                setShowConfirmFinish(false);
+                setFinished(true);
+            }}
+        />
+
+    </div>
 
     </div>
   );

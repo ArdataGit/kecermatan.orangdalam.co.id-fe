@@ -188,6 +188,22 @@ export default function UserIndex() {
       },
     },
     {
+      title: 'Kecermatan',
+      colKey: 'Kecermatan',
+      width: 100,
+      align: AlignType.Center,
+      cell: ({ row }: any) => {
+        return (
+          <p
+            onClick={() => navigate(`/manage-pembelian/${row.id}/kecermatan`)}
+            className="cursor-pointer text-blue-500 underline"
+          >
+            {row?._count?.paketPembelianKecermatan}
+          </p>
+        );
+      },
+    },
+    {
       title: 'Tanggal Dibuat',
       colKey: 'createdAt',
       align: AlignType.Center,

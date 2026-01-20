@@ -16,11 +16,11 @@ const menuList = [
         title: 'Home',
         link: '/',
       },
-      // {
-      //   icon: <IconEye />,
-      //   title: 'Soal Kecermatan',
-      //   link: '/soal-kecermatan',
-      // },
+      {
+        icon: <IconEye />,
+        title: 'Soal Kecermatan',
+        link: '/soal-kecermatan',
+      },
 
       {
         icon: <IconBuildingStore />,

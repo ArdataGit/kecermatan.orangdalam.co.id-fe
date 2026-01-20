@@ -29,6 +29,7 @@ import RekapPenjualan from '@/pages/admin/rekap-penjualan';
 import ManageSoalKecermatan from '@/pages/admin/manage-soal-kecermatan';
 import ManageKiasan from '@/pages/admin/manage-soal-kecermatan/detail';
 import ManageSoalKecermatanList from '@/pages/admin/manage-soal-kecermatan/soal';
+import ManagePaketPembelianKecermatan from '@/pages/admin/manage-paket-pembelian-kecermatan';
 
 export const adminRoutes = [
   <Route path="/dashboard" element={<Dashboard />} />,
@@ -69,6 +70,10 @@ export const adminRoutes = [
   <Route
     path="/manage-pembelian/:id/tryout"
     element={<ManagePaketPembelianTryout />}
+  />,
+    <Route
+    path="/manage-pembelian/:id/kecermatan"
+    element={<ManagePaketPembelianKecermatan />}
   />,
   <Route
     path="/manage-pembelian/:id/tryout/:paketPembelianTryoutId/:latihanId"
