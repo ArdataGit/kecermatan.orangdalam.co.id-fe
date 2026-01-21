@@ -20,6 +20,9 @@ import EventDetail from "@/pages/user/event-detail";
 import TicketForm from "@/pages/user/TicketForm";
 import MyTickets from "@/pages/user/ticket";
 import SoalKecermatanUser from "@/pages/user/soal-kecermatan";
+import ListKecermatan from "@/pages/user/list-kecermatan";
+import SoalKecermatanExam from "@/pages/user/soal-kecermatan-detail";
+import RiwayatKecermatan from "@/pages/user/riwayat-kecermatan";
 
 export const userRoutes = [
   <Route path="/" element={<HomeUser />} />,
@@ -43,6 +46,14 @@ export const userRoutes = [
     element={<Ranking />}
   />,
   <Route
+    path="/my-class/:id/kecermatan/:kategoriId/ranking"
+    element={<Ranking />}
+  />,
+  <Route
+    path="/my-class/:id/kecermatan/:kategoriId/riwayat"
+    element={<RiwayatKecermatan />}
+  />,
+  <Route
     path="/my-class/:id/bimbel/mini-test/:paketFK/:paketId/ranking"
     element={<Ranking isBimbel />}
   />,
@@ -50,6 +61,7 @@ export const userRoutes = [
   <Route path="/my-class/:id/bimbel" element={<Bimbel />} />,
 
   <Route path="/my-class/:id/tryout" element={<ListTryout />} />,
+  <Route path="/my-class/:id/kecermatan" element={<ListKecermatan />} />,
   <Route
     path="/my-class/:id/tryout/:paketFK/:paketId"
     element={<Tryout isBimbel={false} />}

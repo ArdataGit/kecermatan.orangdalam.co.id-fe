@@ -124,15 +124,7 @@ export default function RoutesList() {
       </Route>
 
       {/* Auth pages (login, register, forgot) - tidak di UserRoutesLayouts */}
-      <Route
-        element={
-          <UserExamLayout>
-            <Outlet />
-          </UserExamLayout>
-        }
-      >
-        <Route path="/soal-kecermatan/:id" element={<SoalKecermatanExam />} />
-      </Route>
+
 
       {/* Auth pages (login, register, forgot) - tidak di UserRoutesLayouts */}
       <Route path="/auth/login" element={<Login />} />

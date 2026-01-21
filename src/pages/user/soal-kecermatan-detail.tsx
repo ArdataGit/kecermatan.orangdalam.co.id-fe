@@ -2,7 +2,7 @@
 import { getData, postData } from '@/utils/axios';
 import { IconClock } from '@tabler/icons-react';
 import { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Loading, Dialog } from 'tdesign-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuthStore } from '@/stores/auth-store';
@@ -10,6 +10,9 @@ import toast from 'react-hot-toast';
 
 export default function SoalKecermatanExam() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const classId = location.state?.classId;
   const { user } = useAuthStore();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -106,6 +109,17 @@ export default function SoalKecermatanExam() {
       const currentSoal = currentKiasan.SoalKecermatan[currentSoalIndex];
       const isCorrect = val === currentSoal.jawaban;
 
+      // Save history asynchronously
+      if (user) {
+          postData('user/paket-pembelian-kecermatan/kecermatan-history', {
+              kategoriSoalKecermatanId: Number(id),
+              userId: user.id,
+              soalKecermatanId: currentSoal.id,
+              kiasanId: currentKiasan.id,
+              jawaban: val
+          }).catch(err => console.error("Failed to save history", err));
+      }
+
       setAnswers((prev: any) => ({ 
           ...prev, 
           [`${currentKiasanIndex}-${currentSoalIndex}`]: {
@@ -151,8 +165,11 @@ export default function SoalKecermatanExam() {
                   <div className="text-6xl font-bold text-indigo-600 mb-2">{totalScore}</div>
                   <p className="text-gray-500">dari {totalQuestions} soal</p>
                   <div className="mt-6 flex justify-center gap-4">
-                        <Button href="/soal-kecermatan" variant="outline">Unlangi Latihan</Button>
-                        <Button href="/soal-kecermatan">Kembali ke Daftar</Button>
+                        <Button onClick={() => window.location.reload()} variant="outline">Ulangi Latihan</Button>
+                        <Button onClick={() => navigate(-1)}>Kembali</Button>
+                        {classId && (
+                           <Button onClick={() => navigate(`/my-class/${classId}/kecermatan/${id}/riwayat`)}>Lihat Riwayat</Button>
+                        )}
                   </div>
               </div>
 

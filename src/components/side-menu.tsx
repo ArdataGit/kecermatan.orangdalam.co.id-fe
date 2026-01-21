@@ -343,6 +343,28 @@ export default function SideMenu({
                             </div>
                           </Link>
                         )}
+
+                        {/* Kecermatan */}
+                        {item.paketPembelian?._count?.paketPembelianKecermatan > 0 && (
+                          <Link
+                            to={`/my-class/${item.paketPembelianId}/kecermatan`}
+                            className={`flex items-center mt-2 justify-between w-full px-4 py-2 text-base font-medium rounded-lg
+                              text-gray-700 dark:text-gray-300 
+                              hover:bg-gray-100 dark:hover:bg-gray-800
+                              ${
+                                checkRouteActive(
+                                  `my-class/${item.paketPembelianId}/kecermatan`,
+                                  location.pathname
+                                ) && 'text-teal-500 bg-gray-50 dark:bg-gray-800'
+                              }`}
+                          >
+                            <div className="flex items-center gap-x-3">
+                              <IconChartAreaLine size={18} />
+                              <span>Kecermatan</span>
+                            </div>
+                          </Link>
+                        )}
+                        
                       </motion.div>
                     )}
                   </motion.div>
