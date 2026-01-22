@@ -30,6 +30,8 @@ import ManageSoalKecermatan from '@/pages/admin/manage-soal-kecermatan';
 import ManageKiasan from '@/pages/admin/manage-soal-kecermatan/detail';
 import ManageSoalKecermatanList from '@/pages/admin/manage-soal-kecermatan/soal';
 import ManagePaketPembelianKecermatan from '@/pages/admin/manage-paket-pembelian-kecermatan';
+import HistoryRankingKecermatanAdmin from '@/pages/admin/manage-soal-kecermatan/history-ranking';
+import HistoryDetailKecermatanAdmin from '@/pages/admin/manage-soal-kecermatan/history-detail';
 
 export const adminRoutes = [
   <Route path="/dashboard" element={<Dashboard />} />,
@@ -84,4 +86,6 @@ export const adminRoutes = [
   <Route path="/manage-soal-kecermatan" element={<ManageSoalKecermatan />} />,
   <Route path="/manage-soal-kecermatan/:id" element={<ManageKiasan />} />,
   <Route path="/manage-soal-kecermatan/:id/soal/:kiasanId" element={<ManageSoalKecermatanList />} />,
+  <Route path="/manage-soal-kecermatan/:id/history" element={<HistoryRankingKecermatanAdmin />} />,
+  <Route path="/manage-soal-kecermatan/:id/history/:userId" element={<HistoryDetailKecermatanAdmin />} />,
 ];

@@ -43,10 +43,14 @@ export default function SoalKecermatanExam() {
 
   useEffect(() => {
       if (timer === 0 && !finished && data.length > 0) {
-          handleNextKiasan();
+          if (currentKiasanIndex < data.length - 1) {
+              prepareKiasan(currentKiasanIndex + 1);
+          } else {
+              setFinished(true);
+          }
       }
       // eslint-disable-next-line
-  }, [timer, finished, data.length]);
+  }, [timer, finished, data.length, currentKiasanIndex]);
 
   useEffect(() => {
     if (finished && !hasSubmitted.current && user) {
@@ -147,7 +151,7 @@ export default function SoalKecermatanExam() {
       if (currentKiasanIndex < data.length - 1) {
           prepareKiasan(currentKiasanIndex + 1);
       } else {
-          setFinished(true);
+          setShowConfirmFinish(true);
       }
   };
 
@@ -303,7 +307,7 @@ export default function SoalKecermatanExam() {
                ))}
            </div>
            <Dialog
-            header="Konfirmasi Selesaikan Ujian"
+            header="Selesai Mengerjakan"
             body="Jika anda menyelesaikan ujian, anda tidak dapat lagi mengubah jawaban sebelumnya. Apakah anda yakin untuk menyelesaikan ujian ini?"
             visible={showConfirmFinish}
             onClose={() => setShowConfirmFinish(false)}

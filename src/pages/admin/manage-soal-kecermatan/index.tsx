@@ -1,13 +1,13 @@
 import TableWrapper from '@/components/table';
 import useGetList from '@/hooks/use-get-list';
-import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { IconPencil, IconPlus, IconTrash, IconHistory } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Button, Popconfirm } from 'tdesign-react';
 import ManageKecermatan from './manage';
 import FetchAPI from '@/utils/fetch-api';
 import { deleteData } from '@/utils/axios';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
 
 enum FilterType {
@@ -21,6 +21,7 @@ enum AlignType {
 }
 
 export default function ManageSoalKecermatan() {
+  const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
   const [detail, setDetail] = useState({});
 
@@ -124,6 +125,16 @@ export default function ManageSoalKecermatan() {
               }}
             >
               <IconPencil size={14} />
+            </Button>
+            <Button
+              shape="circle"
+              theme="default"
+              className="ml-2"
+              onClick={() => {
+                navigate(`/manage-soal-kecermatan/${row.id}/history`);
+              }}
+            >
+              <IconHistory size={14} />
             </Button>
             {/* 
             // TODO: Navigate to Sub-Manage (Kiasan) if needed later
