@@ -16,11 +16,13 @@ export default function ManageKiasanModal({
   const [kiasanList, setKiasanList] = useState<string[]>([]);
   const [inputKarakter, setInputKarakter] = useState('');
   const [inputKiasan, setInputKiasan] = useState('');
+  const [waktu, setWaktu] = useState<number>(60);
 
   useEffect(() => {
     if (Object.keys(detail).length > 0) {
       if (Array.isArray(detail.karakter)) setKarakterList(detail.karakter);
       if (Array.isArray(detail.kiasan)) setKiasanList(detail.kiasan);
+      if (detail.waktu) setWaktu(detail.waktu);
     }
   }, [detail]);
 
@@ -73,6 +75,7 @@ export default function ManageKiasanModal({
       kategoriSoalKecermatanId: categoryId,
       karakter: karakterList,
       kiasan: kiasanList,
+      waktu: Number(waktu),
     };
     
     console.log('[DEBUG] Submitting Payload:', payload);
@@ -172,6 +175,17 @@ export default function ManageKiasanModal({
                 )}
             </div>
              <p className="text-xs text-gray-400">* Tekan Enter untuk menambahkan kiasan/simbol</p>
+        </div>
+
+        {/* Waktu Input Section */}
+        <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Waktu (Detik)</label>
+            <Input 
+                type="number" 
+                value={String(waktu)}
+                onChange={(val) => setWaktu(Number(val))}
+                suffix="Detik"
+            />
         </div>
 
         <div className="flex justify-end gap-2 mt-8 border-t pt-4">

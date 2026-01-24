@@ -2,7 +2,7 @@ import { patchData, postData } from '@/utils/axios';
 import FetchAPI from '@/utils/fetch-api';
 import { IconX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { Button, Dialog, Input } from 'tdesign-react';
+import { Button, Dialog } from 'tdesign-react';
 
 export default function ManageSoalModal({
   setVisible,
@@ -15,18 +15,15 @@ export default function ManageSoalModal({
   const [loading, setLoading] = useState(false);
   const [soalList, setSoalList] = useState<string[]>([]);
   const [jawaban, setJawaban] = useState('');
-  const [waktu, setWaktu] = useState(60);
 
   useEffect(() => {
     if (Object.keys(detail).length > 0) {
       if (Array.isArray(detail.soal)) setSoalList(detail.soal);
       if (detail.jawaban) setJawaban(detail.jawaban);
-      if (detail.waktu) setWaktu(detail.waktu);
     } else {
         // Reset defaults
          setSoalList([]);
          setJawaban('');
-         setWaktu(60);
     }
   }, [detail]);
 
@@ -92,7 +89,6 @@ export default function ManageSoalModal({
       kiasanId: Number(kiasanId),
       soal: soalList,
       jawaban: jawaban,
-      waktu: Number(waktu)
     };
     
     try {
@@ -202,17 +198,7 @@ export default function ManageSoalModal({
             </div>
         </div>
 
-        {/* Waktu Input */}
-        <div>
-             <label className="block text-sm font-semibold text-gray-700 mb-2">Waktu (Detik)</label>
-              <Input 
-                className="w-full"
-                type="number" 
-                value={String(waktu)} 
-                onChange={(val) => setWaktu(Number(val))} 
-                suffix="Detik"
-            />
-        </div>
+
 
 
         <div className="flex justify-end gap-2 mt-8 border-t pt-4">

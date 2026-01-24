@@ -239,7 +239,9 @@ export default function SoalKecermatanExam() {
     <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-6 min-h-screen flex flex-col">
        {/* Header Info */}
        <div className="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
-           <div className="w-32"></div>
+           <div className="w-32 font-bold text-gray-700 text-lg">
+               Kolom {currentKiasanIndex + 1} / {data.length}
+           </div>
            
            <div className="flex flex-col items-center">
                 <div className="text-3xl font-bold text-indigo-600 flex items-center gap-2">
