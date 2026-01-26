@@ -23,10 +23,14 @@ import SoalKecermatanUser from "@/pages/user/soal-kecermatan";
 import ListKecermatan from "@/pages/user/list-kecermatan";
 import SoalKecermatanExam from "@/pages/user/soal-kecermatan-detail";
 import RiwayatKecermatan from "@/pages/user/riwayat-kecermatan";
+import SoalBacaanUser from "@/pages/user/soal-bacaan";
+import SoalBacaanExam from "@/pages/user/soal-bacaan-exam";
 
 export const userRoutes = [
   <Route path="/" element={<HomeUser />} />,
   <Route path="/soal-kecermatan" element={<SoalKecermatanUser />} />,
+  <Route path="/soal-bacaan" element={<SoalBacaanUser />} />,
+  <Route path="/soal-bacaan/:id" element={<SoalBacaanExam />} />,
   <Route path="/profile" element={<Profile />} />,
   <Route path="/tryout-massal" element={<Empty />} />,
   <Route path="/event" element={<Event />} />,

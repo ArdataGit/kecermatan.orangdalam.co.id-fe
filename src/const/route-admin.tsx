@@ -30,9 +30,14 @@ import ManageSoalKecermatan from '@/pages/admin/manage-soal-kecermatan';
 import ManageKiasan from '@/pages/admin/manage-soal-kecermatan/detail';
 import ManageSoalKecermatanList from '@/pages/admin/manage-soal-kecermatan/soal';
 import ManagePaketPembelianKecermatan from '@/pages/admin/manage-paket-pembelian-kecermatan';
+import ManagePaketPembelianBacaan from '@/pages/admin/manage-paket-pembelian-bacaan';
 import HistoryRankingKecermatanAdmin from '@/pages/admin/manage-soal-kecermatan/history-ranking';
 import HistoryDetailKecermatanAdmin from '@/pages/admin/manage-soal-kecermatan/history-detail';
-
+import ManageSoalBacaan from '@/pages/admin/manage-soal-bacaan';
+import ManageBacaanDetail from '@/pages/admin/manage-soal-bacaan/detail';
+import ManageSoalBacaanList from '@/pages/admin/manage-soal-bacaan/soal';
+import HistoryRankingBacaanAdmin from '@/pages/admin/manage-soal-bacaan/history';
+import HistoryDetailBacaanAdmin from '@/pages/admin/manage-soal-bacaan/history-detail';
 export const adminRoutes = [
   <Route path="/dashboard" element={<Dashboard />} />,
   <Route path="/rekap-penjualan" element={<RekapPenjualan />} />,
@@ -73,9 +78,13 @@ export const adminRoutes = [
     path="/manage-pembelian/:id/tryout"
     element={<ManagePaketPembelianTryout />}
   />,
-    <Route
+  <Route
     path="/manage-pembelian/:id/kecermatan"
     element={<ManagePaketPembelianKecermatan />}
+  />,
+  <Route
+    path="/manage-pembelian/:id/bacaan"
+    element={<ManagePaketPembelianBacaan />}
   />,
   <Route
     path="/manage-pembelian/:id/tryout/:paketPembelianTryoutId/:latihanId"
@@ -88,4 +97,9 @@ export const adminRoutes = [
   <Route path="/manage-soal-kecermatan/:id/soal/:kiasanId" element={<ManageSoalKecermatanList />} />,
   <Route path="/manage-soal-kecermatan/:id/history" element={<HistoryRankingKecermatanAdmin />} />,
   <Route path="/manage-soal-kecermatan/:id/history/:userId" element={<HistoryDetailKecermatanAdmin />} />,
+  <Route path="/manage-soal-bacaan" element={<ManageSoalBacaan />} />,
+  <Route path="/manage-soal-bacaan/:id" element={<ManageBacaanDetail />} />,
+  <Route path="/manage-soal-bacaan/:id/soal/:bacaanId" element={<ManageSoalBacaanList />} />,
+  <Route path="/manage-soal-bacaan/:id/history" element={<HistoryRankingBacaanAdmin />} />,
+  <Route path="/manage-soal-bacaan/:id/history/:userId" element={<HistoryDetailBacaanAdmin />} />,
 ];

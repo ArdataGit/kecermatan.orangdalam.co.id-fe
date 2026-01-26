@@ -187,6 +187,7 @@ export default function UserIndex() {
         );
       },
     },
+
     {
       title: 'Kecermatan',
       colKey: 'Kecermatan',
@@ -199,6 +200,22 @@ export default function UserIndex() {
             className="cursor-pointer text-blue-500 underline"
           >
             {row?._count?.paketPembelianKecermatan}
+          </p>
+        );
+      },
+    },
+    {
+      title: 'Bacaan',
+      colKey: 'Bacaan',
+      width: 100,
+      align: AlignType.Center,
+      cell: ({ row }: any) => {
+        return (
+          <p
+            onClick={() => navigate(`/manage-pembelian/${row.id}/bacaan`)}
+            className="cursor-pointer text-blue-500 underline"
+          >
+            {row?._count?.paketPembelianBacaan}
           </p>
         );
       },

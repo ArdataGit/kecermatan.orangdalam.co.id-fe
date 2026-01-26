@@ -4,7 +4,8 @@ import {
   IconHome2,
   IconTicket,
   IconBrandCashapp,
-  IconEye
+  IconEye,
+  IconBook
 } from '@tabler/icons-react';
 
 const menuList = [
@@ -21,6 +22,13 @@ const menuList = [
         title: 'Soal Kecermatan',
         link: '/soal-kecermatan',
       },
+      {
+        icon: <IconBook />,
+        title: 'Bank Soal Ya atau Tidak',
+        link: '/soal-bacaan',
+      },
+
+
 
       {
         icon: <IconBuildingStore />,

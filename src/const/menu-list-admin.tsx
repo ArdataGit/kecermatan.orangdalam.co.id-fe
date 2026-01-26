@@ -58,6 +58,11 @@ const menuList = [
         link: '/manage-soal-kecermatan',
       },
       {
+        icon: <IconEye />,
+        title: 'Bank Soal Ya atau Tidak',
+        link: '/manage-soal-bacaan',
+      },
+      {
         icon: <IconClipboardData />,
         title: 'Paket Latihan',
         link: '/manage-latihan',
