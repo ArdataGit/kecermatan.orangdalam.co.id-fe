@@ -63,6 +63,11 @@ const menuList = [
         link: '/manage-soal-bacaan',
       },
       {
+        icon: <IconNotebook />,
+        title: 'Bank Soal Isian',
+        link: '/manage-soal-isian',
+      },
+      {
         icon: <IconClipboardData />,
         title: 'Paket Latihan',
         link: '/manage-latihan',

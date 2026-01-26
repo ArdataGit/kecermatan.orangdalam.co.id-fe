@@ -364,6 +364,48 @@ export default function SideMenu({
                             </div>
                           </Link>
                         )}
+
+                        {/* Bacaan */}
+                        {item.paketPembelian?._count?.paketPembelianBacaan > 0 && (
+                          <Link
+                            to={`/my-class/${item.paketPembelianId}/bacaan`}
+                            className={`flex items-center mt-2 justify-between w-full px-4 py-2 text-base font-medium rounded-lg
+                              text-gray-700 dark:text-gray-300 
+                              hover:bg-gray-100 dark:hover:bg-gray-800
+                              ${
+                                checkRouteActive(
+                                  `my-class/${item.paketPembelianId}/bacaan`,
+                                  location.pathname
+                                ) && 'text-teal-500 bg-gray-50 dark:bg-gray-800'
+                              }`}
+                          >
+                            <div className="flex items-center gap-x-3">
+                              <IconBook size={18} />
+                              <span>Bacaan</span>
+                            </div>
+                          </Link>
+                        )}
+
+                        {/* Isian */}
+                        {item.paketPembelian?._count?.paketPembelianIsian > 0 && (
+                          <Link
+                            to={`/my-class/${item.paketPembelianId}/isian`}
+                            className={`flex items-center mt-2 justify-between w-full px-4 py-2 text-base font-medium rounded-lg
+                              text-gray-700 dark:text-gray-300 
+                              hover:bg-gray-100 dark:hover:bg-gray-800
+                              ${
+                                checkRouteActive(
+                                  `my-class/${item.paketPembelianId}/isian`,
+                                  location.pathname
+                                ) && 'text-teal-500 bg-gray-50 dark:bg-gray-800'
+                              }`}
+                          >
+                            <div className="flex items-center gap-x-3">
+                              <IconBook size={18} />
+                              <span>Isian</span>
+                            </div>
+                          </Link>
+                        )}
                         
                       </motion.div>
                     )}

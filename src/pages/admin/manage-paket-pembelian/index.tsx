@@ -221,6 +221,22 @@ export default function UserIndex() {
       },
     },
     {
+      title: 'Isian',
+      colKey: 'Isian',
+      width: 100,
+      align: AlignType.Center,
+      cell: ({ row }: any) => {
+        return (
+          <p
+            onClick={() => navigate(`/manage-pembelian/${row.id}/isian`)}
+            className="cursor-pointer text-blue-500 underline"
+          >
+            {row?._count?.paketPembelianIsian}
+          </p>
+        );
+      },
+    },
+    {
       title: 'Tanggal Dibuat',
       colKey: 'createdAt',
       align: AlignType.Center,

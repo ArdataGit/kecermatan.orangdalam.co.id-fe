@@ -38,6 +38,12 @@ import ManageBacaanDetail from '@/pages/admin/manage-soal-bacaan/detail';
 import ManageSoalBacaanList from '@/pages/admin/manage-soal-bacaan/soal';
 import HistoryRankingBacaanAdmin from '@/pages/admin/manage-soal-bacaan/history';
 import HistoryDetailBacaanAdmin from '@/pages/admin/manage-soal-bacaan/history-detail';
+import ManageSoalIsian from '@/pages/admin/manage-soal-isian';
+import ManageIsianDetail from '@/pages/admin/manage-soal-isian/detail';
+import ManagePaketPembelianIsian from '@/pages/admin/manage-paket-pembelian-isian';
+import HistorySoalIsianAdmin from "@/pages/admin/manage-soal-isian/history";
+import HistoryDetailIsianAdmin from "@/pages/admin/manage-soal-isian/history-detail";
+
 export const adminRoutes = [
   <Route path="/dashboard" element={<Dashboard />} />,
   <Route path="/rekap-penjualan" element={<RekapPenjualan />} />,
@@ -86,6 +92,10 @@ export const adminRoutes = [
     path="/manage-pembelian/:id/bacaan"
     element={<ManagePaketPembelianBacaan />}
   />,
+    <Route
+    path="/manage-pembelian/:id/isian"
+    element={<ManagePaketPembelianIsian />}
+  />,
   <Route
     path="/manage-pembelian/:id/tryout/:paketPembelianTryoutId/:latihanId"
     element={<RiwayatTryoutAdmin />}
@@ -102,4 +112,15 @@ export const adminRoutes = [
   <Route path="/manage-soal-bacaan/:id/soal/:bacaanId" element={<ManageSoalBacaanList />} />,
   <Route path="/manage-soal-bacaan/:id/history" element={<HistoryRankingBacaanAdmin />} />,
   <Route path="/manage-soal-bacaan/:id/history/:userId" element={<HistoryDetailBacaanAdmin />} />,
+  
+  <Route path="/manage-soal-isian" element={<ManageSoalIsian />} />,
+  <Route path="/manage-soal-isian/:id" element={<ManageIsianDetail />} />,
+  <Route
+    path="/manage-soal-isian/:id/history"
+    element={<HistorySoalIsianAdmin />}
+  />,
+  <Route
+    path="/manage-soal-isian/:id/history/:userId"
+    element={<HistoryDetailIsianAdmin />}
+  />,
 ];

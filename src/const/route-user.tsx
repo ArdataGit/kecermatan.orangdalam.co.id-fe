@@ -23,14 +23,20 @@ import SoalKecermatanUser from "@/pages/user/soal-kecermatan";
 import ListKecermatan from "@/pages/user/list-kecermatan";
 import SoalKecermatanExam from "@/pages/user/soal-kecermatan-detail";
 import RiwayatKecermatan from "@/pages/user/riwayat-kecermatan";
+import RiwayatBacaanUser from "@/pages/user/riwayat-bacaan";
 import SoalBacaanUser from "@/pages/user/soal-bacaan";
 import SoalBacaanExam from "@/pages/user/soal-bacaan-exam";
+import RiwayatIsianUser from "@/pages/user/riwayat-isian";
+import SoalIsianUser from "@/pages/user/soal-isian";
+import SoalIsianExam from "@/pages/user/soal-isian-exam";
 
 export const userRoutes = [
   <Route path="/" element={<HomeUser />} />,
   <Route path="/soal-kecermatan" element={<SoalKecermatanUser />} />,
   <Route path="/soal-bacaan" element={<SoalBacaanUser />} />,
   <Route path="/soal-bacaan/:id" element={<SoalBacaanExam />} />,
+  <Route path="/soal-isian" element={<SoalIsianUser />} />,
+  <Route path="/soal-isian/:id" element={<SoalIsianExam />} />,
   <Route path="/profile" element={<Profile />} />,
   <Route path="/tryout-massal" element={<Empty />} />,
   <Route path="/event" element={<Event />} />,
@@ -66,6 +72,16 @@ export const userRoutes = [
 
   <Route path="/my-class/:id/tryout" element={<ListTryout />} />,
   <Route path="/my-class/:id/kecermatan" element={<ListKecermatan />} />,
+  <Route
+    path="/my-class/:id/bacaan/:kategoriId/riwayat"
+    element={<RiwayatBacaanUser />}
+  />,
+  <Route path="/my-class/:id/bacaan" element={<SoalBacaanUser />} />,
+  <Route
+    path="/my-class/:id/isian/:kategoriId/riwayat"
+    element={<RiwayatIsianUser />}
+  />,
+  <Route path="/my-class/:id/isian" element={<SoalIsianUser />} />,
   <Route
     path="/my-class/:id/tryout/:paketFK/:paketId"
     element={<Tryout isBimbel={false} />}

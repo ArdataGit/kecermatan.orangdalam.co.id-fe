@@ -17,16 +17,21 @@ const menuList = [
         title: 'Home',
         link: '/',
       },
-      {
-        icon: <IconEye />,
-        title: 'Soal Kecermatan',
-        link: '/soal-kecermatan',
-      },
-      {
-        icon: <IconBook />,
-        title: 'Bank Soal Ya atau Tidak',
-        link: '/soal-bacaan',
-      },
+      // {
+      //   icon: <IconEye />,
+      //   title: 'Soal Kecermatan',
+      //   link: '/soal-kecermatan',
+      // },
+      // {
+      //   icon: <IconBook />,
+      //   title: 'Bank Soal Ya atau Tidak',
+      //   link: '/soal-bacaan',
+      // },
+      // {
+      //   icon: <IconBook />,
+      //   title: 'Bank Soal Isian',
+      //   link: '/soal-isian',
+      // },
 
 
 
