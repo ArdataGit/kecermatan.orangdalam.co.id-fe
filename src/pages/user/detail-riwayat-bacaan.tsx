@@ -4,20 +4,19 @@ import { useParams } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
 import moment from 'moment/min/moment-with-locales';
 import { IconBook } from '@tabler/icons-react';
+import { Loading } from 'tdesign-react';
+import { getData } from '@/utils/axios';
+import { useEffect, useState } from 'react';
 
-import { useSearchParams } from 'react-router-dom';
-
-export default function HistoryDetailBacaanAdmin() {
-  const { id, userId } = useParams();
-  const [searchParams] = useSearchParams();
-  const bacaanHistoryId = searchParams.get('bacaanHistoryId');
+export default function DetailRiwayatBacaanUser() {
+  const { id, kategoriId, sessionId } = useParams();
+  const [paketData, setPaketData] = useState<any>({});
 
   const listHistory = useGetList({
-    url: 'admin/kategori-soal-bacaan/history/detail',
+    url: 'user/history-bacaan/my-history',
     initialParams: {
-      kategoriSoalBacaanId: id,
-      userId: userId,
-      bacaanHistoryId: bacaanHistoryId ? Number(bacaanHistoryId) : undefined,
+      kategoriSoalBacaanId: kategoriId,
+      bacaanHistoryId: sessionId, // Filter by Session ID
       skip: 0,
       take: 100,
       sortBy: 'createdAt',
@@ -25,28 +24,45 @@ export default function HistoryDetailBacaanAdmin() {
     },
   });
 
+  useEffect(() => {
+    getData(`user/find-my-class/${id}`).then((res) => {
+        if (!res.error) {
+            setPaketData(res.paketPembelian || {});
+        }
+    });
+  }, [id]);
+
   return (
-    <section className="">
+    <div className="section-container">
       <BreadCrumb
         page={[
-          { name: 'Bank Soal Bacaan', link: '/manage-soal-bacaan' },
-          { name: 'Riwayat Pengerjaan', link: `/manage-soal-bacaan/${id}/history` },
-          { name: 'Detail User', link: '#' },
+          { name: 'Paket saya', link: '/my-class' },
+          { name: paketData.nama || 'Nama Kelas', link: '/my-class' },
+          { name: 'Bacaan', link: `/my-class/${id}/bacaan` },
+          { name: 'Riwayat Pengerjaan', link: `/my-class/${id}/bacaan/${kategoriId}/riwayat` },
+          { name: 'Detail Sesi', link: '#' },
         ]}
       />
 
       <div className="bg-white p-8 rounded-2xl min-w-[400px]">
         <div className="flex flex-col gap-y-5 md:flex-row md:items-center justify-start md:justify-between header-section w-full mt-2 mb-6">
-          <div className="title border-b border-[#ddd] w-full flex justify-between">
-            <h1 className="text-xl text-indigo-950 font-bold mb-5 ">
-              Detail Pengerjaan User (ID: {userId})
+          <div className="title border-b border-[#ddd] w-full flex justify-between items-center">
+             <h1 className="text-xl text-indigo-950 font-bold mb-5 ">
+              Riwayat Pengerjaan (Sesi: {sessionId})
             </h1>
           </div>
         </div>
         
         <div className="flex flex-col gap-4">
-             {listHistory.isLoading && <div>Loading...</div>}
-             {!listHistory.isLoading && listHistory.list.length === 0 && <div>Belum ada data detail.</div>}
+             {listHistory.isLoading && (
+                 <div className="flex justify-center p-10">
+                    <Loading />
+                 </div>
+             )}
+             
+             {!listHistory.isLoading && listHistory.list.length === 0 && (
+                 <div className="text-center text-gray-500 py-10">Belum ada riwayat pengerjaan.</div>
+             )}
              
              {listHistory.list.map((item: any, index: number) => {
                  return (
@@ -59,25 +75,27 @@ export default function HistoryDetailBacaanAdmin() {
                           </div>
 
                           <div className="flex flex-col gap-6">
-                              {/* Bacaan */}
-                              <div className="bg-indigo-50 p-4 rounded-md">
+                               {/* Bacaan */}
+                               <div className="bg-indigo-50 p-4 rounded-md">
                                   <div className="flex items-center gap-2 font-bold text-indigo-900 mb-2">
                                       <IconBook size={18} />
                                       Bacaan
                                   </div>
                                   <p className="text-gray-700 text-sm whitespace-pre-wrap max-h-40 overflow-y-auto">{item.bacaan?.bacaan}</p>
-                              </div>
+                               </div>
 
                                {/* Soal & Jawaban */}
                                <div className="flex flex-row gap-4 items-start">
                                     <div className="p-4 bg-gray-50 rounded-md flex-1">
                                          <p className="font-bold text-gray-900 mb-2">Pertanyaan:</p>
-                                         <p className="text-gray-800">{item.soalBacaan?.soal}</p>
+                                         <p className="text-gray-800 whitespace-pre-wrap text-justify font-inter leading-relaxed">
+                                            {item.soalBacaan?.soal}
+                                         </p>
                                     </div>
 
-                                    <div className="p-4 border rounded-lg bg-white min-w-[150px] text-center shrink-0">
-                                        <p className="text-xs text-gray-500 uppercase mb-2">Jawaban User</p>
-                                        <p className="text-xl font-bold text-indigo-900">
+                                    <div className="p-4 border rounded-lg bg-white min-w-[200px] text-center shrink-0">
+                                        <p className="text-xs text-gray-500 uppercase mb-2">Jawaban Anda</p>
+                                        <p className="text-base font-bold text-green-600 whitespace-pre-wrap text-left">
                                             {item.jawaban}
                                         </p>
                                     </div>
@@ -88,6 +106,6 @@ export default function HistoryDetailBacaanAdmin() {
              })}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

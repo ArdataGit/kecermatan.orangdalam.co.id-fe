@@ -22,9 +22,27 @@ export default function SoalBacaanExam() {
   const [answers, setAnswers] = useState<any>({});
   const [showConfirmFinish, setShowConfirmFinish] = useState(false);
 
+  const [sessionId, setSessionId] = useState<number | null>(null);
+
   useEffect(() => {
-    if (id) fetchData();
+    if (id) {
+        fetchData();
+        fetchSessionId();
+    }
   }, [id]);
+
+  const fetchSessionId = async () => {
+      try {
+          const res = await getData('user/history-bacaan/generate-session-id');
+          if (typeof res?.data === 'number') {
+              setSessionId(res.data);
+          } else if (typeof res === 'number') {
+               setSessionId(res);
+          }
+      } catch(err) {
+          console.error("Failed to generate session ID", err);
+      }
+  }
 
   const fetchData = async () => {
     setLoading(true);
@@ -66,13 +84,14 @@ export default function SoalBacaanExam() {
       }));
 
       // Submit history
-      if (user) {
+      if (user && sessionId) {
           try {
               await postData('user/history-bacaan/insert', {
                   soalBacaanId: soalId,
                   jawaban: val,
                   bacaanId: currentBacaan.id,
-                  kategoriSoalBacaanId: Number(id)
+                  kategoriSoalBacaanId: Number(id),
+                  bacaanHistoryId: sessionId
               });
           } catch(err) {
               console.error("Failed to save history", err);

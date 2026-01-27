@@ -19,10 +19,25 @@ export default function SoalIsianExam() {
   const [finished, setFinished] = useState(false);
   const [answers, setAnswers] = useState<any>({});
   const [showConfirmFinish, setShowConfirmFinish] = useState(false);
+  const [sessionId, setSessionId] = useState<number | null>(null);
 
   useEffect(() => {
-    if (id) fetchData();
+    if (id) {
+        fetchData();
+        fetchSessionId();
+    }
   }, [id]);
+
+  const fetchSessionId = async () => {
+      try {
+          const res = await getData('user/history-isian/generate-session-id');
+          if (typeof res === 'number') {
+              setSessionId(res);
+          }
+      } catch(err) {
+          console.error("Failed to generate session ID", err);
+      }
+  }
 
   const fetchData = async () => {
     setLoading(true);
@@ -56,12 +71,13 @@ export default function SoalIsianExam() {
 
   const handleAnswerBlur = async (soalId: number, val: string) => {
       // Submit history on blur (focus lost)
-      if (user) {
+      if (user && sessionId) {
           try {
               await postData('user/history-isian/insert', {
                   soalIsianId: soalId,
                   jawaban: val,
-                  kategoriSoalIsianId: Number(id)
+                  kategoriSoalIsianId: Number(id),
+                  isianHistoryId: sessionId
               });
               console.log("Saving answer for", soalId, val);
           } catch(err) {

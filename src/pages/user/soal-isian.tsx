@@ -26,6 +26,18 @@ const CardIsian = ({ data, id }: any) => (
       </span>
     </div>
 
+    <div className="flex justify-between items-center mb-4">
+      <span className="font-semibold">Ranking:</span>
+      <span>
+        <Link
+          to={`/my-class/${id}/isian/${data?.kategoriSoalIsian?.id}/ranking`}
+          className="text-blue-600 underline text-sm"
+        >
+          Lihat Ranking
+        </Link>
+      </span>
+    </div>
+
     <div className="mb-6 bg-blue-200 px-4 py-3 text-blue-900 text-sm italic rounded">
       Pastikan Anda sudah memahami materi sebelum mengerjakan.
     </div>

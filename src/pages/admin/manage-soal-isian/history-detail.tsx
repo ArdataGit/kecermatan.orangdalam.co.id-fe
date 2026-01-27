@@ -7,14 +7,19 @@ import { IconBook } from '@tabler/icons-react';
 import { Input, message } from 'tdesign-react';
 import { patchData } from '@/utils/axios';
 
+import { useSearchParams } from 'react-router-dom';
+
 export default function HistoryDetailIsianAdmin() {
   const { id, userId } = useParams();
+  const [searchParams] = useSearchParams();
+  const isianHistoryId = searchParams.get('isianHistoryId');
 
   const listHistory = useGetList({
     url: 'admin/kategori-soal-isian/history/detail',
     initialParams: {
       kategoriSoalIsianId: id,
       userId: userId,
+      isianHistoryId: isianHistoryId ? Number(isianHistoryId) : undefined,
       skip: 0,
       take: 100,
       sortBy: 'createdAt',

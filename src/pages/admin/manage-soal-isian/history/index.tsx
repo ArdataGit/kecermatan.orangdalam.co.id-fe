@@ -87,7 +87,7 @@ export default function HistorySoalIsianAdmin() {
         width: 100,
         cell: ({ row }: any) => (
             <Tooltip content="Lihat Detail Pengerjaan">
-                <Button shape="circle" theme="primary" variant="text" onClick={() => navigate(`/manage-soal-isian/${id}/history/${row.user?.id || row.userId}`)}>
+                <Button shape="circle" theme="primary" variant="text" onClick={() => navigate(`/manage-soal-isian/${id}/history/${row.user?.id || row.userId}?isianHistoryId=${row.isianHistoryId || ''}`)}>
                     <IconEye size={18} />
                 </Button>
             </Tooltip>

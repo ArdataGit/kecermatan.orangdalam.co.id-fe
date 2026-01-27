@@ -1,21 +1,32 @@
 
 import useGetList from '@/hooks/use-get-list';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
 import { getData } from '@/utils/axios';
 import moment from 'moment/min/moment-with-locales';
+import TableWrapper from '@/components/table';
+import { Button, Tooltip } from 'tdesign-react';
+import { IconEye } from '@tabler/icons-react';
+
+enum AlignType {
+  Center = 'center',
+  Left = 'left',
+  Right = 'right',
+}
 
 export default function RiwayatKecermatan() {
   const { id, kategoriId } = useParams();
+  const navigate = useNavigate();
   const [data, setData] = useState<any>({});
 
   const listHistory = useGetList({
-    url: 'user/paket-pembelian-kecermatan/get-history',
+    // Updated endpoint to get grouping/rankings
+    url: 'user/paket-pembelian-kecermatan/history-list',
     initialParams: {
       kategoriSoalKecermatanId: kategoriId,
       skip: 0,
-      take: 100, // Fetch more since pagination might not be focus of custom view or user requested "all" appearance implicitly
+      take: 10,
       sortBy: 'createdAt',
       descending: true,
     },
@@ -31,6 +42,68 @@ export default function RiwayatKecermatan() {
       setData({ ...res });
     });
   };
+
+  const columns = [
+    {
+      title: '#',
+      colKey: 'index',
+      width: 60,
+      cell: ({ rowIndex }: any) => {
+        return <span>{rowIndex + 1 * listHistory.params.skip + 1}</span>;
+      },
+    },
+    {
+      title: 'Score',
+      colKey: 'score',
+      align: AlignType.Center,
+      width: 100,
+      sorter: true,
+      cell: ({ row }: any) => <span className="font-bold text-lg text-indigo-600">{row.score}</span>,
+    },
+    {
+        title: 'Total Soal',
+        colKey: 'totalSoal',
+        align: AlignType.Center,
+        width: 100,
+    },
+    {
+        title: 'Benar',
+        colKey: 'totalBenar',
+        align: AlignType.Center,
+        width: 100,
+        cell: ({ row }: any) => <span className="text-green-600 font-bold">{row.totalBenar}</span>,
+    },
+    {
+        title: 'Salah',
+        colKey: 'totalSalah',
+        align: AlignType.Center,
+        width: 100,
+        cell: ({ row }: any) => <span className="text-red-500 font-bold">{row.totalSalah}</span>,
+    },
+    {
+      title: 'Waktu Pengerjaan',
+      colKey: 'createdAt',
+      width: 200,
+      align: AlignType.Center,
+      sorter: true,
+      cell: ({ row }: any) => {
+        return <span>{moment(row.createdAt).locale('id').format('LL HH:mm')}</span>;
+      },
+    },
+    {
+        title: 'Action',
+        colKey: 'action',
+        align: AlignType.Center,
+        width: 100,
+        cell: () => (
+            <Tooltip content="Lihat Detail Pengerjaan">
+                <Button shape="circle" theme="primary" variant="text" onClick={() => navigate(`/my-class/${id}/kecermatan/${kategoriId}/riwayat/detail`)}>
+                    <IconEye size={18} />
+                </Button>
+            </Tooltip>
+        )
+    }
+  ];
 
   return (
     <section className="">
@@ -55,73 +128,7 @@ export default function RiwayatKecermatan() {
           </div>
         </div>
         
-        <div className="flex flex-col gap-4">
-             {listHistory.isLoading && <div>Loading...</div>}
-             {!listHistory.isLoading && listHistory.list.length === 0 && <div>Belum ada riwayat pengerjaan.</div>}
-             
-             {listHistory.list.map((item: any, index: number) => {
-                 const kiasanChar = item.kiasan?.karakter || []; 
-                 const kiasanKeys = item.kiasan?.kiasan || [];
-                 const soalChars = item.soalKecermatan?.soal || [];
-                 // Parse JSON if string
-                 const parsedSoal = typeof soalChars === 'string' ? JSON.parse(soalChars) : soalChars;
-                 // Note: kiasan.karakter and kiasan.kiasan come as JSON from DB, usually Prisma parses them if type is Json. 
-                 // If types are messed up, we might need manual parse. Assuming Prisma handles it.
-
-                 return (
-                     <div key={item.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                          <div className="flex justify-between items-start mb-4 border-b border-gray-100 pb-2">
-                              <div>
-                                  <span className="font-bold text-gray-500 mr-2">No. {index + 1}</span>
-                                  <span className="text-sm text-gray-400">{moment(item.createdAt).format('LL HH:mm:ss')}</span>
-                              </div>
-                              <div className={`px-3 py-1 rounded-full text-xs font-bold ${item.jawaban === item.soalKecermatan?.jawaban ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                  {item.jawaban === item.soalKecermatan?.jawaban ? 'Benar' : 'Salah'}
-                              </div>
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                              {/* Kiasan Info */}
-                              <div className="bg-gray-50 p-4 rounded-md">
-                                  <p className="font-semibold text-sm mb-2 text-gray-600">Kiasan (ID: {item.kiasanId})</p>
-                                  <div className="flex flex-col gap-2">
-                                      <div className="flex gap-1 justify-center">
-                                          {Array.isArray(kiasanChar) && kiasanChar.map((char: string, i: number) => (
-                                              <div key={i} className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 font-bold text-sm">{char}</div>
-                                          ))}
-                                      </div>
-                                      <div className="flex gap-1 justify-center">
-                                          {Array.isArray(kiasanKeys) && kiasanKeys.map((key: string, i: number) => (
-                                              <div key={i} className="w-8 h-8 flex items-center justify-center text-indigo-600 font-bold text-lg">{key}</div>
-                                          ))}
-                                      </div>
-                                  </div>
-                              </div>
-
-                              {/* Soal & Jawaban Info */}
-                              <div className="flex flex-col justify-center items-center">
-                                   <p className="font-semibold text-sm mb-2 text-gray-600 self-start">Soal & Jawaban</p>
-                                   <div className="flex gap-2 mb-4 bg-gray-100 p-2 rounded">
-                                       {Array.isArray(parsedSoal) && parsedSoal.map((char: string, i: number) => (
-                                            <div key={i} className="text-2xl font-bold text-gray-800">{char}</div>
-                                       ))}
-                                   </div>
-                                   <div className="grid grid-cols-2 gap-x-8 text-center w-full">
-                                       <div>
-                                           <p className="text-xs text-gray-500 uppercase">Jawaban Kamu</p>
-                                           <p className="text-xl font-bold text-indigo-900">{item.jawaban}</p>
-                                       </div>
-                                       <div>
-                                           <p className="text-xs text-gray-500 uppercase">Kunci Jawaban</p>
-                                           <p className="text-xl font-bold text-gray-700">{item.soalKecermatan?.jawaban}</p>
-                                       </div>
-                                   </div>
-                              </div>
-                          </div>
-                     </div>
-                 );
-             })}
-        </div>
+        <TableWrapper data={listHistory} columns={columns} />
       </div>
     </section>
   );

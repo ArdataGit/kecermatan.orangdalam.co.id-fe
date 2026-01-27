@@ -99,7 +99,7 @@ export default function HistoryRankingBacaanAdmin() {
         width: 100,
         cell: ({ row }: any) => (
             <Tooltip content="Lihat Detail Pengerjaan">
-                <Button shape="circle" theme="primary" variant="text" onClick={() => navigate(`/manage-soal-bacaan/${id}/history/${row.user?.id || row.userId}`)}>
+                <Button shape="circle" theme="primary" variant="text" onClick={() => navigate(`/manage-soal-bacaan/${id}/history/${row.user?.id || row.userId}?bacaanHistoryId=${row.bacaanHistoryId || ''}`)}>
                     <IconEye size={18} />
                 </Button>
             </Tooltip>

@@ -27,8 +27,11 @@ import RiwayatBacaanUser from "@/pages/user/riwayat-bacaan";
 import SoalBacaanUser from "@/pages/user/soal-bacaan";
 import SoalBacaanExam from "@/pages/user/soal-bacaan-exam";
 import RiwayatIsianUser from "@/pages/user/riwayat-isian";
+import DetailRiwayatIsianUser from "@/pages/user/detail-riwayat-isian";
 import SoalIsianUser from "@/pages/user/soal-isian";
 import SoalIsianExam from "@/pages/user/soal-isian-exam";
+import DetailRiwayatBacaanUser from "@/pages/user/detail-riwayat-bacaan";
+import DetailRiwayatKecermatanUser from "@/pages/user/detail-riwayat-kecermatan";
 
 export const userRoutes = [
   <Route path="/" element={<HomeUser />} />,
@@ -64,6 +67,10 @@ export const userRoutes = [
     element={<RiwayatKecermatan />}
   />,
   <Route
+    path="/my-class/:id/kecermatan/:kategoriId/riwayat/detail"
+    element={<DetailRiwayatKecermatanUser />}
+  />,
+  <Route
     path="/my-class/:id/bimbel/mini-test/:paketFK/:paketId/ranking"
     element={<Ranking isBimbel />}
   />,
@@ -76,10 +83,22 @@ export const userRoutes = [
     path="/my-class/:id/bacaan/:kategoriId/riwayat"
     element={<RiwayatBacaanUser />}
   />,
+  <Route
+    path="/my-class/:id/bacaan/:kategoriId/riwayat/:sessionId"
+    element={<DetailRiwayatBacaanUser />}
+  />,
   <Route path="/my-class/:id/bacaan" element={<SoalBacaanUser />} />,
   <Route
     path="/my-class/:id/isian/:kategoriId/riwayat"
     element={<RiwayatIsianUser />}
+  />,
+  <Route
+    path="/my-class/:id/isian/:kategoriId/ranking"
+    element={<Ranking />}
+  />,
+  <Route
+    path="/my-class/:id/isian/:kategoriId/riwayat/:sessionId"
+    element={<DetailRiwayatIsianUser />}
   />,
   <Route path="/my-class/:id/isian" element={<SoalIsianUser />} />,
   <Route
