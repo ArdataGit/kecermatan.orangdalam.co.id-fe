@@ -62,6 +62,14 @@ const menuList = [
         link: '/paket-pembelian/riwayat',
         //count: 'event',
       },
+
+      {
+        icon: <IconBuildingStore />,
+        title: 'Latihan Kecermatan',
+        link: '/latihan-kecermatan',
+        count: 'latihan-kecermatan',
+      },
+
     ],
   },
 ];

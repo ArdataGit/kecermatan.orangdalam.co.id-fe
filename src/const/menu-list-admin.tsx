@@ -59,6 +59,11 @@ const menuList = [
       },
       {
         icon: <IconEye />,
+        title: 'Latihan Kecermatan',
+        link: '/manage-latihan-kecermatan',
+      },
+      {
+        icon: <IconEye />,
         title: 'Bank Soal Ya atau Tidak',
         link: '/manage-soal-bacaan',
       },

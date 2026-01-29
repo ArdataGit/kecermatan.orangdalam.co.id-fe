@@ -17,6 +17,7 @@ import { userRoutes } from "./route-user";
 import ForgotPassword from "@/pages/auth/forgot-password";
 import ResetPassword from "@/pages/auth/reset-password";
 import SoalKecermatanExam from "@/pages/user/soal-kecermatan-detail";
+import LatihanSoalKecermatanExam from "@/pages/user/latihan-soal-kecermatan-exam";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -121,6 +122,7 @@ export default function RoutesList() {
         }
       >
         <Route path="/soal-kecermatan/:id" element={<SoalKecermatanExam />} />
+        <Route path="/latihan-soal-kecermatan/:id" element={<LatihanSoalKecermatanExam />} />
       </Route>
 
       {/* Auth pages (login, register, forgot) - tidak di UserRoutesLayouts */}

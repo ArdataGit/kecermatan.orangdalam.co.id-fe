@@ -43,6 +43,9 @@ import ManageIsianDetail from '@/pages/admin/manage-soal-isian/detail';
 import ManagePaketPembelianIsian from '@/pages/admin/manage-paket-pembelian-isian';
 import HistorySoalIsianAdmin from "@/pages/admin/manage-soal-isian/history";
 import HistoryDetailIsianAdmin from "@/pages/admin/manage-soal-isian/history-detail";
+import ManageLatihanKecermatan from "@/pages/admin/manage-latihan-kecermatan";
+import HistoryLatihanKecermatanAdmin from "@/pages/admin/manage-latihan-kecermatan/history-ranking";
+import HistoryDetailLatihanKecermatanAdmin from "@/pages/admin/manage-latihan-kecermatan/history-detail";
 
 export const adminRoutes = [
   <Route path="/dashboard" element={<Dashboard />} />,
@@ -107,6 +110,9 @@ export const adminRoutes = [
   <Route path="/manage-soal-kecermatan/:id/soal/:kiasanId" element={<ManageSoalKecermatanList />} />,
   <Route path="/manage-soal-kecermatan/:id/history" element={<HistoryRankingKecermatanAdmin />} />,
   <Route path="/manage-soal-kecermatan/:id/history/:userId" element={<HistoryDetailKecermatanAdmin />} />,
+  <Route path="/manage-latihan-kecermatan" element={<ManageLatihanKecermatan />} />,
+  <Route path="/manage-latihan-kecermatan/:id/history" element={<HistoryLatihanKecermatanAdmin />} />,
+  <Route path="/manage-latihan-kecermatan/:id/history/:userId" element={<HistoryDetailLatihanKecermatanAdmin />} />,
   <Route path="/manage-soal-bacaan" element={<ManageSoalBacaan />} />,
   <Route path="/manage-soal-bacaan/:id" element={<ManageBacaanDetail />} />,
   <Route path="/manage-soal-bacaan/:id/soal/:bacaanId" element={<ManageSoalBacaanList />} />,

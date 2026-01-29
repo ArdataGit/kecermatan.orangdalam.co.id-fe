@@ -2,13 +2,13 @@ export { default as routes } from "./routes";
 export { default as menuListUser } from "./menu-list-user";
 export { default as menuListAdmin } from "./menu-list-admin";
 
-export const SERVER_URL_API = 'https://fungsional.ujian.or.id/server/api';
-export const SERVER_URL = 'https://fungsional.ujian.or.id/server/';
-export const FRONTEND_URL = 'https://fungsional.ujian.or.id';
+// export const SERVER_URL_API = 'https://fungsional.ujian.or.id/server/api';
+// export const SERVER_URL = 'https://fungsional.ujian.or.id/server/';
+// export const FRONTEND_URL = 'https://fungsional.ujian.or.id';
 
-// export const SERVER_URL_API = "http://localhost:8002/api";
-// export const SERVER_URL = "http://localhost:8002";
-// export const FRONTEND_URL = "http://localhost:5173";
+export const SERVER_URL_API = "http://localhost:8002/api";
+export const SERVER_URL = "http://localhost:8002";
+export const FRONTEND_URL = "http://localhost:5173";
 
 export { adminRoutes } from "./route-admin";
 
