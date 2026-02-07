@@ -41,7 +41,7 @@ export default function RiwayatLatihanKecermatan() {
         colKey: 'action',
         width: 100,
         cell: ({ row }: any) => (
-             <Button shape="circle" theme="primary" variant="text" onClick={() => navigate(`/latihan-kecermatan/riwayat/${row.id}`)}>
+             <Button shape="circle" theme="primary" variant="text" style={{ color: '#F97316' }} onClick={() => navigate(`/latihan-kecermatan/riwayat/${row.id}`)}>
                  <IconEye size={18} />
              </Button>
         )

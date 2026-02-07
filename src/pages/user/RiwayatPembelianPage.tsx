@@ -25,7 +25,7 @@ enum AlignType {
 const statusNameListMap = {
   PAID: {
     label: 'Berhasil',
-    theme: 'success',
+    theme: 'warning',
     icon: <IconCircleCheckFilled />,
   },
   GAGAL: { label: 'Gagal', theme: 'danger', icon: <IconCircleXFilled /> },
@@ -104,7 +104,7 @@ export default function RiwayatPembelianPage() {
               (daysLeft < 0 ? (
                 <span className="block text-red-500 text-xs">Sudah Berakhir</span>
               ) : (
-                <span className="block text-green-500 text-xs">
+                <span className="block text-[#F97316] text-xs">
                   Tersisa: {daysLeft} Hari
                 </span>
               ))}

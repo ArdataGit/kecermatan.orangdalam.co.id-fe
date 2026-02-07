@@ -174,7 +174,7 @@ export default function HomePage() {
     <div className="w-[100%] overflow-hidden">
       {renderFeedbackModal()}
       {notification && (
-        <div className="mx-5 my-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
+        <div className="mx-5 my-4 p-3 rounded-lg bg-orange-50 border border-orange-200">
           <h2 className="text-lg font-semibold text-indigo-950 mb-1">{notification.title}</h2>
           <p className="text-sm text-gray-600 mb-2">{notification.description}</p>
           {notification.link && (
@@ -182,7 +182,7 @@ export default function HomePage() {
               href={notification.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-blue-600 underline"
+              className="text-sm text-[#F97316] underline"
             >
               Lihat selengkapnya
             </a>
@@ -220,7 +220,7 @@ export default function HomePage() {
           onClick={() => navigate("/my-class")}
         >
           <div className="flex flex-row mb-7 justify-between">
-            <div className="bg-violet-700 rounded-full w-fit p-3">
+            <div className="bg-[#F97316] rounded-full w-fit p-3">
               <IconBuildingBank className="text-white" />
             </div>
           </div>
@@ -234,7 +234,7 @@ export default function HomePage() {
           onClick={() => navigate("/paket-pembelian")}
         >
           <div className="flex flex-row mb-7 justify-between">
-            <div className="bg-blue-700 rounded-full w-fit p-3">
+            <div className="bg-[#F97316] rounded-full w-fit p-3">
               <IconUsersGroup className="text-white" />
             </div>
           </div>
@@ -248,7 +248,7 @@ export default function HomePage() {
           onClick={() => navigate("/paket-pembelian")}
         >
           <div className="flex flex-row mb-7 justify-between">
-            <div className="bg-orange-500 rounded-full w-fit p-3">
+            <div className="bg-[#F97316] rounded-full w-fit p-3">
               <svg
         xmlns="http://www.w3.org/2000/svg"
         className="h-6 w-6"
@@ -275,7 +275,7 @@ export default function HomePage() {
           
         >
           <div className="flex flex-row mb-7 justify-between">
-            <div className="bg-cyan-700 rounded-full w-fit p-3">
+            <div className="bg-[#F97316] rounded-full w-fit p-3">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"

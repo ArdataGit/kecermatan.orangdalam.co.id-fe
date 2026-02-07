@@ -71,7 +71,7 @@ export default function RiwayatKecermatan() {
         colKey: 'totalBenar',
         align: AlignType.Center,
         width: 100,
-        cell: ({ row }: any) => <span className="text-green-600 font-bold">{row.totalBenar}</span>,
+        cell: ({ row }: any) => <span className="text-[#F97316] font-bold">{row.totalBenar}</span>,
     },
     {
         title: 'Salah',

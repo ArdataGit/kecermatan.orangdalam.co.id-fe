@@ -42,7 +42,7 @@ export default function CardProduct({
                     transition={{ repeat: Infinity, duration: 1 }}
                     key={alumniVoucher?.value}
                   >
-                    <p className="font-semibold text-green-600">
+                    <p className="font-semibold text-[#F97316]">
                       {formatCurrency(
                         item?.harga -
                           countDiscount(
@@ -69,8 +69,8 @@ export default function CardProduct({
           <ul className="flex flex-col gap-1 mt-5">
             {item?.paketPembelianFitur.map((item: any) => (
               <li className="flex gap-2">
-                <span className=" h-fit mt-0.5 border rounded-full  bg-[#def6ee]">
-                  <IconCheck size={14} className="text-green-500" />
+                <span className=" h-fit mt-0.5 border rounded-full  bg-orange-100">
+                  <IconCheck size={14} className="text-[#F97316]" />
                 </span>
                 <p className="block font-sans text-sm antialiased font-normal leading-relaxed text-inherit">
                   {item?.nama}

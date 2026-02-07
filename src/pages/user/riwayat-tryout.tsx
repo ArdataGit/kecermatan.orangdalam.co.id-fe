@@ -69,7 +69,7 @@ export default function RiwayatTryout({ isBimbel }: any) {
         <div className="flex gap-2">
           {row?.pointCategory?.map((item: any) => (
             <Tag
-              theme={item.all_point >= item.kkm ? 'success' : 'danger'}
+              theme={item.all_point >= item.kkm ? 'warning' : 'danger'}
               size="large"
               variant="light"
             >
@@ -97,7 +97,7 @@ export default function RiwayatTryout({ isBimbel }: any) {
               </Tag>
             ) : (
               <Tag
-                theme={filter?.length < 1 ? 'success' : 'danger'}
+                theme={filter?.length < 1 ? 'warning' : 'danger'}
                 size="large"
                 variant="light"
               >
@@ -148,7 +148,7 @@ export default function RiwayatTryout({ isBimbel }: any) {
               <Popup content="Lihat Statistik" trigger="hover">
                 <Button
                   variant="dashed"
-                  theme="success"
+                  theme="warning"
                   icon={<IconChartInfographic className="mr-1" size={16} />}
                   onClick={() => {
                     navigate(

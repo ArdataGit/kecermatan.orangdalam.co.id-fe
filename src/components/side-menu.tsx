@@ -87,7 +87,7 @@ export default function SideMenu({
                   hover:bg-indigo-100 dark:hover:bg-gray-800
                   ${
                     checkRouteActive(page.link, location.pathname) &&
-                    'bg-teal-500 text-white'
+                    'bg-[#F97316] text-white'
                   }`}
                 to={page.link}
                 onClick={() => {
@@ -103,11 +103,11 @@ export default function SideMenu({
                 {page.count && data?.[page.count] ? (
                   <span
                     className={`text-xs w-[22px] h-[22px] flex justify-center items-center rounded-full 
-                      bg-teal-500 text-white
-                      dark:bg-teal-400 dark:text-gray-900
+                      bg-[#F97316] text-white
+                      dark:bg-[#F97316] dark:text-gray-900
                       ${
                         checkRouteActive(page.link, location.pathname) &&
-                        'bg-white text-teal-500 dark:bg-gray-100'
+                        'bg-white text-[#F97316] dark:bg-gray-100'
                       }`}
                   >
                     {data?.[page.count]}
@@ -142,7 +142,7 @@ export default function SideMenu({
                   hover:bg-indigo-100 dark:hover:bg-gray-800
                   ${
                     checkRouteActive('/affiliate', location.pathname) &&
-                    'bg-teal-500 text-white'
+                    'bg-[#F97316] text-white'
                   }`}
                 onClick={() => {
                   if (window.innerWidth < 768) {
@@ -162,7 +162,7 @@ export default function SideMenu({
                   hover:bg-indigo-100 dark:hover:bg-gray-800
                   ${
                     checkRouteActive('/affiliate-commission', location.pathname) &&
-                    'bg-teal-500 text-white'
+                    'bg-[#F97316] text-white'
                   }`}
                 onClick={() => {
                   if (window.innerWidth < 768) {
@@ -193,7 +193,7 @@ export default function SideMenu({
                   hover:bg-indigo-100 dark:hover:bg-gray-800
                   ${
                     location.pathname === '/profile' && location.search.includes('tab=affiliate') &&
-                    'bg-teal-500 text-white'
+                    'bg-[#F97316] text-white'
                   }`}
                 onClick={() => {
                   if (window.innerWidth < 768) {
@@ -241,7 +241,7 @@ export default function SideMenu({
                             `my-class/${item.paketPembelianId}`,
                             location.pathname,
                             item.paketPembelianId
-                          ) && 'bg-teal-500 text-white'
+                          ) && 'bg-[#F97316] text-white'
                         }`}
                       onClick={() => {
                         if (menuOpened?.includes(item.paketPembelianId)) {
@@ -292,7 +292,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/materi`,
                                   location.pathname
-                                ) && 'text-teal-500'
+                                ) && 'text-[#F97316]'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">
@@ -313,7 +313,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/bimbel`,
                                   location.pathname
-                                ) && 'text-teal-500 bg-gray-50 dark:bg-gray-800'
+                                ) && 'text-[#F97316] bg-gray-50 dark:bg-gray-800'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">
@@ -334,7 +334,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/tryout`,
                                   location.pathname
-                                ) && 'text-teal-500 bg-gray-50 dark:bg-gray-800'
+                                ) && 'text-[#F97316] bg-gray-50 dark:bg-gray-800'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">
@@ -355,7 +355,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/kecermatan`,
                                   location.pathname
-                                ) && 'text-teal-500 bg-gray-50 dark:bg-gray-800'
+                                ) && 'text-[#F97316] bg-gray-50 dark:bg-gray-800'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">
@@ -376,7 +376,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/bacaan`,
                                   location.pathname
-                                ) && 'text-teal-500 bg-gray-50 dark:bg-gray-800'
+                                ) && 'text-[#F97316] bg-gray-50 dark:bg-gray-800'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">
@@ -397,7 +397,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/isian`,
                                   location.pathname
-                                ) && 'text-teal-500 bg-gray-50 dark:bg-gray-800'
+                                ) && 'text-[#F97316] bg-gray-50 dark:bg-gray-800'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">

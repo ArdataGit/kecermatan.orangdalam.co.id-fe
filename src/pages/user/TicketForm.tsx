@@ -96,7 +96,7 @@ const TicketForm: React.FC<TicketFormProps> = ({ closeModal }) => {
         <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">{error}</div>
       )}
       {success && (
-        <div className="mb-4 p-4 bg-green-100 text-green-700 rounded">{success}</div>
+        <div className="mb-4 p-4 bg-orange-100 text-[#C2410C] rounded">{success}</div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">

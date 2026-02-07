@@ -84,10 +84,11 @@ export default function LatihanKecermatan() {
              value={metronom} 
              onChange={(val) => setMetronom(val as string)}
              options={[
-               { label: 'Durasi 1 detik', value: '1' },
-               { label: 'Durasi 2 detik', value: '2' },
-               { label: 'Durasi 3 detik', value: '3' },
-               { label: 'Durasi 60 detik', value: '60' }
+               { label: 'Durasi 1 Menit', value: '60' },
+               { label: 'Durasi 5 Menit', value: '300' },
+               { label: 'Durasi 10 Menit', value: '600' },
+               { label: 'Durasi 30 Menit', value: '1800' },
+               { label: 'Durasi 60 Menit', value: '3600' }
              ]}
              className="w-full"
            />
@@ -110,8 +111,8 @@ export default function LatihanKecermatan() {
                  </div>
                  <div className={`
                     border-2 rounded-lg px-3 h-12 flex items-center justify-between transition-colors
-                    ${item.filled ? 'border-green-400 bg-white' : 'border-gray-200 bg-white'}
-                    focus-within:border-blue-400
+                    ${item.filled ? 'border-[#F97316] bg-white' : 'border-gray-200 bg-white'}
+                    focus-within:border-[#F97316]
                  `}>
                     <input
                       type="text"
@@ -144,7 +145,7 @@ export default function LatihanKecermatan() {
                       placeholder="Input manual..."
                     />
                     {item.filled && (
-                      <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+                      <div className="w-5 h-5 bg-[#F97316] rounded-full flex items-center justify-center flex-shrink-0 ml-2">
                          <IconCheck size={14} className="text-white" stroke={3} />
                       </div>
                     )}
@@ -170,7 +171,7 @@ export default function LatihanKecermatan() {
          </Button>
          <Button 
             theme="primary" 
-            className="bg-[#1e293b] border-[#1e293b]" 
+            className="!bg-[#F97316] !border-[#F97316]"  
             icon={<IconPlayerPlay />}
             loading={loading}
             onClick={async () => {
@@ -241,8 +242,8 @@ export default function LatihanKecermatan() {
         destroyOnClose
       >
         <div className="text-center p-4">
-           <div className="w-16 h-16 rounded-full border-4 border-indigo-900 flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl font-bold text-indigo-900">!</span>
+           <div className="w-16 h-16 rounded-full border-4 border-[#F97316] flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl font-bold text-[#F97316]">!</span>
            </div>
            
            <h2 className="text-xl font-bold text-black mb-4">Soal Otomatis</h2>
@@ -288,7 +289,7 @@ export default function LatihanKecermatan() {
               </Button>
               <Button 
                 theme="primary" 
-                className="bg-[#1e293b] border-[#1e293b] min-w-[100px]"
+                className="!bg-[#F97316] !border-[#F97316] min-w-[100px]"
                 onClick={handleConfirmAuto}
               >
                 Lanjut

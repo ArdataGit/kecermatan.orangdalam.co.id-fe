@@ -97,9 +97,9 @@ export default function DetailRiwayatIsianUser() {
                                         </p>
                                     </div>
 
-                                     <div className="p-4 border rounded-lg bg-green-50 min-w-[200px] shrink-0 border-green-200 text-center">
-                                        <p className="text-xs text-green-700 uppercase mb-2">Nilai</p>
-                                        <p className="text-xl font-bold text-green-900">
+                                     <div className="p-4 border rounded-lg bg-orange-50 min-w-[200px] shrink-0 border-orange-200 text-center">
+                                        <p className="text-xs text-[#C2410C] uppercase mb-2">Nilai</p>
+                                        <p className="text-xl font-bold text-[#7C2D12]">
                                             {item.score || 0}
                                         </p>
                                     </div>

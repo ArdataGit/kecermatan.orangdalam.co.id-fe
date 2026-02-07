@@ -51,7 +51,7 @@ const statusNameListMap: StatusNameListMap = {
   },
   SELESAI: {
     label: 'Selesai',
-    theme: 'success',
+    theme: 'warning',
     icon: <IconCircleCheck size={20} />,
   },
 };
@@ -185,7 +185,7 @@ export default function UserIndex() {
           >
             <Button
               variant="dashed"
-              theme="success"
+              theme="warning"
               icon={<IconVideo className="mr-1" size={16} />}
               disabled={!row.videoLink}
               onClick={() => handleOpenLink(row.videoLink)}

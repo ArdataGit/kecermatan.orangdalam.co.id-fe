@@ -115,7 +115,7 @@ export default function Ranking({ isBimbel }: any) {
           colKey: "totalScore",
           width: 130,
           align: AlignType.Center,
-          cell: ({ row }: any) => <div className="font-bold text-green-600">{row.totalScore}</div>,
+          cell: ({ row }: any) => <div className="font-bold text-[#F97316]">{row.totalScore}</div>,
         },
     ] : [
         {
@@ -149,7 +149,7 @@ export default function Ranking({ isBimbel }: any) {
             <div className="flex gap-2">
               {row?.pointCategory?.map((item: any) => (
                 <Tag
-                  theme={item.all_point >= item.maxPoint ? "success" : "danger"}
+                  theme={item.all_point >= item.maxPoint ? "warning" : "danger"}
                   size="large"
                   variant="light"
                 >
@@ -170,7 +170,7 @@ export default function Ranking({ isBimbel }: any) {
             );
             return (
               <Tag
-                theme={filter?.length < 1 ? "success" : "danger"}
+                theme={filter?.length < 1 ? "warning" : "danger"}
                 size="large"
                 variant="light"
               >

@@ -181,8 +181,8 @@ export default function PembahasanTryout({ isBimbel }: any) {
               {allPoint.isPassing ? (
                 <Tag
                   variant="light-outline"
-                  theme={'success'}
-                  className={`flex mb-5 w-full justify-center rounded-2xl h-14 bg-white bg-clip-border px-3 py-4 border shadow-md border-green-500`}
+                  theme={'warning'}
+                  className={`flex mb-5 w-full justify-center rounded-2xl h-14 bg-white bg-clip-border px-3 py-4 border shadow-md border-[#F97316]`}
                 >
                   <p className=" text-lg font-medium text-navy-700 text-center w-full flex">
                     <IconCircleCheck size={24} className="mr-1 mt-0.5" />
@@ -194,7 +194,7 @@ export default function PembahasanTryout({ isBimbel }: any) {
                 <Tag
                   variant="light-outline"
                   theme={'danger'}
-                  className={`flex mb-5 w-full justify-center rounded-2xl bg-white bg-clip-border px-1 py-6 border shadow-md border-green-500`}
+                  className={`flex mb-5 w-full justify-center rounded-2xl bg-white bg-clip-border px-1 py-6 border shadow-md border-red-500`}
                 >
                   <p className=" text-lg font-medium text-navy-700 text-center w-full flex">
                     <IconCircleX size={24} className="mr-1 mt-0.5" />
@@ -230,10 +230,10 @@ export default function PembahasanTryout({ isBimbel }: any) {
                 {detail?.pointCategory?.map((e: any) => (
                   <Tag
                     variant="light-outline"
-                    theme={e.all_point >= e?.kkm ? 'success' : 'danger'}
+                    theme={e.all_point >= e?.kkm ? 'warning' : 'danger'}
                     className={`flex mb-5 w-full justify-center rounded-2xl h-20 bg-white bg-clip-border px-3 py-4 border shadow-md ${
                       e.all_point >= e?.kkm
-                        ? 'border-green-500'
+                        ? 'border-[#F97316]'
                         : '!border-red-500'
                     }`}
                   >
@@ -288,7 +288,7 @@ export default function PembahasanTryout({ isBimbel }: any) {
                               {e.paketRekomendasi.deskripsi}
                             </p>
                           )}
-                          <p className="text-base font-bold text-green-600">
+                          <p className="text-base font-bold text-[#F97316]">
                             Rp {e.paketRekomendasi.harga?.toLocaleString("id-ID")}
                           </p>
                         </div>
@@ -329,7 +329,7 @@ export default function PembahasanTryout({ isBimbel }: any) {
                       Jumlah Soal: {e.count_soal}{' '}
                     </p>
                     {e.tipe_penilaian === 'BENAR_SALAH' && (
-                      <p className="text-success">Benar: {e.answer_right}</p>
+                      <p className="text-[#F97316]">Benar: {e.answer_right}</p>
                     )}
                   </div>
                   <div className="flex justify-between w-full ">

@@ -34,7 +34,7 @@ export default function RiwayatLatihanKecermatanDetail() {
       <div className="bg-white p-6 md:p-8 rounded-2xl min-w-[400px] shadow-sm border border-gray-100">
         <div className="flex flex-col gap-y-5 md:flex-row md:items-center justify-start md:justify-between header-section w-full mt-2 mb-6">
           <div className="title border-b border-[#ddd] w-full flex justify-between">
-            <h1 className="text-xl text-indigo-950 font-bold mb-5 ">
+            <h1 className="text-xl text-[#C2410C] font-bold mb-5 ">
               Detail Riwayat Pengerjaan
             </h1>
           </div>
@@ -60,7 +60,7 @@ export default function RiwayatLatihanKecermatanDetail() {
                                   <span className="font-bold text-gray-500 mr-2">No. {index + 1}</span>
                                   <span className="text-sm text-gray-400">{moment(item.createdAt).locale('id').format('LL HH:mm:ss')}</span>
                               </div>
-                              <div className={`px-3 py-1 rounded-full text-xs font-bold ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                              <div className={`px-3 py-1 rounded-full text-xs font-bold ${isCorrect ? 'bg-orange-100 text-[#C2410C]' : 'bg-red-100 text-red-800'}`}>
                                   {isCorrect ? 'Benar' : 'Salah'}
                               </div>
                           </div>
@@ -76,8 +76,8 @@ export default function RiwayatLatihanKecermatanDetail() {
                                           ))}
                                       </div>
                                       <div className="flex gap-1 justify-center">
-                                          {Array.isArray(kiasanKeys) && kiasanKeys.map((key: string, i: number) => (
-                                              <div key={i} className="w-8 h-8 flex items-center justify-center text-indigo-600 font-bold text-lg">{key}</div>
+                                            {Array.isArray(kiasanKeys) && kiasanKeys.map((key: string, i: number) => (
+                                              <div key={i} className="w-8 h-8 flex items-center justify-center text-[#F97316] font-bold text-lg">{key}</div>
                                           ))}
                                       </div>
                                   </div>
@@ -94,7 +94,7 @@ export default function RiwayatLatihanKecermatanDetail() {
                                    <div className="grid grid-cols-2 gap-x-8 text-center w-full">
                                        <div>
                                            <p className="text-xs text-gray-500 uppercase">Jawaban Kamu</p>
-                                           <p className="text-xl font-bold text-indigo-900">{item.jawaban}</p>
+                                           <p className="text-xl font-bold text-[#F97316]">{item.jawaban}</p>
                                        </div>
                                        <div>
                                            <p className="text-xs text-gray-500 uppercase">Kunci Jawaban</p>

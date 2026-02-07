@@ -208,7 +208,7 @@ export default function SoalKecermatanExam() {
                                               {ans.correctAnswer}
                                           </td>
                                           <td className="px-6 py-4 whitespace-nowrap text-center">
-                                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${ans.isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${ans.isCorrect ? 'bg-orange-100 text-[#C2410C]' : 'bg-red-100 text-red-800'}`}>
                                                   {ans.isCorrect ? 'Benar' : 'Salah'}
                                               </span>
                                           </td>

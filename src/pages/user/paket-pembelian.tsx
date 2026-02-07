@@ -70,7 +70,7 @@ export default function PaketPembelian() {
       {/* header section */}
       <div className="flex flex-col gap-y-5 md:flex-row md:items-center justify-start md:justify-between header-section w-full">
         <div className="title flex justify-between w-full items-start">
-          <h1 className="text-2xl text-indigo-900 font-bold mb-5">
+          <h1 className="text-2xl text-[#F97316] font-bold mb-5">
             Paket Tryout
           </h1>
           <Link
@@ -88,16 +88,16 @@ export default function PaketPembelian() {
             py-3 px-6
             border
             rounded
-            text-primary
-            border-indigo-900
-            hover:bg-indigo-900
-            hover:shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)]
+            rounded
+            border-[#F97316]
+            hover:bg-[#F97316]
+            hover:shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)]
             whitespace-nowrap flex-shrink-0
             sm:whitespace-normal sm:flex-shrink sm:mr-2 sm:mb-5
             ${
               getClass.params.category === ""
-                ? " shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)] bg-indigo-900 text-white"
-                : " bg-white"
+                ? " shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)] bg-[#F97316] text-white"
+                : " bg-white text-[#F97316]"
             }
             hover:text-white`}
           onClick={() => {
@@ -122,16 +122,15 @@ export default function PaketPembelian() {
               py-3 px-6
               border
               rounded
-              text-primary
-              border-indigo-900
-              hover:bg-indigo-900
-              hover:shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)]
+              border-[#F97316]
+              hover:bg-[#F97316]
+              hover:shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)]
               whitespace-nowrap flex-shrink-0
               sm:whitespace-normal sm:flex-shrink sm:mr-2 sm:mb-5
               ${
                 getClass.params.category === item.nama
-                  ? " shadow-[5px_5px_rgb(255,_0,_108,_0.4),_10px_10px_rgb(255,_0,_109,_0.22)] bg-indigo-900 text-white"
-                  : " bg-white"
+                  ? " shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)] bg-[#F97316] text-white"
+                  : " bg-white text-[#F97316]"
               }
               hover:text-white`}
           >

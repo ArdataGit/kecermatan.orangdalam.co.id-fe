@@ -74,7 +74,7 @@ export default function DetailRiwayatKecermatanUser() {
                                   <span className="font-bold text-gray-500 mr-2">No. {index + 1}</span>
                                   <span className="text-sm text-gray-400">{moment(item.createdAt).locale('id').format('LL HH:mm:ss')}</span>
                               </div>
-                              <div className={`px-3 py-1 rounded-full text-xs font-bold ${item.jawaban === item.soalKecermatan?.jawaban ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                              <div className={`px-3 py-1 rounded-full text-xs font-bold ${item.jawaban === item.soalKecermatan?.jawaban ? 'bg-orange-100 text-[#C2410C]' : 'bg-red-100 text-red-800'}`}>
                                   {item.jawaban === item.soalKecermatan?.jawaban ? 'Benar' : 'Salah'}
                               </div>
                           </div>

@@ -438,7 +438,7 @@ const onSubmitProfil = async (data: any) => {
           <div className="space-y-6">
             {account?.affiliateCode ? (
               <>
-                <div className="p-4 bg-green-50 border border-green-200 rounded">
+                <div className="p-4 bg-orange-50 border border-orange-200 rounded">
                   <strong>Status Affiliate Aktif!</strong> Anda mendapatkan komisi dari setiap pembelian melalui referral Anda.
                 </div>
 
@@ -461,9 +461,9 @@ const onSubmitProfil = async (data: any) => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-green-100 p-4 rounded text-center">
+                  <div className="bg-orange-100 p-4 rounded text-center">
                     <h5>Saldo Komisi Saat Ini</h5>
-                    <h3 className="text-green-800">Rp {balanceFormatted}</h3>
+                    <h3 className="text-[#F97316]">Rp {balanceFormatted}</h3>
                   </div>
                   <div className="bg-blue-100 p-4 rounded text-center">
                     <h5>Total Sudah Dicairkan</h5>
@@ -472,7 +472,7 @@ const onSubmitProfil = async (data: any) => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                  <Button theme="success" onClick={() => setWithdrawVisible(true)} className="w-full sm:w-auto flex-1">
+                  <Button theme="primary" onClick={() => setWithdrawVisible(true)} className="w-full sm:w-auto flex-1 !bg-[#F97316] !border-[#F97316]">
                     Ajukan Pencairan Komisi
                   </Button>
                   <Button theme="default" onClick={() => setHistoryVisible(true)} className="w-full sm:w-auto flex-1">
@@ -503,7 +503,7 @@ const onSubmitProfil = async (data: any) => {
       {/* === MODAL WITHDRAW === */}
       <Modal visible={withdrawVisible} onClose={() => setWithdrawVisible(false)} title={<div className="text-lg font-semibold">Ajukan Pencairan Komisi</div>}>
         <div className="space-y-4">
-          <div className="bg-green-50 border border-green-200 text-green-800 p-3 rounded-md text-sm">
+          <div className="bg-orange-50 border border-orange-200 text-[#F97316] p-3 rounded-md text-sm">
             Saldo tersedia: <strong>Rp {balanceFormatted}</strong>
           </div>
 
@@ -563,7 +563,8 @@ const onSubmitProfil = async (data: any) => {
         <div className="flex justify-end gap-2 pt-2">
           <Button onClick={() => setWithdrawVisible(false)}>Batal</Button>
           <Button
-            theme="success"
+            theme="primary"
+            className="!bg-[#F97316] !border-[#F97316]"
             loading={isSubmitting}
             disabled={pendingWithdrawals.length > 0 || isAmountExceedsBalance || !withdrawAmount || isDestinationEmpty || isSubmitting}
             onClick={handleWithdrawSubmit}
@@ -577,9 +578,9 @@ const onSubmitProfil = async (data: any) => {
       <Modal visible={historyVisible} onClose={() => setHistoryVisible(false)} title={<div className="text-lg font-semibold">Riwayat Pencairan Komisi</div>}>
         <div className="space-y-4">
           
-            <div className="bg-green-50 border border-green-200 p-3 rounded-md text-center">
-              <h5 className="text-sm text-green-700">Total Disetujui</h5>
-              <h3 className="text-lg font-semibold text-green-900">Rp {summary.total_approved_formatted}</h3>
+            <div className="bg-orange-50 border border-orange-200 p-3 rounded-md text-center">
+              <h5 className="text-sm text-[#F97316]">Total Disetujui</h5>
+              <h3 className="text-lg font-semibold text-[#F97316]">Rp {summary.total_approved_formatted}</h3>
             </div>
 
           {withdrawHistory.length > 0 ? (
