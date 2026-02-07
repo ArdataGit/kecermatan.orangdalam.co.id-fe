@@ -33,10 +33,14 @@ import SoalIsianExam from "@/pages/user/soal-isian-exam";
 import DetailRiwayatBacaanUser from "@/pages/user/detail-riwayat-bacaan";
 import DetailRiwayatKecermatanUser from "@/pages/user/detail-riwayat-kecermatan";
 import LatihanKecermatan from "@/pages/user/latihan-kecermatan";
+import RiwayatLatihanKecermatan from "@/pages/user/latihan-kecermatan/riwayat";
+import RiwayatLatihanKecermatanDetail from "@/pages/user/latihan-kecermatan/riwayat-detail";
 
 export const userRoutes = [
   <Route path="/" element={<HomeUser />} />,
   <Route path="/latihan-kecermatan" element={<LatihanKecermatan />} />,
+  <Route path="/latihan-kecermatan/riwayat" element={<RiwayatLatihanKecermatan />} />,
+  <Route path="/latihan-kecermatan/riwayat/:id" element={<RiwayatLatihanKecermatanDetail />} />,
   <Route path="/soal-kecermatan" element={<SoalKecermatanUser />} />,
   <Route path="/soal-bacaan" element={<SoalBacaanUser />} />,
   <Route path="/soal-bacaan/:id" element={<SoalBacaanExam />} />,

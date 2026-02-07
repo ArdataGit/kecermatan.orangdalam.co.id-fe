@@ -1,5 +1,5 @@
 
-import { IconCheck, IconRotateClockwise, IconRobot, IconPlayerPlay } from '@tabler/icons-react';
+import { IconCheck, IconRotateClockwise, IconRobot, IconPlayerPlay, IconHistory } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Button, Select, Dialog, Switch } from 'tdesign-react';
 import toast from 'react-hot-toast';
@@ -158,6 +158,9 @@ export default function LatihanKecermatan() {
       <div className="flex flex-col md:flex-row justify-end items-center gap-4">
          <Button variant="outline" theme="default" onClick={handleReset} icon={<IconRotateClockwise />}>
             Reset
+         </Button>
+         <Button variant="outline" theme="default" onClick={() => navigate('/latihan-kecermatan/riwayat')} icon={<IconHistory />}>
+            Riwayat
          </Button>
          <Button variant="outline" theme="default" onClick={() => setShowAutoModal(true)} icon={<IconRobot />}>
             Soal otomatis
