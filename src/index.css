@@ -4,7 +4,7 @@
 
 
 :root{
-  --td-brand-color: #49c1bf !important
+  --td-brand-color: #F97316 !important
 }
 .cke_editable img{
   object-fit: contain;
@@ -71,16 +71,16 @@ input[type=number] {
 
 :root,
 :root[theme-mode="light"] {
-  --td-brand-color-1: #ede7f6 !important;
-  --td-brand-color-2: #d9005c !important;
-  --td-brand-color-3: #49c1bf87 !important;
-  --td-brand-color-4: #49c1bf !important;
-  --td-brand-color-5: #49c1bf !important;
-  --td-brand-color-6: #d9005c !important;
-  --td-brand-color-7: #49c1bf !important;
-  --td-brand-color-8: #49c1bf !important;
-  --td-brand-color-9: #49c1bf !important;
-  --td-brand-color-10: #49c1bf !important;
+  --td-brand-color-1: #FFF7ED !important;
+  --td-brand-color-2: #FED7AA !important;
+  --td-brand-color-3: #F9731687 !important;
+  --td-brand-color-4: #F97316 !important;
+  --td-brand-color-5: #F97316 !important;
+  --td-brand-color-6: #FB923C !important;
+  --td-brand-color-7: #F97316 !important;
+  --td-brand-color-8: #EA580C !important;
+  --td-brand-color-9: #C2410C !important;
+  --td-brand-color-10: #9A3412 !important;
   
   --td-brand-color: var(--td-brand-color-7) !important;     
   --td-warning-color: var(--td-warning-color-5); 

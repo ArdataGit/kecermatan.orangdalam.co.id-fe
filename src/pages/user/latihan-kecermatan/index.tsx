@@ -103,8 +103,7 @@ export default function LatihanKecermatan() {
                  <div className="flex justify-between items-center">
                     <span className="font-semibold text-gray-800">Soal {index + 1}</span>
                     <button 
-                      onClick={() => handleSelectSimbol(index)}
-                      className="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded transition-colors"
+                      className="text-xs bg-orange-100 hover:bg-orange-200 text-[#C2410C] px-3 py-1 rounded transition-colors"
                     >
                       Pilih Simbol
                     </button>
@@ -157,21 +156,21 @@ export default function LatihanKecermatan() {
 
       {/* Footer Actions */}
       <div className="flex flex-col md:flex-row justify-end items-center gap-4">
-         <Button variant="outline" theme="default" onClick={handleReset} icon={<IconRotateClockwise />}>
+         <Button variant="outline" theme="warning" onClick={handleReset} icon={<IconRotateClockwise />}>
             Reset
          </Button>
-         <Button variant="outline" theme="default" onClick={() => navigate('/latihan-kecermatan/riwayat')} icon={<IconHistory />}>
+         <Button variant="outline" theme="warning" onClick={() => navigate('/latihan-kecermatan/riwayat')} icon={<IconHistory />}>
             Riwayat
          </Button>
-         <Button variant="outline" theme="default" onClick={() => setShowAutoModal(true)} icon={<IconRobot />}>
+         <Button variant="outline" theme="warning" onClick={() => setShowAutoModal(true)} icon={<IconRobot />}>
             Soal otomatis
          </Button>
-         <Button variant="outline" theme="default">
+         <Button variant="outline" theme="warning">
             Gunakan Soal Sebelumnya?
          </Button>
          <Button 
-            theme="primary" 
-            className="!bg-[#F97316] !border-[#F97316]"  
+            theme="warning" 
+            className="bg-[#F97316] border-[#F97316]" 
             icon={<IconPlayerPlay />}
             loading={loading}
             onClick={async () => {
@@ -208,7 +207,7 @@ export default function LatihanKecermatan() {
                 // 3. Create Kiasan (Loop)
                 const promises = soalList.map(soal => {
                    return postData('latihan-kiasan/insert', {
-                      kategoriSoalKecermatanId: categoryId,
+                      kategoriLatihanKecermatanId: categoryId,
                       kiasan: Array.from(soal.simbol),
                       waktu: parseInt(metronom) || 1
                    });
@@ -281,15 +280,15 @@ export default function LatihanKecermatan() {
            <div className="flex justify-center gap-4">
               <Button 
                 variant="outline" 
-                theme="default" 
+                theme="warning" 
                 onClick={() => setShowAutoModal(false)}
                 className="min-w-[100px]"
               >
                 Batal
               </Button>
               <Button 
-                theme="primary" 
-                className="!bg-[#F97316] !border-[#F97316] min-w-[100px]"
+                theme="warning" 
+                className="bg-[#F97316] border-[#F97316] min-w-[100px]"
                 onClick={handleConfirmAuto}
               >
                 Lanjut

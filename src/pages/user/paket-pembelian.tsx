@@ -89,6 +89,7 @@ export default function PaketPembelian() {
             border
             rounded
             rounded
+            text-[#F97316]
             border-[#F97316]
             hover:bg-[#F97316]
             hover:shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)]
@@ -97,7 +98,7 @@ export default function PaketPembelian() {
             ${
               getClass.params.category === ""
                 ? " shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)] bg-[#F97316] text-white"
-                : " bg-white text-[#F97316]"
+                : " bg-white"
             }
             hover:text-white`}
           onClick={() => {
@@ -122,6 +123,7 @@ export default function PaketPembelian() {
               py-3 px-6
               border
               rounded
+              text-[#F97316]
               border-[#F97316]
               hover:bg-[#F97316]
               hover:shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)]
@@ -130,7 +132,7 @@ export default function PaketPembelian() {
               ${
                 getClass.params.category === item.nama
                   ? " shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)] bg-[#F97316] text-white"
-                  : " bg-white text-[#F97316]"
+                  : " bg-white"
               }
               hover:text-white`}
           >

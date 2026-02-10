@@ -139,6 +139,355 @@ export default function LatihanSoalKecermatanExam() {
       }
   };
 
+  const calculateStats = () => {
+      const totalColumns = data.length;
+      let totalCorrectAll = 0;
+      let totalQuestionsAll = 0;
+      let sumCorrectPerColumn = 0; 
+      let sumQuestionsPerColumn = 0;
+      const correctCounts: number[] = [];
+
+      // Iterate over each column (Kiasan) to calculate per-column stats
+      data.forEach((kiasan, kiasanIndex) => {
+          let correctInColumn = 0;
+          const questionsInColumn = kiasan.soalLatihanKecermatan?.length || 0;
+
+          // Check answers for this column
+          for (let i = 0; i < questionsInColumn; i++) {
+              const key = `${kiasanIndex}-${i}`;
+              if (answers[key]?.isCorrect) {
+                  correctInColumn++;
+              }
+          }
+
+          correctCounts.push(correctInColumn);
+          sumCorrectPerColumn += correctInColumn;
+          sumQuestionsPerColumn += questionsInColumn;
+          totalCorrectAll += correctInColumn;
+          totalQuestionsAll += questionsInColumn;
+      });
+
+      // PANKER (Kecepatan Kerja)
+      // Raw Score: Average correct answers per column (Mean)
+      const rawScore = totalColumns > 0 ? (sumCorrectPerColumn / totalColumns) : 0;
+      
+      // Average Total Questions per column
+      const avgQuestionsPerColumn = totalColumns > 0 ? (sumQuestionsPerColumn / totalColumns) : 1;
+
+      // Converted Score: Percentage
+      let convertedScore = (rawScore / avgQuestionsPerColumn) * 100;
+      convertedScore = Math.min(Math.max(convertedScore, 0), 100);
+
+      // PANKER Category
+      const getPankerCategory = (score: number) => {
+          if (score >= 80) return {
+              label: "Tinggi",
+              color: "text-green-600",
+              bg: "bg-green-50",
+              border: "border-green-200",
+              desc: "Kecepatan kerja Anda tinggi. Ritme kerja cepat dan alur pengerjaan lancar sehingga output dapat dicapai dengan baik.",
+              saran: "Pertahankan tempo dan jaga konsistensi dari awal hingga akhir. Pastikan kecepatan tidak menurunkan ketelitian."
+          };
+          if (score >= 60) return {
+              label: "Cukup Tinggi",
+              color: "text-blue-600",
+              bg: "bg-blue-50",
+              border: "border-blue-200",
+              desc: "Kecepatan kerja Anda sudah baik. Namun masih ada bagian yang melambat sehingga hasil belum maksimal.",
+              saran: "Kurangi jeda-jeda kecil dan perkuat ritme yang stabil. Tingkatkan target secara bertahap agar tempo naik tanpa mengganggu kontrol."
+          };
+          if (score >= 40) return {
+              label: "Sedang",
+              color: "text-yellow-600",
+              bg: "bg-yellow-50",
+              border: "border-yellow-200",
+              desc: "Kecepatan kerja Anda berada pada tingkat cukup. Anda mampu menyelesaikan tugas, tetapi tempo masih mudah turun saat ragu atau ketika ritme tidak stabil.",
+              saran: "Bangun alur kerja yang konsisten dan hindari berhenti untuk memeriksa di tengah pengerjaan. Setelah ritme stabil, tingkatkan output sedikit demi sedikit."
+          };
+          if (score >= 20) return {
+              label: "Rendah",
+              color: "text-orange-600",
+              bg: "bg-orange-50",
+              border: "border-orange-200",
+              desc: "Kecepatan kerja Anda masih rendah. Tempo cenderung lambat sehingga hasil mudah tertinggal.",
+              saran: "Fokus pada kelancaran dan ritme. Kurangi kebiasaan berhenti, jaga tempo yang sama, dan lakukan latihan rutin dengan target peningkatan kecil namun konsisten."
+          };
+          return {
+              label: "Sangat Rendah",
+              color: "text-red-600",
+              bg: "bg-red-50",
+              border: "border-red-200",
+              desc: "Kecepatan kerja Anda masih di bawah harapan. Terdapat jeda singkat yang sering berulang sehingga menghambat tempo.",
+              saran: "Latih transisi yang lebih cepat dan kurangi jeda. Tetapkan target minimal yang realistis, stabilkan ritme terlebih dahulu, lalu tingkatkan secara bertahap."
+          };
+      };
+
+      const panker = getPankerCategory(convertedScore);
+
+      // TIANKER (Ketelitian Kerja)
+      const totalAnswered = Object.keys(answers).length;
+      const totalWrong = totalAnswered - totalCorrectAll;
+      const rawScoreTianker = totalAnswered > 0 ? (totalWrong / totalAnswered) : 0;
+      const convertedScoreTianker = Math.min(100, Math.max(0, (1 - rawScoreTianker) * 100));
+
+      const getTiankerCategory = (score: number) => {
+           if (score >= 80) return {
+              label: "Tinggi",
+              color: "text-green-600",
+              bg: "bg-green-50",
+              border: "border-green-200",
+              desc: "Ketelitian kerja Anda tinggi. Kesalahan sangat sedikit, menunjukkan fokus dan kontrol yang baik saat mengerjakan.",
+              saran: "Pertahankan cara kerja yang rapi dan konsisten. Saat meningkatkan kecepatan, pastikan pola kerja tetap sama agar ketelitian tidak turun."
+          };
+          if (score >= 60) return {
+              label: "Cukup Tinggi",
+              color: "text-blue-600",
+              bg: "bg-blue-50",
+              border: "border-blue-200",
+              desc: "Ketelitian kerja Anda sudah baik. Masih ada beberapa kesalahan, tetapi secara umum akurasi terjaga.",
+              saran: "Identifikasi jenis kesalahan yang paling sering dilakukan. Kurangi sumber kesalahan itu dengan menjaga ritme dan fokus, tanpa terlalu lama berhenti."
+          };
+          if (score >= 40) return {
+              label: "Sedang",
+              color: "text-yellow-600",
+              bg: "bg-yellow-50",
+              border: "border-yellow-200",
+              desc: "Ketelitian kerja Anda cukup, namun kesalahan masih muncul cukup sering sehingga akurasi belum stabil.",
+              saran: "Prioritaskan ketelitian dulu sebelum menaikkan tempo. Gunakan alur kerja yang konsisten dan hindari tergesa-gesa pada bagian yang sering menimbulkan salah."
+          };
+          if (score >= 20) return {
+              label: "Rendah",
+              color: "text-orange-600",
+              bg: "bg-orange-50",
+              border: "border-orange-200",
+              desc: "Ketelitian kerja Anda rendah. Kesalahan relatif banyak, menandakan fokus mudah terpecah atau kontrol pengerjaan belum kuat.",
+              saran: "Turunkan tempo sedikit agar lebih terkontrol, lalu latih akurasi. Fokus pada satu pola kerja yang sama dan perbaiki penyebab kesalahan utama secara bertahap."
+          };
+          return {
+              label: "Sangat Rendah",
+              color: "text-red-600",
+              bg: "bg-red-50",
+              border: "border-red-200",
+              desc: "Ketelitian kerja Anda masih kurang. Kesalahan terjadi berulang sehingga hasil belum dapat diandalkan.",
+              saran: "Perkuat kebiasaan kerja yang rapi, seperti baca dengan jelas, hitung singkat, lalu jawab. Kurangi kebiasaan menebak atau terburu-buru. Setelah kesalahan turun, baru naikkan kecepatan secara bertahap."
+          };
+      };
+
+      const tianker = getTiankerCategory(convertedScoreTianker);
+
+      // JANKER (Keajegan Kerja) -- STDEV
+      // Calculate Variance (Sample Variance: divide by N-1, if N > 1)
+      let variance = 0;
+      if (totalColumns > 1) {
+          const sumSqDiff = correctCounts.reduce((acc, val) => acc + Math.pow(val - rawScore, 2), 0);
+          variance = sumSqDiff / (totalColumns - 1);
+      }
+      const rawScoreJanker = Math.sqrt(variance);
+      
+      // Converted Score JANKER
+      // Formula: MIN(100; MAX(0; (1 - (nilai mentah / 26.3523138347)) * 100))
+      const jankerDenominator = 26.3523138347;
+      let convertedScoreJanker = (1 - (rawScoreJanker / jankerDenominator)) * 100;
+      convertedScoreJanker = Math.min(100, Math.max(0, convertedScoreJanker));
+
+      const getJankerCategory = (score: number) => {
+          if (score >= 80) return {
+              label: "Tinggi",
+              color: "text-green-600",
+              bg: "bg-green-50",
+              border: "border-green-200",
+              desc: "Kestabilan kerja Anda tinggi. Hasil antar bagian cenderung merata dan tidak banyak naik-turun, menunjukkan ritme dan kontrol kerja yang baik.",
+              saran: "Pertahankan ritme yang konsisten. Saat meningkatkan kecepatan, pastikan kenaikan dilakukan bertahap agar stabilitas tetap terjaga."
+          };
+          if (score >= 60) return {
+              label: "Cukup Tinggi",
+              color: "text-blue-600",
+              bg: "bg-blue-50",
+              border: "border-blue-200",
+              desc: "Kestabilan kerja Anda sudah baik. Ada sedikit fluktuasi, tetapi secara umum ritme masih terkontrol.",
+              saran: "Perkecil fluktuasi dengan menjaga tempo yang sama dan mengurangi jeda saat transisi. Fokus pada konsistensi, bukan mengejar lonjakan output di satu bagian."
+          };
+          if (score >= 40) return {
+              label: "Sedang",
+              color: "text-yellow-600",
+              bg: "bg-yellow-50",
+              border: "border-yellow-200",
+              desc: "Kestabilan kerja Anda cukup. Performa masih naik-turun, sehingga hasil belum sepenuhnya konsisten.",
+              saran: "Bangun ritme yang lebih stabil. Jaga tempo yang sama di setiap bagian, hindari perubahan kecepatan yang terlalu drastis, dan fokus pada alur kerja yang terus mengalir."
+          };
+          if (score >= 20) return {
+              label: "Rendah",
+              color: "text-orange-600",
+              bg: "bg-orange-50",
+              border: "border-orange-200",
+              desc: "Kestabilan kerja Anda rendah. Fluktuasi hasil cukup besar, menandakan ritme mudah berubah dan fokus belum stabil.",
+              saran: "Prioritaskan konsistensi tempo. Kurangi kebiasaan berhenti atau mempercepat secara tiba-tiba. Latih menjaga ritme konstan dan evaluasi bagian yang sering turun."
+          };
+          return {
+              label: "Sangat Rendah",
+              color: "text-red-600",
+              bg: "bg-red-50",
+              border: "border-red-200",
+              desc: "Kestabilan kerja Anda masih kurang. Hasil sering berubah-ubah sehingga kontrol ritme belum terbentuk.",
+              saran: "Latih pola kerja yang sama dari awal sampai akhir. Pertahankan tempo yang realistis dan stabil, lalu tingkatkan secara bertahap setelah fluktuasi berkurang."
+          };
+      };
+
+      const janker = getJankerCategory(convertedScoreJanker);
+
+      // HANKER (Ketahanan Kerja)
+      let rawScoreHanker = 0;
+      if (totalColumns >= 3) {
+          const avgFirst3 = (correctCounts[0] + correctCounts[1] + correctCounts[2]) / 3;
+          const avgLast3 = (correctCounts[totalColumns - 1] + correctCounts[totalColumns - 2] + correctCounts[totalColumns - 3]) / 3;
+          rawScoreHanker = avgLast3 - avgFirst3;
+      }
+      // Converted Score: MIN(100; MAX(0; skor mentah + 50))
+      let convertedScoreHanker = Math.min(100, Math.max(0, rawScoreHanker + 50));
+
+      const getHankerCategory = (score: number) => {
+           if (score >= 80) return {
+              label: "Tinggi",
+              color: "text-green-600",
+              bg: "bg-green-50",
+              border: "border-green-200",
+              desc: "Ketahanan kerja Anda tinggi. Anda mampu menjaga performa sampai akhir tanpa penurunan berarti, menunjukkan daya tahan fokus yang baik.",
+              saran: "Pertahankan pola kerja yang stabil. Pastikan ritme tetap sama dan hindari memaksakan tempo terlalu tinggi di awal agar tidak turun di akhir."
+          };
+          if (score >= 60) return {
+              label: "Cukup Tinggi",
+              color: "text-blue-600",
+              bg: "bg-blue-50",
+              border: "border-blue-200",
+              desc: "Ketahanan kerja Anda cukup baik. Performa umumnya terjaga, meskipun ada sedikit penurunan pada bagian tertentu.",
+              saran: "Perkuat daya tahan dengan menjaga ritme yang konsisten dan mengurangi jeda kecil saat mulai lelah. Tingkatkan durasi latihan secara bertahap agar fokus lebih tahan."
+          };
+          if (score >= 40) return {
+              label: "Sedang",
+              color: "text-yellow-600",
+              bg: "bg-yellow-50",
+              border: "border-yellow-200",
+              desc: "Ketahanan kerja Anda berada pada tingkat cukup. Performa masih dapat dipertahankan, tetapi mulai terlihat penurunan ketika pekerjaan berlangsung lebih lama.",
+              saran: "Fokus pada menjaga tempo yang realistis sejak awal. Hindari terlalu cepat di awal lalu turun. Latih konsistensi ritme dan perbaiki kebiasaan yang membuat cepat lelah, seperti sering ragu atau berhenti."
+          };
+          if (score >= 20) return {
+              label: "Rendah",
+              color: "text-orange-600",
+              bg: "bg-orange-50",
+              border: "border-orange-200",
+              desc: "Ketahanan kerja Anda rendah. Penurunan performa terlihat jelas pada bagian akhir, menandakan fokus cepat menurun atau mudah lelah.",
+              saran: "Bangun ketahanan bertahap. Mulai dari tempo yang lebih terkontrol, jaga ritme stabil, dan lakukan latihan rutin agar daya tahan meningkat. Evaluasi bagian akhir untuk melihat penyebab turunnya performa."
+          };
+          return {
+              label: "Sangat Rendah",
+              color: "text-red-600",
+              bg: "bg-red-50",
+              border: "border-red-200",
+              desc: "Ketahanan kerja Anda masih kurang. Performa cenderung turun cukup cepat sehingga hasil akhir tidak stabil.",
+              saran: "Terapkan strategi menjaga tenaga, yakni ritme stabil, minim jeda yang tidak perlu, dan tidak memaksakan tempo tinggi di awal. Tingkatkan latihan secara bertahap sampai penurunan di akhir berkurang."
+          };
+      };
+
+      const hanker = getHankerCategory(convertedScoreHanker);
+
+      // NILAI AKHIR (Final Score)
+      // Formula: (PANKER * 35%) + (TIANKER * 35%) + (JANKER * 20%) + (HANKER * 10%)
+      const finalScore = (convertedScore * 0.35) + (convertedScoreTianker * 0.35) + (convertedScoreJanker * 0.20) + (convertedScoreHanker * 0.10);
+
+      const getFinalCategory = (score: number) => {
+          if (score >= 80) return {
+              label: "Tinggi",
+              color: "text-green-700",
+              bg: "bg-green-100",
+              border: "border-green-300",
+              desc: "Hasil akhir sangat kuat. Pertahankan konsistensi agar tetap stabil."
+          };
+          if (score >= 60) return {
+              label: "Cukup Tinggi",
+              color: "text-blue-700",
+              bg: "bg-blue-100",
+              border: "border-blue-300",
+              desc: "Hasil akhir sudah baik. Sedikit perbaikan pada bagian terlemah akan membuatnya lebih optimal."
+          };
+          if (score >= 40) return {
+              label: "Sedang",
+              color: "text-yellow-700",
+              bg: "bg-yellow-100",
+              border: "border-yellow-300",
+              desc: "Hasil akhir cukup. Dengan latihan terarah, performa bisa naik ke level baik."
+          };
+          if (score >= 20) return {
+              label: "Rendah",
+              color: "text-orange-700",
+              bg: "bg-orange-100",
+              border: "border-orange-300",
+              desc: "Hasil akhir masih rendah. Mulai dari perbaikan dasar dan tingkatkan bertahap. Hasil biasanya cepat terlihat."
+          };
+          return {
+              label: "Sangat Rendah",
+              color: "text-red-700",
+              bg: "bg-red-100",
+              border: "border-red-300",
+              desc: "Hasil akhir masih di bawah target. Fokus pada ritme dan konsistensi. Kenaikan akan lebih mudah jika dilakukan rutin."
+          };
+      };
+
+      const finalCategory = getFinalCategory(finalScore);
+
+      return {
+          finalScore,
+          finalCategory,
+          panker,
+          tianker,
+          janker,
+          hanker,
+          rawScore,
+          convertedScore,
+          rawScoreTianker,
+          convertedScoreTianker,
+          rawScoreJanker,
+          convertedScoreJanker,
+          rawScoreHanker,
+          convertedScoreHanker,
+          totalQuestionsAll,
+          totalCorrectAll,
+          totalWrong
+      };
+  };
+
+  const submitResult = () => {
+       const stats = calculateStats();
+       const payload = {
+           kategoriLatihanKecermatanId: Number(id),
+           userId: user?.id,
+           score: Math.round(stats.finalScore),
+           totalSoal: stats.totalQuestionsAll,
+           totalSalah: stats.totalWrong,
+           totalBenar: stats.totalCorrectAll,
+           pankerScore: Number(stats.convertedScore.toFixed(2)),
+           pankerCategory: stats.panker.label,
+           tiankerScore: Number(stats.convertedScoreTianker.toFixed(2)),
+           tiankerCategory: stats.tianker.label,
+           jankerScore: Number(stats.convertedScoreJanker.toFixed(2)),
+           jankerCategory: stats.janker.label,
+           hankerScore: Number(stats.convertedScoreHanker.toFixed(2)),
+           hankerCategory: stats.hanker.label,
+           finalScore: Number(stats.finalScore.toFixed(2)),
+           finalCategory: stats.finalCategory.label
+       };
+       
+       postData('kategori-latihan-kecermatan/ranking', payload)
+        .then(() => {
+            toast.success("Hasil latihan berhasil disimpan ke Riwayat", { position: "top-center" });
+        })
+        .catch((err) => {
+            console.error("Gagal menyimpan hasil", err);
+            toast.error("Gagal menyimpan hasil ke Riwayat");
+        });
+        
+       setFinished(true);
+  };
+
   const handleNextKiasan = () => {
       if (currentKiasanIndex < data.length - 1) {
           prepareKiasan(currentKiasanIndex + 1);
@@ -151,16 +500,152 @@ export default function LatihanSoalKecermatanExam() {
   if (!data.length) return <div className="p-8 text-center text-gray-500">Data Soal tidak ditemukan.</div>;
 
   if (finished) {
-      const totalScore = Object.values(answers).filter((a: any) => a.isCorrect).length;
-      const totalQuestions = Object.keys(answers).length; 
+      const stats = calculateStats();
+      const {
+          finalScore,
+          finalCategory,
+          panker,
+          tianker,
+          janker,
+          hanker,
+          rawScore,
+          convertedScore,
+          rawScoreTianker,
+          convertedScoreTianker,
+          rawScoreJanker,
+          convertedScoreJanker,
+          rawScoreHanker,
+          convertedScoreHanker
+      } = stats;
 
       return (
           <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-8 font-['Poppins']">
+              {/* Score Summary Card */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-6 text-center">
-                  <h2 className="text-3xl font-bold mb-2 text-indigo-900">Hasil Latihan Kecermatan</h2>
-                  <div className="text-6xl font-bold text-indigo-600 mb-2">{totalScore}</div>
-                  <p className="text-gray-500">dari {totalQuestions} soal</p>
-                  <div className="mt-6 flex justify-center gap-4">
+                  <h2 className="text-3xl font-bold mb-6 text-indigo-900">Hasil Latihan Kecermatan</h2>
+                  
+
+
+                  {/* STATS GRID */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
+                      {/* PANKER */}
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                          <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">PANKER Mentah</p>
+                          <div className="text-xl lg:text-2xl font-bold text-gray-800">{rawScore.toFixed(1)}</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">PANKER Konv</p>
+                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScore.toFixed(0)}</div>
+                      </div>
+                      {/* TIANKER */}
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                          <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">TIANKER Mentah</p>
+                          <div className="text-xl lg:text-2xl font-bold text-gray-800">{rawScoreTianker.toFixed(2)}</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">TIANKER Konv</p>
+                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreTianker.toFixed(0)}</div>
+                      </div>
+                      {/* JANKER */}
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                          <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">JANKER Mentah</p>
+                          <div className="text-xl lg:text-2xl font-bold text-gray-800">{rawScoreJanker.toFixed(2)}</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">JANKER Konv</p>
+                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreJanker.toFixed(0)}</div>
+                      </div>
+                      {/* HANKER */}
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                          <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">HANKER Mentah</p>
+                          <div className="text-xl lg:text-2xl font-bold text-gray-800">{rawScoreHanker.toFixed(1)}</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">HANKER Konv</p>
+                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreHanker.toFixed(0)}</div>
+                      </div>
+                  </div>
+
+                  {/* CATEGORY GRID */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                       <div className={`p-4 rounded-lg border ${panker.bg} ${panker.border} flex flex-col items-center justify-center`}>
+                           <p className="text-xs text-gray-500 mb-1 font-bold uppercase">Kategori PANKER</p>
+                           <div className={`text-xl font-bold ${panker.color} mb-1`}>{panker.label}</div>
+                           <p className="text-[10px] text-gray-500">Kecepatan</p>
+                      </div>
+                       <div className={`p-4 rounded-lg border ${tianker.bg} ${tianker.border} flex flex-col items-center justify-center`}>
+                           <p className="text-xs text-gray-500 mb-1 font-bold uppercase">Kategori TIANKER</p>
+                           <div className={`text-xl font-bold ${tianker.color} mb-1`}>{tianker.label}</div>
+                           <p className="text-[10px] text-gray-500">Ketelitian</p>
+                      </div>
+                      <div className={`p-4 rounded-lg border ${janker.bg} ${janker.border} flex flex-col items-center justify-center`}>
+                           <p className="text-xs text-gray-500 mb-1 font-bold uppercase">Kategori JANKER</p>
+                           <div className={`text-xl font-bold ${janker.color} mb-1`}>{janker.label}</div>
+                           <p className="text-[10px] text-gray-500">Keajegan (Stabilitas)</p>
+                      </div>
+                       <div className={`p-4 rounded-lg border ${hanker.bg} ${hanker.border} flex flex-col items-center justify-center`}>
+                           <p className="text-xs text-gray-500 mb-1 font-bold uppercase">Kategori HANKER</p>
+                           <div className={`text-xl font-bold ${hanker.color} mb-1`}>{hanker.label}</div>
+                           <p className="text-[10px] text-gray-500">Ketahanan (Endurance)</p>
+                      </div>
+                  </div>
+
+                  {/* DETAILS */}
+                  <div className="grid grid-cols-1 gap-4 mb-6 text-left">
+                      {/* PANKER Details */}
+                      <div className={`p-5 rounded-lg border ${panker.bg} ${panker.border}`}>
+                           <h3 className={`font-bold text-md mb-2 ${panker.color} flex items-center gap-2`}>
+                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">PANKER</span> 
+                                {panker.label}
+                           </h3>
+                           <p className="text-gray-700 text-sm mb-2">{panker.desc}</p>
+                           <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {panker.saran}</p>
+                      </div>
+
+                      {/* TIANKER Details */}
+                      <div className={`p-5 rounded-lg border ${tianker.bg} ${tianker.border}`}>
+                           <h3 className={`font-bold text-md mb-2 ${tianker.color} flex items-center gap-2`}>
+                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">TIANKER</span> 
+                                {tianker.label}
+                           </h3>
+                           <p className="text-gray-700 text-sm mb-2">{tianker.desc}</p>
+                           <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {tianker.saran}</p>
+                      </div>
+
+                      {/* JANKER Details */}
+                      <div className={`p-5 rounded-lg border ${janker.bg} ${janker.border}`}>
+                           <h3 className={`font-bold text-md mb-2 ${janker.color} flex items-center gap-2`}>
+                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">JANKER</span> 
+                                {janker.label}
+                           </h3>
+                           <p className="text-gray-700 text-sm mb-2">{janker.desc}</p>
+                           <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {janker.saran}</p>
+                      </div>
+
+                      {/* HANKER Details */}
+                      <div className={`p-5 rounded-lg border ${hanker.bg} ${hanker.border}`}>
+                           <h3 className={`font-bold text-md mb-2 ${hanker.color} flex items-center gap-2`}>
+                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">HANKER</span> 
+                                {hanker.label}
+                           </h3>
+                           <p className="text-gray-700 text-sm mb-2">{hanker.desc}</p>
+                           <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {hanker.saran}</p>
+                      </div>
+                  </div>
+
+                  {/* FINAL SCORE CARD - Moved per user request */}
+                  <div className={`mb-8 p-6 rounded-xl border-2 ${finalCategory.border} ${finalCategory.bg} flex flex-col md:flex-row items-center justify-between gap-6`}>
+                      <div className="text-center md:text-left">
+                          <p className="text-sm text-gray-600 font-bold uppercase tracking-wider mb-1">Nilai Akhir</p>
+                          <div className={`text-5xl font-extrabold ${finalCategory.color}`}>{finalScore.toFixed(0)}</div>
+                      </div>
+                      <div className="text-center md:text-right flex-1">
+                           <div className={`text-2xl font-bold ${finalCategory.color} mb-2`}>{finalCategory.label}</div>
+                           <p className="text-gray-700 text-lg">{finalCategory.desc}</p>
+                      </div>
+                  </div>
+
+                  <div className="flex justify-center gap-4">
                         <Button onClick={() => window.location.reload()} variant="outline">Ulangi Latihan</Button>
                         <Button onClick={() => navigate('/latihan-kecermatan')}>Kembali ke Menu</Button>
                   </div>
@@ -329,7 +814,7 @@ export default function LatihanSoalKecermatanExam() {
             onClose={() => setShowConfirmFinish(false)}
             onConfirm={() => {
                 setShowConfirmFinish(false);
-                setFinished(true);
+                submitResult();
             }}
         />
 

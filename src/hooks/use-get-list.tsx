@@ -6,6 +6,7 @@ interface ListInfo {
   count: number;
   isLoading: boolean;
   hasMore: boolean;
+  metadata?: any;
 }
 
 interface GetListProps {
@@ -34,9 +35,10 @@ export default function useGetList({
     count: 0,
     isLoading: false,
     hasMore: true,
+    metadata: null,
   });
 
-  const { list, count, isLoading, hasMore } = listInfo;
+  const { list, count, isLoading, hasMore, metadata } = listInfo;
 
   const getList = async (_params: any) => {
     if (!url) return;
@@ -56,6 +58,7 @@ export default function useGetList({
         isLoading: false,
         count: result.pagination.total,
         hasMore: result.list.length === _params.take,
+        metadata: result.metadata || null,
       }));
       handleSuccess(result);
     } else {
@@ -109,6 +112,7 @@ export default function useGetList({
     list,
     count,
     isLoading,
+    metadata,
     params,
     setParams,
     goPage,
