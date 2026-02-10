@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Loading, Dialog } from 'tdesign-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useAuthStore } from '@/stores/auth-store';
 import toast from 'react-hot-toast';
 
@@ -643,6 +644,95 @@ export default function LatihanSoalKecermatanExam() {
                            <div className={`text-2xl font-bold ${finalCategory.color} mb-2`}>{finalCategory.label}</div>
                            <p className="text-gray-700 text-lg">{finalCategory.desc}</p>
                       </div>
+                  </div>
+
+                  {/* Performance Progression Chart */}
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+                      <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                          <span className="text-orange-600">📈</span> Grafik Performa Pengerjaan
+                      </h3>
+                      <div className="h-80">
+                          <ResponsiveContainer width="100%" height="100%">
+                              <LineChart
+                                  data={(() => {
+                                      // Generate chart data from answers - tracking per kiasan/column
+                                      return data.map((kiasan: any, idx: number) => {
+                                          const kiasanAnswers = Object.entries(answers)
+                                              .filter(([key]) => key.startsWith(`${idx}-`))
+                                              .map(([_, value]: any) => value);
+                                          
+                                          const correctInKiasan = kiasanAnswers.filter((ans: any) => 
+                                              kiasan.soalLatihanKecermatan?.some((soal: any) => soal.jawaban === ans)
+                                          ).length;
+                                          
+                                          const wrongInKiasan = kiasanAnswers.length - correctInKiasan;
+                                          const totalSoalInKiasan = kiasan.soalLatihanKecermatan?.length || 0;
+                                          
+                                          return {
+                                              name: `Kolom ${idx + 1}`,
+                                              'Soal Terjawab': kiasanAnswers.length,
+                                              'Soal Benar': correctInKiasan,
+                                              'Soal Salah': wrongInKiasan,
+                                              totalSoal: totalSoalInKiasan
+                                          };
+                                      });
+                                  })()}
+                                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                              >
+                                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                                  <XAxis 
+                                      dataKey="name" 
+                                      stroke="#666"
+                                      style={{ fontSize: '12px' }}
+                                      label={{ value: 'Jumlah Kolom', position: 'insideBottom', offset: -5, style: { fontSize: '12px', fill: '#666' } }}
+                                  />
+                                  <YAxis 
+                                      stroke="#666"
+                                      style={{ fontSize: '12px' }}
+                                      label={{ value: 'Jumlah Soal', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#666' } }}
+                                  />
+                                  <Tooltip 
+                                      contentStyle={{ 
+                                          backgroundColor: 'white', 
+                                          border: '1px solid #ccc', 
+                                          borderRadius: '8px',
+                                          fontSize: '12px'
+                                      }}
+                                  />
+                                  <Legend 
+                                      wrapperStyle={{ fontSize: '12px' }}
+                                      iconType="line"
+                                  />
+                                  <Line 
+                                      type="monotone" 
+                                      dataKey="Soal Terjawab" 
+                                      stroke="#3B82F6" 
+                                      strokeWidth={2.5}
+                                      dot={{ fill: '#3B82F6', r: 4 }}
+                                      activeDot={{ r: 6 }}
+                                  />
+                                  <Line 
+                                      type="monotone" 
+                                      dataKey="Soal Benar" 
+                                      stroke="#10B981" 
+                                      strokeWidth={2.5}
+                                      dot={{ fill: '#10B981', r: 4 }}
+                                      activeDot={{ r: 6 }}
+                                  />
+                                  <Line 
+                                      type="monotone" 
+                                      dataKey="Soal Salah" 
+                                      stroke="#EF4444" 
+                                      strokeWidth={2.5}
+                                      dot={{ fill: '#EF4444', r: 4 }}
+                                      activeDot={{ r: 6 }}
+                                  />
+                              </LineChart>
+                          </ResponsiveContainer>
+                      </div>
+                      <p className="text-xs text-gray-500 italic mt-4 text-center">
+                          * Grafik menunjukkan perbandingan soal terjawab, benar, dan salah per kolom
+                      </p>
                   </div>
 
                   <div className="flex justify-center gap-4">
