@@ -5,9 +5,11 @@ import useGetList from '@/hooks/use-get-list';
 import moment from 'moment';
 import { Button } from 'tdesign-react';
 import { IconEye } from '@tabler/icons-react';
+import { useAuthStore } from '@/stores/auth-store';
 
 export default function RiwayatLatihanKecermatan() {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
 
   const getData = useGetList({
     // Using generic get endpoint. It might need adjustment if backend has specific user endpoint
@@ -17,6 +19,7 @@ export default function RiwayatLatihanKecermatan() {
       take: 10,
       sortBy: 'createdAt',
       descending: true,
+      userId: user?.id
     },
   });
 
