@@ -94,7 +94,7 @@ export default function UserIndex() {
       width: 100,
       align: AlignType.Center,
       cell: ({ row }: any) =>
-        `${row.durasi ? `${row.durasi} Bulan` : 'Seumur Hidup'}`,
+        `${row.durasi ? `${row.durasi} Hari` : 'Seumur Hidup'}`,
     },
     {
       title: 'Pembeli',

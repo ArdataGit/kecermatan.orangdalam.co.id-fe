@@ -110,7 +110,7 @@ export default function ManagePaketPembelian({
           title="Durasi"
           name="durasi"
           type="number"
-          endAdornment="Bulan"
+          endAdornment="Hari"
           min={0}
           validation={{
             required: 'Durasi tidak boleh kosong',
