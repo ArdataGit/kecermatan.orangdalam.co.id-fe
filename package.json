@@ -13,6 +13,7 @@
     "@ckeditor/ckeditor5-build-classic": "^41.4.1",
     "@ckeditor/ckeditor5-react": "^6.3.0",
     "@isaul32/ckeditor5-math": "^41.3.1",
+    "@react-oauth/google": "^0.13.4",
     "@tabler/icons-react": "^2.45.0",
     "axios": "^1.6.8",
     "ckeditor-vendor": "file:src/vendor/ckeditor",

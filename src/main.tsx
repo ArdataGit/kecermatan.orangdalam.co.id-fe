@@ -4,6 +4,7 @@ import merge from 'lodash/merge';
 
 import { BrowserRouter } from 'react-router-dom';
 import enConfig from 'tdesign-react/es/locale/en_US';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import { ConfigProvider } from 'tdesign-react';
 import { Toaster } from 'react-hot-toast';
@@ -19,13 +20,19 @@ const globalConfig = merge(enConfig, {
     loadingText: 'Memuat...',
   },
 });
+
+// Get Google Client ID from environment variable
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ConfigProvider globalConfig={globalConfig}>
-      <Toaster />
-      <BrowserRouter>
-        <RoutesList />
-      </BrowserRouter>
-    </ConfigProvider>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <ConfigProvider globalConfig={globalConfig}>
+        <Toaster />
+        <BrowserRouter>
+          <RoutesList />
+        </BrowserRouter>
+      </ConfigProvider>
+    </GoogleOAuthProvider>
   </React.StrictMode>
 );
