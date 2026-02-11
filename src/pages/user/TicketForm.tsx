@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getData } from '@/utils/axios';
 import { postData } from '@/utils/axios';
 
 interface FormData {
@@ -71,8 +70,8 @@ const TicketForm: React.FC<TicketFormProps> = ({ closeModal }) => {
 
     const response = await postData('admin/ticket', payload);
 
-    if (response.error) {
-      setError(response.msg || 'Failed to create ticket. Please try again.');
+    if ('error' in response) {
+      setError(response.message || 'Failed to create ticket. Please try again.');
       setIsLoading(false);
       return;
     }
@@ -169,14 +168,14 @@ const TicketForm: React.FC<TicketFormProps> = ({ closeModal }) => {
           <button
             type="button"
             onClick={closeModal}
-            className="py-2 px-4 border border-indigo-900 text-indigo-900 rounded-md hover:bg-indigo-900 hover:text-white transition-all"
+            className="py-2 px-4 border border-[#F97316] text-[#F97316] rounded-md hover:bg-[#F97316] hover:text-white transition-all"
             disabled={isLoading}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className={`py-2 px-4 bg-indigo-900 text-white rounded-md hover:bg-indigo-800 transition-all ${
+            className={`py-2 px-4 bg-[#F97316] text-white rounded-md hover:bg-[#EA580C] transition-all ${
               isLoading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
             disabled={isLoading}

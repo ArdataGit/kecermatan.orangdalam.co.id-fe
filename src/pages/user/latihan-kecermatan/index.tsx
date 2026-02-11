@@ -77,21 +77,48 @@ export default function LatihanKecermatan() {
        {/* Breadcrumb would go here if needed, but mockup shows clean header */}
       
       {/* Header Filters */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-           <label className="block text-sm font-semibold text-gray-700 mb-2">Pilih Waktu</label>
-           <Select 
-             value={metronom} 
-             onChange={(val) => setMetronom(val as string)}
-             options={[
-               { label: 'Durasi 1 Menit', value: '60' },
-               { label: 'Durasi 5 Menit', value: '300' },
-               { label: 'Durasi 10 Menit', value: '600' },
-               { label: 'Durasi 30 Menit', value: '1800' },
-               { label: 'Durasi 60 Menit', value: '3600' }
-             ]}
-             className="w-full"
-           />
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Pilih Waktu</label>
+            <style>{`
+              .select-orange .t-input {
+                border: 1px solid #F97316 !important;
+                color: #F97316 !important;
+                transition: all 0.2s linear;
+              }
+              .select-orange .t-input:hover, 
+              .select-orange .t-input--focused,
+              .select-orange.t-select-input--focused .t-input {
+                border-color: #F97316 !important;
+                box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important;
+              }
+              .select-orange .t-input__inner {
+                color: #F97316 !important;
+                font-weight: 500;
+              }
+              .select-orange .t-fake-arrow {
+                color: #F97316 !important;
+              }
+            `}</style>
+            <Select 
+              value={metronom} 
+              onChange={(val) => setMetronom(val as string)}
+              options={[
+                { label: 'Durasi 1 Menit', value: '60' },
+                { label: 'Durasi 5 Menit', value: '300' },
+                { label: 'Durasi 10 Menit', value: '600' },
+                { label: 'Durasi 30 Menit', value: '1800' },
+                { label: 'Durasi 60 Menit', value: '3600' }
+              ]}
+              className="w-full md:w-[300px] select-orange"
+            />
+          </div>
+          <div className="flex justify-end">
+            <Button variant="outline" theme="warning" onClick={() => navigate('/latihan-kecermatan/riwayat')} icon={<IconHistory />}>
+              Riwayat
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -159,9 +186,6 @@ export default function LatihanKecermatan() {
          <Button variant="outline" theme="warning" onClick={handleReset} icon={<IconRotateClockwise />}>
             Reset
          </Button>
-         <Button variant="outline" theme="warning" onClick={() => navigate('/latihan-kecermatan/riwayat')} icon={<IconHistory />}>
-            Riwayat
-         </Button>
          <Button variant="outline" theme="warning" onClick={() => setShowAutoModal(true)} icon={<IconRobot />}>
             Soal otomatis
          </Button>
@@ -174,7 +198,6 @@ export default function LatihanKecermatan() {
             icon={<IconPlayerPlay />}
             loading={loading}
             onClick={async () => {
-              // 1. Validate all filled
               const notFilled = soalList.some(s => !s.filled);
               if (notFilled) {
                 toast.error('Mohon lengkapi semua 10 soal terlebih dahulu');
@@ -183,7 +206,6 @@ export default function LatihanKecermatan() {
 
               setLoading(true);
               try {
-                // 2. Create Category
                 const currentDate = new Date();
                 const title = `Latihan ${currentDate.toLocaleDateString('id-ID')} ${currentDate.toLocaleTimeString('id-ID')}`;
                 
@@ -196,15 +218,12 @@ export default function LatihanKecermatan() {
                   throw new Error(catRes.message);
                 }
                 
-                // response structure { data: { id: ... } } based on backend controller
-                // catRes is AxiosResponse, so catRes.data is the body
                 const categoryId = catRes.data?.data?.id; 
 
                 if (!categoryId) {
                   throw new Error('Gagal membuat kategori latihan');
                 }
 
-                // 3. Create Kiasan (Loop)
                 const promises = soalList.map(soal => {
                    return postData('latihan-kiasan/insert', {
                       kategoriLatihanKecermatanId: categoryId,
@@ -214,10 +233,7 @@ export default function LatihanKecermatan() {
                 });
 
                 await Promise.all(promises);
-
                 toast.success('Latihan berhasil dibuat!');
-                
-                // 4. Redirect
                 navigate(`/latihan-soal-kecermatan/${categoryId}`);
 
               } catch (err) {

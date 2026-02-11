@@ -17,6 +17,13 @@ const menuList = [
         title: 'Home',
         link: '/',
       },
+
+      {
+        icon: <IconBuildingStore />,
+        title: 'COBA TES KECERMATAN, GRATIS!',
+        link: '/latihan-kecermatan',
+        count: 'latihan-kecermatan',
+      },
       // {
       //   icon: <IconEye />,
       //   title: 'Soal Kecermatan',
@@ -63,12 +70,7 @@ const menuList = [
         //count: 'event',
       },
 
-      {
-        icon: <IconBuildingStore />,
-        title: 'Latihan Kecermatan',
-        link: '/latihan-kecermatan',
-        count: 'latihan-kecermatan',
-      },
+      
 
     ],
   },

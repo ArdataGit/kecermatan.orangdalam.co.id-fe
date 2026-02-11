@@ -229,10 +229,10 @@ export default function App({ children }: LayoutProps) {
                   <div className="relative font-[sans-serif] w-max mx-auto group group-hover:opacity-100 hidden md:block">
                     <button
                       type="button"
-                      className="w-10 h-10 border border-primary flex items-center justify-center group rounded-full text-sm font-semibold bg-white dark:bg-gray-800 group-hover:bg-indigo-800 dark:group-hover:bg-indigo-600 text-indigo-800 dark:text-indigo-300 group-hover:text-white"
+                      className="w-10 h-10 border border-[#F97316] flex items-center justify-center group rounded-full text-sm font-semibold bg-white dark:bg-gray-800 group-hover:bg-[#F97316] dark:group-hover:bg-[#F97316] text-[#F97316] dark:text-[#F97316] group-hover:text-white"
                     >
                       {data?.notifikasi?.filter((e: any) => !e?.isRead).length ? (
-                        <div className="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-primary dark:bg-indigo-500 group-hover:bg-white group-hover:text-primary dark:group-hover:text-indigo-300 group-hover:border group-hover:border-primary dark:group-hover:border-indigo-300 rounded-full -top-1 -end-0">
+                        <div className="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-[#F97316] dark:bg-[#F97316] group-hover:bg-white group-hover:text-[#F97316] group-hover:border group-hover:border-[#F97316] rounded-full -top-1 -end-0">
                           {data.notifikasi.filter((e: any) => !e?.isRead).length}
                         </div>
                       ) : null}

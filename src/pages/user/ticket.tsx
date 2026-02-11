@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getData } from '@/utils/axios';
 import TicketForm from './TicketForm';
 
@@ -27,19 +26,15 @@ const TicketList: React.FC = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const navigate = useNavigate();
 
   const fetchTickets = async () => {
   try {
     const auth = localStorage.getItem("authentication");
-    console.log("Auth Data:", auth);
     let userId = null;
 
     if (auth) {
       const parsed = JSON.parse(auth);
-      console.log("Parsed Auth:", parsed);
       userId = parsed.state?.user?.id;
-      console.log("User ID:", userId);
     }
 
     if (!userId) {
@@ -50,28 +45,19 @@ const TicketList: React.FC = () => {
     const res = await getData(
       `admin/ticket/user?userId=${userId}&sortBy=updatedAt&descending=true&_=${Date.now()}`
     );
-    console.log("Raw API Response:", res);
 
-    // Ubah pengecekan dan akses data
     if (!res || !res.list) {
       setError(res.msg || "Failed to fetch tickets.");
       return;
     }
 
-    console.log("Tickets Data:", res.list);
     setTickets(res.list);
-  } catch (err) {
+  } catch (err: any) {
     console.error("Fetch tickets error:", err.message, err.stack);
     setError("An error occurred while fetching tickets.");
   }
 };
 
-useEffect(() => {
-  console.log("Updated Tickets:", tickets);
-}, [tickets]);
-
-
-  // hanya sekali jalan saat mount
   useEffect(() => {
     fetchTickets();
   }, []);
@@ -79,7 +65,7 @@ useEffect(() => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    fetchTickets(); // refresh lagi setelah modal close
+    fetchTickets();
   };
 
   return (
@@ -88,7 +74,7 @@ useEffect(() => {
         <h1 className="text-2xl font-bold text-indigo-950">My Tickets</h1>
         <button
           onClick={openModal}
-          className="py-2 px-4 bg-indigo-900 text-white rounded-md hover:bg-indigo-800 transition-all"
+          className="py-2 px-4 bg-[#F97316] text-white rounded-md hover:bg-[#EA580C] transition-all"
         >
           Create New Ticket
         </button>

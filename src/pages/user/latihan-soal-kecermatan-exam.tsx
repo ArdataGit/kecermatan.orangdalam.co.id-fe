@@ -3,7 +3,7 @@ import { getData, postData } from '@/utils/axios';
 import { IconClock } from '@tabler/icons-react';
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { Button, Loading, Dialog } from 'tdesign-react';
+import { Button, Loading, Dialog, Select, Switch } from 'tdesign-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useAuthStore } from '@/stores/auth-store';
@@ -18,9 +18,11 @@ export default function LatihanSoalKecermatanExam() {
   const [loading, setLoading] = useState(false);
   const [currentKiasanIndex, setCurrentKiasanIndex] = useState(0);
   const [currentSoalIndex, setCurrentSoalIndex] = useState(0);
+  const [reviewColumnIndex, setReviewColumnIndex] = useState(0);
   const [answers, setAnswers] = useState<any>({});
   const [timer, setTimer] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [showPembahasan, setShowPembahasan] = useState(false);
   const hasSubmitted = useRef(false);
   const [showConfirmFinish, setShowConfirmFinish] = useState(false);
 
@@ -53,10 +55,7 @@ export default function LatihanSoalKecermatanExam() {
   }, [timer, finished, data.length, currentKiasanIndex]);
 
   useEffect(() => {
-    // If finished, we could auto-submit or just show results locally since this is "Latihan Mandiri"
-    // For now, let's just show local results.
     if (finished && !hasSubmitted.current) {
-         // Maybe save later?
          hasSubmitted.current = true; 
     }
   }, [finished]);
@@ -65,14 +64,6 @@ export default function LatihanSoalKecermatanExam() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch LatihanKiasan by Category ID
-      // NOTE: backend controller 'get' accepts filters via query params usually parse to JSON
-      // But based on previous update, we can pass filters.
-      // We need to fetch all Kiasan for this category.
-      // Assuming 'get' supports standard filter or we use custom find logic.
-      // Let's rely on standard filter logic provided by 'get'.
-      // URL: /api/latihan-kiasan/get?filters={"kategoriLatihanKecermatanId":ID}&includeSoal=true
-      
       const filter = JSON.stringify({ kategoriLatihanKecermatanId: Number(id) });
       const res = await getData(`latihan-kiasan/get?filters=${filter}&includeSoal=true`);
       
@@ -96,7 +87,6 @@ export default function LatihanSoalKecermatanExam() {
       setCurrentKiasanIndex(index);
       setCurrentSoalIndex(0);
       if (listData[index]) {
-          // Set timer per Kiasan 
           setTimer(listData[index].waktu || 60); 
       }
   }
@@ -105,9 +95,6 @@ export default function LatihanSoalKecermatanExam() {
       const currentKiasan = data[currentKiasanIndex];
       const currentSoal = currentKiasan.soalLatihanKecermatan[currentSoalIndex];
       const isCorrect = val === currentSoal.jawaban;
-
-      // We don't necessarily save every click to DB for "Latihan" unless requested.
-      // Keeping it local for speed for now.
 
       setAnswers((prev: any) => ({ 
           ...prev, 
@@ -119,7 +106,6 @@ export default function LatihanSoalKecermatanExam() {
           } 
       }));
 
-      // Non-blocking save to history
       postData('latihan-kiasan/history', {
           kategoriLatihanKecermatanId: Number(id),
           latihanKiasanId: currentKiasan.id,
@@ -148,12 +134,10 @@ export default function LatihanSoalKecermatanExam() {
       let sumQuestionsPerColumn = 0;
       const correctCounts: number[] = [];
 
-      // Iterate over each column (Kiasan) to calculate per-column stats
       data.forEach((kiasan, kiasanIndex) => {
           let correctInColumn = 0;
           const questionsInColumn = kiasan.soalLatihanKecermatan?.length || 0;
 
-          // Check answers for this column
           for (let i = 0; i < questionsInColumn; i++) {
               const key = `${kiasanIndex}-${i}`;
               if (answers[key]?.isCorrect) {
@@ -168,292 +152,81 @@ export default function LatihanSoalKecermatanExam() {
           totalQuestionsAll += questionsInColumn;
       });
 
-      // PANKER (Kecepatan Kerja)
-      // Raw Score: Average correct answers per column (Mean)
       const rawScore = totalColumns > 0 ? (sumCorrectPerColumn / totalColumns) : 0;
-      
-      // Average Total Questions per column
       const avgQuestionsPerColumn = totalColumns > 0 ? (sumQuestionsPerColumn / totalColumns) : 1;
-
-      // Converted Score: Percentage
       let convertedScore = (rawScore / avgQuestionsPerColumn) * 100;
       convertedScore = Math.min(Math.max(convertedScore, 0), 100);
 
-      // PANKER Category
       const getPankerCategory = (score: number) => {
-          if (score >= 80) return {
-              label: "Tinggi",
-              color: "text-green-600",
-              bg: "bg-green-50",
-              border: "border-green-200",
-              desc: "Kecepatan kerja Anda tinggi. Ritme kerja cepat dan alur pengerjaan lancar sehingga output dapat dicapai dengan baik.",
-              saran: "Pertahankan tempo dan jaga konsistensi dari awal hingga akhir. Pastikan kecepatan tidak menurunkan ketelitian."
-          };
-          if (score >= 60) return {
-              label: "Cukup Tinggi",
-              color: "text-blue-600",
-              bg: "bg-blue-50",
-              border: "border-blue-200",
-              desc: "Kecepatan kerja Anda sudah baik. Namun masih ada bagian yang melambat sehingga hasil belum maksimal.",
-              saran: "Kurangi jeda-jeda kecil dan perkuat ritme yang stabil. Tingkatkan target secara bertahap agar tempo naik tanpa mengganggu kontrol."
-          };
-          if (score >= 40) return {
-              label: "Sedang",
-              color: "text-yellow-600",
-              bg: "bg-yellow-50",
-              border: "border-yellow-200",
-              desc: "Kecepatan kerja Anda berada pada tingkat cukup. Anda mampu menyelesaikan tugas, tetapi tempo masih mudah turun saat ragu atau ketika ritme tidak stabil.",
-              saran: "Bangun alur kerja yang konsisten dan hindari berhenti untuk memeriksa di tengah pengerjaan. Setelah ritme stabil, tingkatkan output sedikit demi sedikit."
-          };
-          if (score >= 20) return {
-              label: "Rendah",
-              color: "text-orange-600",
-              bg: "bg-orange-50",
-              border: "border-orange-200",
-              desc: "Kecepatan kerja Anda masih rendah. Tempo cenderung lambat sehingga hasil mudah tertinggal.",
-              saran: "Fokus pada kelancaran dan ritme. Kurangi kebiasaan berhenti, jaga tempo yang sama, dan lakukan latihan rutin dengan target peningkatan kecil namun konsisten."
-          };
-          return {
-              label: "Sangat Rendah",
-              color: "text-red-600",
-              bg: "bg-red-50",
-              border: "border-red-200",
-              desc: "Kecepatan kerja Anda masih di bawah harapan. Terdapat jeda singkat yang sering berulang sehingga menghambat tempo.",
-              saran: "Latih transisi yang lebih cepat dan kurangi jeda. Tetapkan target minimal yang realistis, stabilkan ritme terlebih dahulu, lalu tingkatkan secara bertahap."
-          };
+          if (score >= 80) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Kecepatan kerja Anda tinggi. Ritme kerja cepat dan alur pengerjaan lancar sehingga output dapat dicapai dengan baik.", saran: "Pertahankan tempo dan jaga konsistensi dari awal hingga akhir. Pastikan kecepatan tidak menurunkan ketelitian." };
+          if (score >= 60) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Kecepatan kerja Anda sudah baik. Namun masih ada bagian yang melambat sehingga hasil belum maksimal.", saran: "Kurangi jeda-jeda kecil dan perkuat ritme yang stabil. Tingkatkan target secara bertahap agar tempo naik tanpa mengganggu kontrol." };
+          if (score >= 40) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Kecepatan kerja Anda berada pada tingkat cukup. Anda mampu menyelesaikan tugas, tetapi tempo masih mudah turun saat ragu atau ketika ritme tidak stabil.", saran: "Bangun alur kerja yang konsisten dan hindari berhenti untuk memeriksa di tengah pengerjaan. Setelah ritme stabil, tingkatkan output sedikit demi sedikit." };
+          if (score >= 20) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Kecepatan kerja Anda masih rendah. Tempo cenderung lambat sehingga hasil mudah tertinggal.", saran: "Fokus pada kelancaran dan ritme. Kurangi kebiasaan berhenti, jaga tempo yang sama, dan lakukan latihan rutin dengan target peningkatan kecil namun konsisten." };
+          return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Kecepatan kerja Anda masih di bawah harapan. Terdapat jeda singkat yang sering berulang sehingga menghambat tempo.", saran: "Latih transisi yang lebih cepat dan kurangi jeda. Tetapkan target minimal yang realistis, stabilkan ritme terlebih dahulu, lalu tingkatkan secara bertahap." };
       };
-
       const panker = getPankerCategory(convertedScore);
 
-      // TIANKER (Ketelitian Kerja)
       const totalAnswered = Object.keys(answers).length;
       const totalWrong = totalAnswered - totalCorrectAll;
       const rawScoreTianker = totalAnswered > 0 ? (totalWrong / totalAnswered) : 0;
       const convertedScoreTianker = Math.min(100, Math.max(0, (1 - rawScoreTianker) * 100));
 
       const getTiankerCategory = (score: number) => {
-           if (score >= 80) return {
-              label: "Tinggi",
-              color: "text-green-600",
-              bg: "bg-green-50",
-              border: "border-green-200",
-              desc: "Ketelitian kerja Anda tinggi. Kesalahan sangat sedikit, menunjukkan fokus dan kontrol yang baik saat mengerjakan.",
-              saran: "Pertahankan cara kerja yang rapi dan konsisten. Saat meningkatkan kecepatan, pastikan pola kerja tetap sama agar ketelitian tidak turun."
-          };
-          if (score >= 60) return {
-              label: "Cukup Tinggi",
-              color: "text-blue-600",
-              bg: "bg-blue-50",
-              border: "border-blue-200",
-              desc: "Ketelitian kerja Anda sudah baik. Masih ada beberapa kesalahan, tetapi secara umum akurasi terjaga.",
-              saran: "Identifikasi jenis kesalahan yang paling sering dilakukan. Kurangi sumber kesalahan itu dengan menjaga ritme dan fokus, tanpa terlalu lama berhenti."
-          };
-          if (score >= 40) return {
-              label: "Sedang",
-              color: "text-yellow-600",
-              bg: "bg-yellow-50",
-              border: "border-yellow-200",
-              desc: "Ketelitian kerja Anda cukup, namun kesalahan masih muncul cukup sering sehingga akurasi belum stabil.",
-              saran: "Prioritaskan ketelitian dulu sebelum menaikkan tempo. Gunakan alur kerja yang konsisten dan hindari tergesa-gesa pada bagian yang sering menimbulkan salah."
-          };
-          if (score >= 20) return {
-              label: "Rendah",
-              color: "text-orange-600",
-              bg: "bg-orange-50",
-              border: "border-orange-200",
-              desc: "Ketelitian kerja Anda rendah. Kesalahan relatif banyak, menandakan fokus mudah terpecah atau kontrol pengerjaan belum kuat.",
-              saran: "Turunkan tempo sedikit agar lebih terkontrol, lalu latih akurasi. Fokus pada satu pola kerja yang sama dan perbaiki penyebab kesalahan utama secara bertahap."
-          };
-          return {
-              label: "Sangat Rendah",
-              color: "text-red-600",
-              bg: "bg-red-50",
-              border: "border-red-200",
-              desc: "Ketelitian kerja Anda masih kurang. Kesalahan terjadi berulang sehingga hasil belum dapat diandalkan.",
-              saran: "Perkuat kebiasaan kerja yang rapi, seperti baca dengan jelas, hitung singkat, lalu jawab. Kurangi kebiasaan menebak atau terburu-buru. Setelah kesalahan turun, baru naikkan kecepatan secara bertahap."
-          };
+           if (score >= 80) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Ketelitian kerja Anda tinggi. Kesalahan sangat sedikit, menunjukkan fokus dan kontrol yang baik saat mengerjakan.", saran: "Pertahankan cara kerja yang rapi dan konsisten. Saat meningkatkan kecepatan, pastikan pola kerja tetap sama agar ketelitian tidak turun." };
+           if (score >= 60) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Ketelitian kerja Anda sudah baik. Masih ada beberapa kesalahan, tetapi secara umum akurasi terjaga.", saran: "Identifikasi jenis kesalahan yang paling sering dilakukan. Kurangi sumber kesalahan itu dengan menjaga ritme dan fokus, tanpa terlalu lama berhenti." };
+           if (score >= 40) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Ketelitian kerja Anda cukup, namun kesalahan masih muncul cukup sering sehingga akurasi belum stabil.", saran: "Prioritaskan ketelitian dulu sebelum menaikkan tempo. Gunakan alur kerja yang konsisten dan hindari tergesa-gesa pada bagian yang sering menimbulkan salah." };
+           if (score >= 20) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Ketelitian kerja Anda rendah. Kesalahan relatif banyak, menandakan fokus mudah terpecah atau kontrol pengerjaan belum kuat.", saran: "Turunkan tempo sedikit agar lebih terkontrol, lalu latih akurasi. Fokus pada satu pola kerja yang sama dan perbaiki penyebab kesalahan utama secara bertahap." };
+           return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Ketelitian kerja Anda masih kurang. Kesalahan terjadi berulang sehingga hasil belum dapat diandalkan.", saran: "Perkuat kebiasaan kerja yang rapi, seperti baca dengan jelas, hitung singkat, lalu jawab. Kurangi kebiasaan menebak atau terburu-buru. Setelah kesalahan turun, baru naikkan kecepatan secara bertahap." };
       };
-
       const tianker = getTiankerCategory(convertedScoreTianker);
 
-      // JANKER (Keajegan Kerja) -- STDEV
-      // Calculate Variance (Sample Variance: divide by N-1, if N > 1)
       let variance = 0;
       if (totalColumns > 1) {
           const sumSqDiff = correctCounts.reduce((acc, val) => acc + Math.pow(val - rawScore, 2), 0);
           variance = sumSqDiff / (totalColumns - 1);
       }
       const rawScoreJanker = Math.sqrt(variance);
-      
-      // Converted Score JANKER
-      // Formula: MIN(100; MAX(0; (1 - (nilai mentah / 26.3523138347)) * 100))
       const jankerDenominator = 26.3523138347;
       let convertedScoreJanker = (1 - (rawScoreJanker / jankerDenominator)) * 100;
       convertedScoreJanker = Math.min(100, Math.max(0, convertedScoreJanker));
 
       const getJankerCategory = (score: number) => {
-          if (score >= 80) return {
-              label: "Tinggi",
-              color: "text-green-600",
-              bg: "bg-green-50",
-              border: "border-green-200",
-              desc: "Kestabilan kerja Anda tinggi. Hasil antar bagian cenderung merata dan tidak banyak naik-turun, menunjukkan ritme dan kontrol kerja yang baik.",
-              saran: "Pertahankan ritme yang konsisten. Saat meningkatkan kecepatan, pastikan kenaikan dilakukan bertahap agar stabilitas tetap terjaga."
-          };
-          if (score >= 60) return {
-              label: "Cukup Tinggi",
-              color: "text-blue-600",
-              bg: "bg-blue-50",
-              border: "border-blue-200",
-              desc: "Kestabilan kerja Anda sudah baik. Ada sedikit fluktuasi, tetapi secara umum ritme masih terkontrol.",
-              saran: "Perkecil fluktuasi dengan menjaga tempo yang sama dan mengurangi jeda saat transisi. Fokus pada konsistensi, bukan mengejar lonjakan output di satu bagian."
-          };
-          if (score >= 40) return {
-              label: "Sedang",
-              color: "text-yellow-600",
-              bg: "bg-yellow-50",
-              border: "border-yellow-200",
-              desc: "Kestabilan kerja Anda cukup. Performa masih naik-turun, sehingga hasil belum sepenuhnya konsisten.",
-              saran: "Bangun ritme yang lebih stabil. Jaga tempo yang sama di setiap bagian, hindari perubahan kecepatan yang terlalu drastis, dan fokus pada alur kerja yang terus mengalir."
-          };
-          if (score >= 20) return {
-              label: "Rendah",
-              color: "text-orange-600",
-              bg: "bg-orange-50",
-              border: "border-orange-200",
-              desc: "Kestabilan kerja Anda rendah. Fluktuasi hasil cukup besar, menandakan ritme mudah berubah dan fokus belum stabil.",
-              saran: "Prioritaskan konsistensi tempo. Kurangi kebiasaan berhenti atau mempercepat secara tiba-tiba. Latih menjaga ritme konstan dan evaluasi bagian yang sering turun."
-          };
-          return {
-              label: "Sangat Rendah",
-              color: "text-red-600",
-              bg: "bg-red-50",
-              border: "border-red-200",
-              desc: "Kestabilan kerja Anda masih kurang. Hasil sering berubah-ubah sehingga kontrol ritme belum terbentuk.",
-              saran: "Latih pola kerja yang sama dari awal sampai akhir. Pertahankan tempo yang realistis dan stabil, lalu tingkatkan secara bertahap setelah fluktuasi berkurang."
-          };
+          if (score >= 80) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Kestabilan kerja Anda tinggi. Hasil antar bagian cenderung merata and tidak banyak naik-turun, menunjukkan ritme and kontrol kerja yang baik.", saran: "Pertahankan ritme yang konsisten. Saat meningkatkan kecepatan, pastikan kenaikan dilakukan bertahap agar stabilitas tetap terjaga." };
+          if (score >= 60) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Kestabilan kerja Anda sudah baik. Ada sedikit fluktuasi, tetapi secara umum ritme masih terkontrol.", saran: "Perkecil fluktuasi dengan menjaga tempo yang sama and mengurangi jeda saat transisi. Fokus pada konsistensi, bukan mengejar lonjakan output di satu bagian." };
+          if (score >= 40) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Kestabilan kerja Anda cukup. Performa masih naik-turun, sehingga hasil belum sepenuhnya konsisten.", saran: "Bangun ritme yang lebih stabil. Jaga tempo yang sama di setiap bagian, hindari perubahan kecepatan yang terlalu drastis, and fokus pada alur kerja yang terus mengalir." };
+          if (score >= 20) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Kestabilan kerja Anda rendah. Fluktuasi hasil cukup besar, menandakan ritme mudah berubah and fokus belum stabil.", saran: "Prioritaskan konsistensi tempo. Kurangi kebiasaan berhenti atau mempercepat secara tiba-tiba. Latih menjaga ritme konstan and evaluasi bagian yang sering turun." };
+          return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Kestabilan kerja Anda masih kurang. Hasil sering berubah-ubah sehingga kontrol ritme belum terbentuk.", saran: "Latih pola kerja yang sama dari awal sampai akhir. Pertahankan tempo yang realistis and stabil, lalu tingkatkan secara bertahap setelah fluktuasi berkurang." };
       };
-
       const janker = getJankerCategory(convertedScoreJanker);
 
-      // HANKER (Ketahanan Kerja)
       let rawScoreHanker = 0;
       if (totalColumns >= 3) {
           const avgFirst3 = (correctCounts[0] + correctCounts[1] + correctCounts[2]) / 3;
           const avgLast3 = (correctCounts[totalColumns - 1] + correctCounts[totalColumns - 2] + correctCounts[totalColumns - 3]) / 3;
           rawScoreHanker = avgLast3 - avgFirst3;
       }
-      // Converted Score: MIN(100; MAX(0; skor mentah + 50))
       let convertedScoreHanker = Math.min(100, Math.max(0, rawScoreHanker + 50));
 
       const getHankerCategory = (score: number) => {
-           if (score >= 80) return {
-              label: "Tinggi",
-              color: "text-green-600",
-              bg: "bg-green-50",
-              border: "border-green-200",
-              desc: "Ketahanan kerja Anda tinggi. Anda mampu menjaga performa sampai akhir tanpa penurunan berarti, menunjukkan daya tahan fokus yang baik.",
-              saran: "Pertahankan pola kerja yang stabil. Pastikan ritme tetap sama dan hindari memaksakan tempo terlalu tinggi di awal agar tidak turun di akhir."
-          };
-          if (score >= 60) return {
-              label: "Cukup Tinggi",
-              color: "text-blue-600",
-              bg: "bg-blue-50",
-              border: "border-blue-200",
-              desc: "Ketahanan kerja Anda cukup baik. Performa umumnya terjaga, meskipun ada sedikit penurunan pada bagian tertentu.",
-              saran: "Perkuat daya tahan dengan menjaga ritme yang konsisten dan mengurangi jeda kecil saat mulai lelah. Tingkatkan durasi latihan secara bertahap agar fokus lebih tahan."
-          };
-          if (score >= 40) return {
-              label: "Sedang",
-              color: "text-yellow-600",
-              bg: "bg-yellow-50",
-              border: "border-yellow-200",
-              desc: "Ketahanan kerja Anda berada pada tingkat cukup. Performa masih dapat dipertahankan, tetapi mulai terlihat penurunan ketika pekerjaan berlangsung lebih lama.",
-              saran: "Fokus pada menjaga tempo yang realistis sejak awal. Hindari terlalu cepat di awal lalu turun. Latih konsistensi ritme dan perbaiki kebiasaan yang membuat cepat lelah, seperti sering ragu atau berhenti."
-          };
-          if (score >= 20) return {
-              label: "Rendah",
-              color: "text-orange-600",
-              bg: "bg-orange-50",
-              border: "border-orange-200",
-              desc: "Ketahanan kerja Anda rendah. Penurunan performa terlihat jelas pada bagian akhir, menandakan fokus cepat menurun atau mudah lelah.",
-              saran: "Bangun ketahanan bertahap. Mulai dari tempo yang lebih terkontrol, jaga ritme stabil, dan lakukan latihan rutin agar daya tahan meningkat. Evaluasi bagian akhir untuk melihat penyebab turunnya performa."
-          };
-          return {
-              label: "Sangat Rendah",
-              color: "text-red-600",
-              bg: "bg-red-50",
-              border: "border-red-200",
-              desc: "Ketahanan kerja Anda masih kurang. Performa cenderung turun cukup cepat sehingga hasil akhir tidak stabil.",
-              saran: "Terapkan strategi menjaga tenaga, yakni ritme stabil, minim jeda yang tidak perlu, dan tidak memaksakan tempo tinggi di awal. Tingkatkan latihan secara bertahap sampai penurunan di akhir berkurang."
-          };
+           if (score >= 80) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Ketahanan kerja Anda tinggi. Anda mampu menjaga performa sampai akhir tanpa penurunan berarti, menunjukkan daya tahan fokus yang baik.", saran: "Pertahankan pola kerja yang stabil. Pastikan ritme tetap sama and hindari memaksakan tempo terlalu tinggi di awal agar tidak turun di akhir." };
+           if (score >= 60) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Ketahanan kerja Anda cukup baik. Performa umumnya terjaga, meskipun ada sedikit penurunan pada bagian tertentu.", saran: "Perkuat daya tahan dengan menjaga ritme yang konsisten and mengurangi jeda kecil saat mulai lelah. Tingkatkan durasi latihan secara bertahap agar fokus lebih tahan." };
+           if (score >= 40) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Ketahanan kerja Anda berada pada tingkat cukup. Performa masih dapat dipertahankan, tetapi mulai terlihat penurunan ketika pekerjaan berlangsung lebih lama.", saran: "Fokus pada menjaga tempo yang realistis sejak awal. Hindari terlalu cepat di awal lalu turun. Latih konsistensi ritme and perbaiki kebiasaan yang membuat cepat lelah, seperti sering ragu atau berhenti." };
+           if (score >= 20) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Ketahanan kerja Anda rendah. Penurunan performa terlihat jelas pada bagian akhir, menandakan fokus cepat menurun atau mudah lelah.", saran: "Bangun ketahanan bertahap. Mulai dari tempo yang lebih terkontrol, jaga ritme stabil, and lakukan latihan rutin agar daya tahan meningkat. Evaluasi bagian akhir untuk melihat penyebab turunnya performa." };
+           return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Ketahanan kerja Anda masih kurang. Performa cenderung turun cukup cepat sehingga hasil akhir tidak stabil.", saran: "Terapkan strategi menjaga tenaga, yakni ritme stabil, minim jeda yang tidak perlu, and tidak memaksakan tempo tinggi di awal. Tingkatkan latihan secara bertahap sampai penurunan di akhir berkurang." };
       };
-
       const hanker = getHankerCategory(convertedScoreHanker);
 
-      // NILAI AKHIR (Final Score)
-      // Formula: (PANKER * 35%) + (TIANKER * 35%) + (JANKER * 20%) + (HANKER * 10%)
       const finalScore = (convertedScore * 0.35) + (convertedScoreTianker * 0.35) + (convertedScoreJanker * 0.20) + (convertedScoreHanker * 0.10);
-
       const getFinalCategory = (score: number) => {
-          if (score >= 80) return {
-              label: "Tinggi",
-              color: "text-green-700",
-              bg: "bg-green-100",
-              border: "border-green-300",
-              desc: "Hasil akhir sangat kuat. Pertahankan konsistensi agar tetap stabil."
-          };
-          if (score >= 60) return {
-              label: "Cukup Tinggi",
-              color: "text-blue-700",
-              bg: "bg-blue-100",
-              border: "border-blue-300",
-              desc: "Hasil akhir sudah baik. Sedikit perbaikan pada bagian terlemah akan membuatnya lebih optimal."
-          };
-          if (score >= 40) return {
-              label: "Sedang",
-              color: "text-yellow-700",
-              bg: "bg-yellow-100",
-              border: "border-yellow-300",
-              desc: "Hasil akhir cukup. Dengan latihan terarah, performa bisa naik ke level baik."
-          };
-          if (score >= 20) return {
-              label: "Rendah",
-              color: "text-orange-700",
-              bg: "bg-orange-100",
-              border: "border-orange-300",
-              desc: "Hasil akhir masih rendah. Mulai dari perbaikan dasar dan tingkatkan bertahap. Hasil biasanya cepat terlihat."
-          };
-          return {
-              label: "Sangat Rendah",
-              color: "text-red-700",
-              bg: "bg-red-100",
-              border: "border-red-300",
-              desc: "Hasil akhir masih di bawah target. Fokus pada ritme dan konsistensi. Kenaikan akan lebih mudah jika dilakukan rutin."
-          };
+          if (score >= 80) return { label: "Tinggi", color: "text-green-700", bg: "bg-green-100", border: "border-green-300", desc: "Hasil akhir sangat kuat. Pertahankan konsistensi agar tetap stabil." };
+          if (score >= 60) return { label: "Cukup Tinggi", color: "text-blue-700", bg: "bg-blue-100", border: "border-blue-300", desc: "Hasil akhir sudah baik. Sedikit perbaikan pada bagian terlemah akan membuatnya lebih optimal." };
+          if (score >= 40) return { label: "Sedang", color: "text-yellow-700", bg: "bg-yellow-100", border: "border-yellow-300", desc: "Hasil akhir cukup. Dengan latihan terarah, performa bisa naik ke level baik." };
+          if (score >= 20) return { label: "Rendah", color: "text-orange-700", bg: "bg-orange-100", border: "border-orange-300", desc: "Hasil akhir masih rendah. Mulai dari perbaikan dasar and tingkatkan bertahap. Hasil biasanya cepat terlihat." };
+          return { label: "Sangat Rendah", color: "text-red-700", bg: "bg-red-100", border: "border-red-300", desc: "Hasil akhir masih di bawah target. Fokus pada ritme and konsistensi. Kenaikan akan lebih mudah jika dilakukan rutin." };
       };
-
       const finalCategory = getFinalCategory(finalScore);
 
-      return {
-          finalScore,
-          finalCategory,
-          panker,
-          tianker,
-          janker,
-          hanker,
-          rawScore,
-          convertedScore,
-          rawScoreTianker,
-          convertedScoreTianker,
-          rawScoreJanker,
-          convertedScoreJanker,
-          rawScoreHanker,
-          convertedScoreHanker,
-          totalQuestionsAll,
-          totalCorrectAll,
-          totalWrong
-      };
+      return { finalScore, finalCategory, panker, tianker, janker, hanker, rawScore, convertedScore, rawScoreTianker, convertedScoreTianker, rawScoreJanker, convertedScoreJanker, rawScoreHanker, convertedScoreHanker, totalQuestionsAll, totalCorrectAll, totalWrong };
   };
 
   const submitResult = () => {
@@ -497,39 +270,22 @@ export default function LatihanSoalKecermatanExam() {
       }
   };
 
-  if (loading) return <div className="p-8 flex justify-center"><Loading /></div>;
-  if (!data.length) return <div className="p-8 text-center text-gray-500">Data Soal tidak ditemukan.</div>;
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
 
   if (finished) {
       const stats = calculateStats();
-      const {
-          finalScore,
-          finalCategory,
-          panker,
-          tianker,
-          janker,
-          hanker,
-          rawScore,
-          convertedScore,
-          rawScoreTianker,
-          convertedScoreTianker,
-          rawScoreJanker,
-          convertedScoreJanker,
-          rawScoreHanker,
-          convertedScoreHanker
-      } = stats;
+      const { finalScore, finalCategory, panker, tianker, janker, hanker, rawScore, convertedScore, rawScoreTianker, convertedScoreTianker, rawScoreJanker, convertedScoreJanker, rawScoreHanker, convertedScoreHanker } = stats;
 
       return (
           <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-8 font-['Poppins']">
-              {/* Score Summary Card */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-6 text-center">
                   <h2 className="text-3xl font-bold mb-6 text-indigo-900">Hasil Latihan Kecermatan</h2>
-                  
-
-
-                  {/* STATS GRID */}
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
-                      {/* PANKER */}
                       <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">PANKER Mentah</p>
                           <div className="text-xl lg:text-2xl font-bold text-gray-800">{rawScore.toFixed(1)}</div>
@@ -538,7 +294,6 @@ export default function LatihanSoalKecermatanExam() {
                            <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">PANKER Konv</p>
                            <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScore.toFixed(0)}</div>
                       </div>
-                      {/* TIANKER */}
                       <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">TIANKER Mentah</p>
                           <div className="text-xl lg:text-2xl font-bold text-gray-800">{rawScoreTianker.toFixed(2)}</div>
@@ -547,7 +302,6 @@ export default function LatihanSoalKecermatanExam() {
                            <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">TIANKER Konv</p>
                            <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreTianker.toFixed(0)}</div>
                       </div>
-                      {/* JANKER */}
                       <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">JANKER Mentah</p>
                           <div className="text-xl lg:text-2xl font-bold text-gray-800">{rawScoreJanker.toFixed(2)}</div>
@@ -556,7 +310,6 @@ export default function LatihanSoalKecermatanExam() {
                            <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">JANKER Konv</p>
                            <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreJanker.toFixed(0)}</div>
                       </div>
-                      {/* HANKER */}
                       <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">HANKER Mentah</p>
                           <div className="text-xl lg:text-2xl font-bold text-gray-800">{rawScoreHanker.toFixed(1)}</div>
@@ -567,7 +320,6 @@ export default function LatihanSoalKecermatanExam() {
                       </div>
                   </div>
 
-                  {/* CATEGORY GRID */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                        <div className={`p-4 rounded-lg border ${panker.bg} ${panker.border} flex flex-col items-center justify-center`}>
                            <p className="text-xs text-gray-500 mb-1 font-bold uppercase">Kategori PANKER</p>
@@ -591,50 +343,37 @@ export default function LatihanSoalKecermatanExam() {
                       </div>
                   </div>
 
-                  {/* DETAILS */}
                   <div className="grid grid-cols-1 gap-4 mb-6 text-left">
-                      {/* PANKER Details */}
                       <div className={`p-5 rounded-lg border ${panker.bg} ${panker.border}`}>
                            <h3 className={`font-bold text-md mb-2 ${panker.color} flex items-center gap-2`}>
-                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">PANKER</span> 
-                                {panker.label}
+                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">PANKER</span> {panker.label}
                            </h3>
                            <p className="text-gray-700 text-sm mb-2">{panker.desc}</p>
                            <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {panker.saran}</p>
                       </div>
-
-                      {/* TIANKER Details */}
                       <div className={`p-5 rounded-lg border ${tianker.bg} ${tianker.border}`}>
                            <h3 className={`font-bold text-md mb-2 ${tianker.color} flex items-center gap-2`}>
-                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">TIANKER</span> 
-                                {tianker.label}
+                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">TIANKER</span> {tianker.label}
                            </h3>
                            <p className="text-gray-700 text-sm mb-2">{tianker.desc}</p>
                            <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {tianker.saran}</p>
                       </div>
-
-                      {/* JANKER Details */}
                       <div className={`p-5 rounded-lg border ${janker.bg} ${janker.border}`}>
                            <h3 className={`font-bold text-md mb-2 ${janker.color} flex items-center gap-2`}>
-                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">JANKER</span> 
-                                {janker.label}
+                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">JANKER</span> {janker.label}
                            </h3>
                            <p className="text-gray-700 text-sm mb-2">{janker.desc}</p>
                            <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {janker.saran}</p>
                       </div>
-
-                      {/* HANKER Details */}
                       <div className={`p-5 rounded-lg border ${hanker.bg} ${hanker.border}`}>
                            <h3 className={`font-bold text-md mb-2 ${hanker.color} flex items-center gap-2`}>
-                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">HANKER</span> 
-                                {hanker.label}
+                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">HANKER</span> {hanker.label}
                            </h3>
                            <p className="text-gray-700 text-sm mb-2">{hanker.desc}</p>
                            <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {hanker.saran}</p>
                       </div>
                   </div>
 
-                  {/* FINAL SCORE CARD - Moved per user request */}
                   <div className={`mb-8 p-6 rounded-xl border-2 ${finalCategory.border} ${finalCategory.bg} flex flex-col md:flex-row items-center justify-between gap-6`}>
                       <div className="text-center md:text-left">
                           <p className="text-sm text-gray-600 font-bold uppercase tracking-wider mb-1">Nilai Akhir</p>
@@ -646,270 +385,157 @@ export default function LatihanSoalKecermatanExam() {
                       </div>
                   </div>
 
-                  {/* Performance Progression Chart */}
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
                       <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                           <span className="text-orange-600">📈</span> Grafik Performa Pengerjaan
                       </h3>
                       <div className="h-80">
                           <ResponsiveContainer width="100%" height="100%">
-                              <LineChart
-                                  data={(() => {
-                                      // Generate chart data from answers - tracking per kiasan/column
-                                      return data.map((kiasan: any, idx: number) => {
-                                          const kiasanAnswers = Object.entries(answers)
-                                              .filter(([key]) => key.startsWith(`${idx}-`))
-                                              .map(([_, value]: any) => value);
-                                          
-                                          const correctInKiasan = kiasanAnswers.filter((ans: any) => 
-                                              kiasan.soalLatihanKecermatan?.some((soal: any) => soal.jawaban === ans)
-                                          ).length;
-                                          
-                                          const wrongInKiasan = kiasanAnswers.length - correctInKiasan;
-                                          const totalSoalInKiasan = kiasan.soalLatihanKecermatan?.length || 0;
-                                          
-                                          return {
-                                              name: `Kolom ${idx + 1}`,
-                                              'Soal Terjawab': kiasanAnswers.length,
-                                              'Soal Benar': correctInKiasan,
-                                              'Soal Salah': wrongInKiasan,
-                                              totalSoal: totalSoalInKiasan
-                                          };
-                                      });
-                                  })()}
-                                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                              >
+                              <LineChart data={data.map((kiasan: any, idx: number) => {
+                                  const kiasanAnswers = Object.entries(answers).filter(([key]) => key.startsWith(`${idx}-`)).map(([_, value]: any) => value);
+                                  const correctInKiasan = kiasanAnswers.filter((ans: any) => kiasan.soalLatihanKecermatan?.some((soal: any) => soal.jawaban === ans)).length;
+                                  return { name: `Kolom ${idx + 1}`, 'Soal Terjawab': kiasanAnswers.length, 'Soal Benar': correctInKiasan, 'Soal Salah': kiasanAnswers.length - correctInKiasan };
+                              })} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                                  <XAxis 
-                                      dataKey="name" 
-                                      stroke="#666"
-                                      style={{ fontSize: '12px' }}
-                                      label={{ value: 'Jumlah Kolom', position: 'insideBottom', offset: -5, style: { fontSize: '12px', fill: '#666' } }}
-                                  />
-                                  <YAxis 
-                                      stroke="#666"
-                                      style={{ fontSize: '12px' }}
-                                      label={{ value: 'Jumlah Soal', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#666' } }}
-                                  />
-                                  <Tooltip 
-                                      contentStyle={{ 
-                                          backgroundColor: 'white', 
-                                          border: '1px solid #ccc', 
-                                          borderRadius: '8px',
-                                          fontSize: '12px'
-                                      }}
-                                  />
-                                  <Legend 
-                                      wrapperStyle={{ fontSize: '12px' }}
-                                      iconType="line"
-                                  />
-                                  <Line 
-                                      type="monotone" 
-                                      dataKey="Soal Terjawab" 
-                                      stroke="#3B82F6" 
-                                      strokeWidth={2.5}
-                                      dot={{ fill: '#3B82F6', r: 4 }}
-                                      activeDot={{ r: 6 }}
-                                  />
-                                  <Line 
-                                      type="monotone" 
-                                      dataKey="Soal Benar" 
-                                      stroke="#10B981" 
-                                      strokeWidth={2.5}
-                                      dot={{ fill: '#10B981', r: 4 }}
-                                      activeDot={{ r: 6 }}
-                                  />
-                                  <Line 
-                                      type="monotone" 
-                                      dataKey="Soal Salah" 
-                                      stroke="#EF4444" 
-                                      strokeWidth={2.5}
-                                      dot={{ fill: '#EF4444', r: 4 }}
-                                      activeDot={{ r: 6 }}
-                                  />
+                                  <XAxis dataKey="name" stroke="#666" style={{ fontSize: '12px' }} />
+                                  <YAxis stroke="#666" style={{ fontSize: '12px' }} />
+                                  <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #ccc', borderRadius: '8px', fontSize: '12px' }} />
+                                  <Legend wrapperStyle={{ fontSize: '12px' }} iconType="line" />
+                                  <Line type="monotone" dataKey="Soal Terjawab" stroke="#3B82F6" strokeWidth={2.5} dot={{ fill: '#3B82F6', r: 4 }} activeDot={{ r: 6 }} />
+                                  <Line type="monotone" dataKey="Soal Benar" stroke="#10B981" strokeWidth={2.5} dot={{ fill: '#10B981', r: 4 }} activeDot={{ r: 6 }} />
+                                  <Line type="monotone" dataKey="Soal Salah" stroke="#EF4444" strokeWidth={2.5} dot={{ fill: '#EF4444', r: 4 }} activeDot={{ r: 6 }} />
                               </LineChart>
                           </ResponsiveContainer>
                       </div>
-                      <p className="text-xs text-gray-500 italic mt-4 text-center">
-                          * Grafik menunjukkan perbandingan soal terjawab, benar, dan salah per kolom
-                      </p>
                   </div>
 
-                  <div className="flex justify-center gap-4">
-                        <Button onClick={() => window.location.reload()} variant="outline">Ulangi Latihan</Button>
-                        <Button onClick={() => navigate('/latihan-kecermatan')}>Kembali ke Menu</Button>
+                  <div className="flex flex-col items-center justify-center mb-8 gap-4">
+                        <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-gray-100">
+                             <span className="text-sm font-bold text-gray-700">Tampilkan Pembahasan?</span>
+                             <Switch 
+                                value={showPembahasan}
+                                onChange={(val) => setShowPembahasan(val as boolean)}
+                             />
+                        </div>
+                        <div className="flex justify-center gap-4">
+                            <Button onClick={() => window.location.reload()} variant="outline">Ulangi Latihan</Button>
+                            <Button onClick={() => navigate('/latihan-kecermatan')}>Kembali ke Menu</Button>
+                        </div>
                   </div>
-              </div>
 
-               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                  <div className="p-6 border-b border-gray-100">
-                      <h3 className="text-xl font-bold text-gray-800">Pembahasan</h3>
-                  </div>
-                  <div className="overflow-x-auto">
-                      <table className="w-full">
-                          <thead className="bg-gray-50">
-                              <tr>
-                                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Soal</th>
-                                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Jawaban Kamu</th>
-                                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Kunci</th>
-                                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                              </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                              {Object.keys(answers).map((key, idx) => {
-                                  const ans = answers[key];
-                                  // Find the Key (A, B...) for the answer
-                                  // Need to reconstruct context from `key` "KiasanIndex-SoalIndex"
-                                  // But `ans` has `userAnswer` (Symbol) and `correctAnswer` (Symbol)
-                                  // Ideally we show the Key (Label) if we can.
-                                  // But simplified view showing Symbols is also fine for now.
-                                  
-                                  return (
-                                      <tr key={key}>
-                                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{idx + 1}</td>
-                                          <td className="px-6 py-4 whitespace-nowrap text-lg font-bold text-gray-800">
-                                              {Array.isArray(ans.soal) ? ans.soal.join(' ') : ans.soal}
-                                          </td>
-                                          <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold">
-                                              {ans.userAnswer}
-                                          </td>
-                                          <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-bold text-indigo-600">
-                                              {ans.correctAnswer}
-                                          </td>
-                                          <td className="px-6 py-4 whitespace-nowrap text-center">
-                                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${ans.isCorrect ? 'bg-orange-100 text-[#C2410C]' : 'bg-red-100 text-red-800'}`}>
-                                                  {ans.isCorrect ? 'Benar' : 'Salah'}
-                                              </span>
-                                          </td>
-                                      </tr>
-                                  );
-                              })}
-                          </tbody>
-                      </table>
-                  </div>
+                  {/* NEW PEMBAHASAN DROPDOWN */}
+                  {showPembahasan && (
+                      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden text-left animate-in fade-in slide-in-from-top-4 duration-500">
+                           <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                               <h3 className="text-xl font-bold text-gray-800">Pembahasan</h3>
+                               <div className="w-full md:w-64">
+                                    <style>{`
+                                        .select-orange .t-input { border: 1px solid #F97316 !important; color: #F97316 !important; }
+                                        .select-orange .t-input__inner { color: #F97316 !important; font-weight: 600; }
+                                        .select-orange .t-fake-arrow { color: #F97316 !important; }
+                                    `}</style>
+                                    <Select 
+                                        value={reviewColumnIndex}
+                                        onChange={(val) => setReviewColumnIndex(Number(val))}
+                                        options={data.map((_, idx) => ({ label: `Kolom ${idx + 1}`, value: idx }))}
+                                        className="select-orange"
+                                        placeholder="Pilih Kolom"
+                                    />
+                               </div>
+                           </div>
+
+                           <div className="p-6 bg-gray-50 border-b border-gray-100">
+                                <div className="max-w-md mx-auto">
+                                    <p className="text-center text-xs font-bold text-gray-500 uppercase mb-3 tracking-widest">Referensi Kunci Kolom {reviewColumnIndex + 1}</p>
+                                    <div className="grid grid-cols-5 divide-x divide-gray-200 border border-gray-200 rounded-lg overflow-hidden shadow-sm bg-white">
+                                        {['A', 'B', 'C', 'D', 'E'].slice(0, data[reviewColumnIndex]?.kiasan?.length).map((char, idx) => (
+                                            <div key={idx} className="bg-gray-50 p-2 text-center font-bold text-xs text-gray-700 border-b border-gray-200">{char}</div>
+                                        ))}
+                                        {data[reviewColumnIndex]?.kiasan?.map((sym: string, idx: number) => (
+                                            <div key={idx} className="p-2 text-center font-bold text-xl text-indigo-600">{sym}</div>
+                                        ))}
+                                    </div>
+                                </div>
+                           </div>
+
+                           <div className="overflow-x-auto">
+                               <table className="w-full">
+                                   <thead className="bg-gray-50">
+                                       <tr>
+                                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Soal</th>
+                                           <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Jawaban Kamu</th>
+                                           <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Kunci</th>
+                                           <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                       </tr>
+                                   </thead>
+                                   <tbody className="bg-white divide-y divide-gray-200">
+                                       {Object.keys(answers).filter(key => key.startsWith(`${reviewColumnIndex}-`)).map((key, idx) => {
+                                           const ans = answers[key];
+                                           return (
+                                               <tr key={key} className="hover:bg-gray-50 transition-colors">
+                                                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400 font-medium">{idx + 1}</td>
+                                                   <td className="px-6 py-4 whitespace-nowrap text-2xl font-bold text-gray-800 tracking-widest">{Array.isArray(ans.soal) ? ans.soal.join(' ') : ans.soal}</td>
+                                                   <td className="px-6 py-4 whitespace-nowrap text-center text-lg font-bold text-gray-700">{ans.userAnswer}</td>
+                                                   <td className="px-6 py-4 whitespace-nowrap text-center text-lg font-bold text-indigo-600">{ans.correctAnswer}</td>
+                                                   <td className="px-6 py-4 whitespace-nowrap text-center">
+                                                       <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${ans.isCorrect ? 'bg-orange-100 text-[#F97316]' : 'bg-red-100 text-red-600'}`}>{ans.isCorrect ? 'Benar' : 'Salah'}</span>
+                                                   </td>
+                                               </tr>
+                                           );
+                                       })}
+                                       {Object.keys(answers).filter(key => key.startsWith(`${reviewColumnIndex}-`)).length === 0 && (
+                                           <tr><td colSpan={5} className="px-6 py-10 text-center text-gray-500 italic">Tidak ada data jawaban untuk kolom ini.</td></tr>
+                                       )}
+                                   </tbody>
+                               </table>
+                           </div>
+                      </div>
+                  )}
               </div>
           </div>
-      )
+      );
   }
 
   const currentKiasan = data[currentKiasanIndex];
   const currentSoal = currentKiasan?.soalLatihanKecermatan?.[currentSoalIndex];
 
-  const formatTime = (seconds: number) => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
-
   if (!currentSoal) return <div>Loading Soal...</div>;
 
-  // Symbols from the Kiasan data
-  const symbols = currentKiasan.kiasan; // Array of 5 chars
-  // Since we don't have separate "Keys" (Header), we can generate standard ones A-E or 1-5, or just show Symbols.
-  // Standard format usually has Map Row (Key -> Symbol).
-  // Let's generate Keys A, B, C, D, E
+  const symbols = currentKiasan.kiasan; 
   const keys = ['A', 'B', 'C', 'D', 'E'].slice(0, symbols.length);
 
   return (
     <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-6 min-h-screen flex flex-col font-['Poppins']">
-       {/* Header Info */}
        <div className="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
-           <div className="w-32 font-bold text-gray-700 text-lg">
-               Kolom {currentKiasanIndex + 1} / {data.length}
-           </div>
-           
+           <div className="w-32 font-bold text-gray-700 text-lg">Kolom {currentKiasanIndex + 1} / {data.length}</div>
            <div className="flex flex-col items-center">
-                <div className="text-3xl font-bold text-indigo-600 flex items-center gap-2">
-                    <IconClock /> {formatTime(timer)}
-                </div>
+                <div className="text-3xl font-bold text-indigo-600 flex items-center gap-2"><IconClock /> {formatTime(timer)}</div>
            </div>
-
-           <div className="w-32 text-right">
-               <Button theme="danger" variant="outline" onClick={() => setShowConfirmFinish(true)}>Selesai</Button>
-           </div>
+           <div className="w-32 text-right"><Button theme="danger" variant="outline" onClick={() => setShowConfirmFinish(true)}>Selesai</Button></div>
        </div>
 
-       {/* Kiasan Table (Answer Key) */}
        <div className="bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-100">
            <div className="grid grid-cols-5 divide-x divide-gray-200 border border-gray-200 rounded-lg overflow-hidden mb-6">
-                {/* Headers (Keys) */}
-                {keys.map((char: string, idx: number) => (
-                    <div key={`char-${idx}`} className="bg-gray-50 p-3 text-center font-bold text-lg text-gray-700">
-                        {char}
-                    </div>
-                ))}
-                {/* Values (Symbols) */}
-                {symbols.map((key: string, idx: number) => (
-                    <div key={`key-${idx}`} className="p-3 text-center font-bold text-2xl text-indigo-600 bg-white">
-                        {key}
-                    </div>
-                ))}
+                {keys.map((char: string, idx: number) => (<div key={`char-${idx}`} className="bg-gray-50 p-3 text-center font-bold text-lg text-gray-700">{char}</div>))}
+                {symbols.map((key: string, idx: number) => (<div key={`key-${idx}`} className="p-3 text-center font-bold text-2xl text-indigo-600 bg-white">{key}</div>))}
            </div>
-
-           {/* Question Display */}
            <div className="flex justify-center mb-8">
                <div className="flex flex-wrap gap-3 justify-center bg-gray-50 p-6 rounded-xl border border-dashed border-gray-300">
                    <AnimatePresence mode='wait'>
-                        <motion.div 
-                            key={`${currentKiasanIndex}-${currentSoalIndex}`}
-                            initial={{ opacity: 0, y: -50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 50 }}
-                            transition={{ duration: 0.05, ease: "linear" }}
-                            className="flex gap-4 md:gap-8"
-                        >
-                            {(Array.isArray(currentSoal.soal) ? currentSoal.soal : []).map((char: string, idx: number) => (
-                                <div key={idx} className="font-bold text-4xl md:text-5xl text-gray-800">
-                                    {char}
-                                </div>
-                            ))}
+                        <motion.div key={`${currentKiasanIndex}-${currentSoalIndex}`} initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }} transition={{ duration: 0.05, ease: "linear" }} className="flex gap-4 md:gap-8">
+                            {(Array.isArray(currentSoal.soal) ? currentSoal.soal : []).map((char: string, idx: number) => (<div key={idx} className="font-bold text-4xl md:text-5xl text-gray-800">{char}</div>))}
                         </motion.div>
                    </AnimatePresence>
                </div>
            </div>
-
-            {/* Answer Options */}
            <div className="grid grid-cols-5 gap-4">
                {symbols.map((symbol: string, idx: number) => (
-                   <button 
-                        key={idx}
-                        onClick={() => handleAnswer(symbol)}
-                        className="py-4 rounded-xl bg-indigo-600 text-white font-bold text-2xl hover:bg-indigo-700 active:scale-95 transition-all shadow-lg hover:shadow-indigo-200"
-                   >
-                       {keys[idx]} {/* Show Key (A, B...) on button instead of symbol? Usually user selects the Key */}
-                   </button>
+                   <button key={idx} onClick={() => handleAnswer(symbol)} className="py-4 rounded-xl bg-indigo-600 text-white font-bold text-2xl hover:bg-indigo-700 active:scale-95 transition-all shadow-lg hover:shadow-indigo-200">{keys[idx]}</button>
                ))}
            </div>
-           
-           {/* Alternative: If the user needs to select the SYMBOL itself, use symbol.
-               But standard Kecermatan is: Look at symbols, find missing one.
-               If Question is missing B, then Answer is B (which maps to specific symbol).
-               
-               In my logic: `jawaban` is the CHAR (Symbol).
-               `handleAnswer(val)` checks `val === jawaban`.
-               So we should pass the SYMBOL to `handleAnswer`.
-               
-               BUT, on the button, usually tests show the KEY (A, B, C...) corresponding to that symbol.
-               So:
-               <button onClick={() => handleAnswer(symbol)}> {keys[idx]} </button>
-               This works. The user clicks "A" (which corresponds to symbol[0]), and we send symbol[0] to check.
-           */}
-           
-           <Dialog
-            header="Selesai Mengerjakan"
-            body="Apakah anda yakin untuk menyelesaikan latihan ini?"
-            visible={showConfirmFinish}
-            onClose={() => setShowConfirmFinish(false)}
-            onConfirm={() => {
-                setShowConfirmFinish(false);
-                submitResult();
-            }}
-        />
-
-    </div>
-
+           <Dialog header="Selesai Mengerjakan" body="Apakah anda yakin untuk menyelesaikan latihan ini?" visible={showConfirmFinish} onClose={() => setShowConfirmFinish(false)} onConfirm={() => { setShowConfirmFinish(false); submitResult(); }} />
+       </div>
     </div>
   );
 }
