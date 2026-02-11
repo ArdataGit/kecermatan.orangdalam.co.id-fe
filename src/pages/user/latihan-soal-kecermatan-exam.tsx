@@ -285,7 +285,7 @@ export default function LatihanSoalKecermatanExam() {
           <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-8 font-['Poppins']">
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-6 text-center">
                   <h2 className="text-3xl font-bold mb-6 text-indigo-900">Hasil Latihan Kecermatan</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
+                  {/* <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
                       <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">PANKER Mentah</p>
                           <div className="text-xl lg:text-2xl font-bold text-gray-800">{rawScore.toFixed(1)}</div>
@@ -318,9 +318,9 @@ export default function LatihanSoalKecermatanExam() {
                            <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">HANKER Konv</p>
                            <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreHanker.toFixed(0)}</div>
                       </div>
-                  </div>
+                  </div> */}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                  {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                        <div className={`p-4 rounded-lg border ${panker.bg} ${panker.border} flex flex-col items-center justify-center`}>
                            <p className="text-xs text-gray-500 mb-1 font-bold uppercase">Kategori PANKER</p>
                            <div className={`text-xl font-bold ${panker.color} mb-1`}>{panker.label}</div>
@@ -341,7 +341,7 @@ export default function LatihanSoalKecermatanExam() {
                            <div className={`text-xl font-bold ${hanker.color} mb-1`}>{hanker.label}</div>
                            <p className="text-[10px] text-gray-500">Ketahanan (Endurance)</p>
                       </div>
-                  </div>
+                  </div> */}
 
                   <div className="grid grid-cols-1 gap-4 mb-6 text-left">
                       <div className={`p-5 rounded-lg border ${panker.bg} ${panker.border}`}>

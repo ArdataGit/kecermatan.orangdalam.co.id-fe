@@ -11,8 +11,7 @@ export default function LatihanKecermatan() {
   const [showAutoModal, setShowAutoModal] = useState(false);
   const [autoOptions, setAutoOptions] = useState({
     huruf: true,
-    angka: true,
-    simbol: true
+    angka: true
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -27,8 +26,6 @@ export default function LatihanKecermatan() {
     let pool: string[] = [];
     if (options.huruf !== false) pool = pool.concat('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''));
     if (options.angka !== false) pool = pool.concat('0123456789'.split(''));
-    // Symbols must be treated as whole strings, not split by char if they contain surrogates/variants
-    if (options.simbol !== false) pool = pool.concat(['☘︎', '☀︎', '☁︎', '☂︎', '☃︎']);
 
     if (pool.length === 0 || pool.length < length) return '';
 
@@ -37,9 +34,9 @@ export default function LatihanKecermatan() {
     return shuffled.slice(0, length).join('');
   };
 
-  const handleSelectSimbol = (index: number) => {
+  const handleRandomizeSoal = (index: number) => {
     // Generate 5 random characters using the helper
-    const result = generateRandomString(5, { huruf: true, angka: true, simbol: true });
+    const result = generateRandomString(5, { huruf: true, angka: true });
 
     const newSoalList = [...soalList];
     newSoalList[index] = {
@@ -54,13 +51,7 @@ export default function LatihanKecermatan() {
   };
 
   const handleConfirmAuto = () => {
-    if (!autoOptions.huruf && !autoOptions.angka && !autoOptions.simbol) {
-      toast.error('Pilih minimal satu jenis karakter');
-      return;
-    }
-
     const autoList = Array(10).fill(null).map(() => {
-      // Typically kecermatan is 4-5 chars? detailed spec not provided, using 5 to match max input.
       const str = generateRandomString(5, autoOptions);
       return {
         simbol: str, 
@@ -131,8 +122,9 @@ export default function LatihanKecermatan() {
                     <span className="font-semibold text-gray-800">Soal {index + 1}</span>
                     <button 
                       className="text-xs bg-orange-100 hover:bg-orange-200 text-[#C2410C] px-3 py-1 rounded transition-colors"
+                      onClick={() => handleRandomizeSoal(index)}
                     >
-                      Pilih Simbol
+                      Acak Karakter
                     </button>
                  </div>
                  <div className={`
@@ -263,7 +255,7 @@ export default function LatihanKecermatan() {
            
            <h2 className="text-xl font-bold text-black mb-4">Soal Otomatis</h2>
            <p className="text-gray-600 mb-8 max-w-sm mx-auto">
-             Kolom soal akan terisi otomatis berdasarkan huruf, angka dan symbol yang dipilih.
+             Kolom soal akan terisi otomatis berdasarkan huruf dan angka yang dipilih.
            </p>
 
            <div className="flex justify-center gap-8 mb-8">
@@ -281,14 +273,6 @@ export default function LatihanKecermatan() {
                    size="large"
                    value={autoOptions.angka} 
                    onChange={(val) => setAutoOptions({...autoOptions, angka: val})}
-                 />
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                 <span className="font-medium text-gray-700">Simbol</span>
-                 <Switch 
-                   size="large"
-                   value={autoOptions.simbol} 
-                   onChange={(val) => setAutoOptions({...autoOptions, simbol: val})}
                  />
               </div>
            </div>
