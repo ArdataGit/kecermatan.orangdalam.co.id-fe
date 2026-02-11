@@ -114,7 +114,7 @@ export default function UserIndex() {
       cell: ({ row }: any) => {
         return row.duration ? (
           <p className="text-center">
-            {`${row.duration} Bulan`} <br />
+            {`${row.duration} Hari`} <br />
             {row.paidAt ? (
               moment(row.expiredAt).diff(moment(), 'days') < 0 ? (
                 <span className="text-red-500">Sudah Berakhir</span>
