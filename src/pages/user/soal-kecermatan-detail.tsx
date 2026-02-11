@@ -161,7 +161,7 @@ export default function SoalKecermatanExam() {
       };
       const finalCategory = getFinalCategory(finalScore);
 
-      return { finalScore, finalCategory, panker, tianker, janker, hanker, rawScore, convertedScore, totalQuestionsAll, totalCorrectAll, totalWrong };
+      return { finalScore, finalCategory, panker, tianker, janker, hanker, rawScore, convertedScore, convertedScoreTianker, convertedScoreJanker, convertedScoreHanker, totalQuestionsAll, totalCorrectAll, totalWrong };
   };
 
   const submitResult = async () => {
@@ -288,15 +288,47 @@ export default function SoalKecermatanExam() {
   if (!data.length) return <div className="p-8 text-center text-gray-500">Data Soal tidak ditemukan.</div>;
 
   if (finished) {
-      const stats = calculateStats();
-      const { finalScore, finalCategory, panker, tianker, janker, hanker, rawScore, convertedScore, totalQuestionsAll, totalCorrectAll, totalWrong } = stats;
+      let stats;
+      try {
+          stats = calculateStats();
+      } catch (e: any) {
+          console.error("Error calculating stats:", e);
+          return <div className="p-10 text-center text-red-600 font-bold">Error calculating stats: {e.message}</div>;
+      }
+      
+      const { finalScore, finalCategory, panker, tianker, janker, hanker, convertedScore, convertedScoreTianker, convertedScoreJanker, convertedScoreHanker } = stats;
 
       return (
           <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-8 font-['Poppins']">
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-6 text-center">
-                  <h2 className="text-3xl font-bold mb-6 text-indigo-900">Hasil Latihan Kecermatan</h2>
+                  <h2 className="text-3xl font-bold mb-6 text-indigo-900">Hasil Ujian Kecermatan</h2>
+                  {/* <div className="flex justify-center mb-8">
+                       <div className="w-48 h-48 rounded-full border-4 border-indigo-100 flex flex-col items-center justify-center bg-indigo-50">
+                           <span className="text-4xl font-extrabold text-indigo-700">{finalScore.toFixed(0)}</span>
+                           <span className="text-sm font-bold text-gray-500 uppercase mt-1 tracking-wider">Nilai Akhir</span>
+                       </div>
+                  </div> */}
 
-                  <div className="grid grid-cols-1 gap-4 mb-6 text-left">
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">PANKER</p>
+                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScore.toFixed(0)}</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">TIANKER</p>
+                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreTianker.toFixed(0)}</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">JANKER</p>
+                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreJanker.toFixed(0)}</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">HANKER</p>
+                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreHanker.toFixed(0)}</div>
+                      </div>
+                  </div>
+
+                   <div className="grid grid-cols-1 gap-4 mb-6 text-left">
                       <div className={`p-5 rounded-lg border ${panker.bg} ${panker.border}`}>
                            <h3 className={`font-bold text-md mb-2 ${panker.color} flex items-center gap-2`}>
                                 <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">PANKER</span> {panker.label}
@@ -311,6 +343,7 @@ export default function SoalKecermatanExam() {
                            <p className="text-gray-700 text-sm mb-2">{tianker.desc}</p>
                            <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {tianker.saran}</p>
                       </div>
+
                       <div className={`p-5 rounded-lg border ${janker.bg} ${janker.border}`}>
                            <h3 className={`font-bold text-md mb-2 ${janker.color} flex items-center gap-2`}>
                                 <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">JANKER</span> {janker.label}
@@ -337,6 +370,7 @@ export default function SoalKecermatanExam() {
                            <p className="text-gray-700 text-lg">{finalCategory.desc}</p>
                       </div>
                   </div>
+              </div>
 
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
                       <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -448,7 +482,7 @@ export default function SoalKecermatanExam() {
                            </div>
                       </div>
                   )}
-              </div>
+
           </div>
       )
   }
