@@ -314,6 +314,33 @@ export default function DetailRiwayatKecermatanUser() {
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                {/* PANKER */}
+                <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
+                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">PANKER (Kecepatan)</p>
+                  <p className="text-2xl font-bold text-orange-600">{stats.pankerScore?.toFixed(2) || '0.00'}</p>
+                  <p className="text-sm font-semibold text-gray-600 mt-1">{panker.label || '-'}</p>
+                </div>
+
+                {/* TIANKER */}
+                <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
+                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">TIANKER (Ketelitian)</p>
+                  <p className="text-2xl font-bold text-orange-600">{stats.tiankerScore?.toFixed(2) || '0.00'}</p>
+                  <p className="text-sm font-semibold text-gray-600 mt-1">{tianker.label || '-'}</p>
+                </div>
+
+                {/* JANKER */}
+                <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
+                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">JANKER (Keajegan)</p>
+                  <p className="text-2xl font-bold text-orange-600">{stats.jankerScore?.toFixed(2) || '0.00'}</p>
+                  <p className="text-sm font-semibold text-gray-600 mt-1">{janker.label || '-'}</p>
+                </div>
+
+                {/* HANKER */}
+                <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
+                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">HANKER (Ketahanan)</p>
+                  <p className="text-2xl font-bold text-orange-600">{stats.hankerScore?.toFixed(2) || '0.00'}</p>
+                  <p className="text-sm font-semibold text-gray-600 mt-1">{hanker.label || '-'}</p>
+                </div>
                 {/* Total Scores */}
                 <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
                   <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Total</p>
@@ -332,7 +359,7 @@ export default function DetailRiwayatKecermatanUser() {
                 <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-lg shadow-md text-white">
                   <p className="text-xs uppercase tracking-wide mb-1 opacity-90">Nilai Akhir</p>
                   <p className="text-3xl font-bold">{stats.finalScore?.toFixed(2) || '0.00'}</p>
-                  <p className="text-sm font-semibold mt-1">Kategori Performa</p>
+                  <p className="text-sm font-semibold mt-1">{stats.finalScore >= 80 ? 'Sangat Baik' : stats.finalScore >= 60 ? 'Baik' : stats.finalScore >= 40 ? 'Cukup' : stats.finalScore >= 20 ? 'Kurang' : 'Sangat Kurang'}</p>
                 </div>
               </div>
 

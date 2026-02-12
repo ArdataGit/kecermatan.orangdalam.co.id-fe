@@ -270,32 +270,32 @@ export default function RiwayatLatihanKecermatanDetail() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
               {/* PANKER */}
-              {/* <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
+              <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
                 <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">PANKER (Kecepatan)</p>
                 <p className="text-2xl font-bold text-orange-600">{listHistory.metadata.pankerScore?.toFixed(2) || '0.00'}</p>
                 <p className="text-sm font-semibold text-gray-600 mt-1">{listHistory.metadata.pankerCategory || '-'}</p>
-              </div> */}
+              </div>
 
               {/* TIANKER */}
-              {/* <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
+              <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
                 <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">TIANKER (Ketelitian)</p>
                 <p className="text-2xl font-bold text-orange-600">{listHistory.metadata.tiankerScore?.toFixed(2) || '0.00'}</p>
                 <p className="text-sm font-semibold text-gray-600 mt-1">{listHistory.metadata.tiankerCategory || '-'}</p>
-              </div> */}
+              </div>
 
               {/* JANKER */}
-              {/* <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
+              <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
                 <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">JANKER (Keajegan)</p>
                 <p className="text-2xl font-bold text-orange-600">{listHistory.metadata.jankerScore?.toFixed(2) || '0.00'}</p>
                 <p className="text-sm font-semibold text-gray-600 mt-1">{listHistory.metadata.jankerCategory || '-'}</p>
-              </div> */}
+              </div>
 
               {/* HANKER */}
-              {/* <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
+              <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
                 <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">HANKER (Ketahanan)</p>
                 <p className="text-2xl font-bold text-orange-600">{listHistory.metadata.hankerScore?.toFixed(2) || '0.00'}</p>
                 <p className="text-sm font-semibold text-gray-600 mt-1">{listHistory.metadata.hankerCategory || '-'}</p>
-              </div> */}
+              </div>
 
               {/* Total Scores */}
               <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
