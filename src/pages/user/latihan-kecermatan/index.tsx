@@ -12,7 +12,7 @@ export default function LatihanKecermatan() {
   const [autoOptions, setAutoOptions] = useState({
     huruf: true,
     angka: true,
-    simbol: false
+    simbol: true
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
