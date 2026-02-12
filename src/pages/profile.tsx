@@ -172,7 +172,7 @@ useEffect(() => {
 
   // === Submit Form ===
   const onSubmitAkun = async (data: any) => {
-    const formData = jsonToFormData({ ...data, photo: image });
+    const formData = jsonToFormData({ ...data, gambar: image });
 
   console.log("📤 DATA TERKIRIM:", Object.fromEntries(formData.entries()));
 
@@ -199,7 +199,7 @@ useEffect(() => {
 };
 
 const onSubmitProfil = async (data: any) => {
-  const formData = jsonToFormData({ ...data, photo: image });
+  const formData = jsonToFormData({ ...data, gambar: image });
 
   console.log("📤 DATA TERKIRIM:", Object.fromEntries(formData.entries()));
 
@@ -395,7 +395,7 @@ const onSubmitProfil = async (data: any) => {
                     <Input name="kecamatan" title="Kecamatan" type="text" validation={{ required: 'Kecamatan wajib diisi' }} />
                   </div>
                   <div className="sm:col-span-3">
-                    <Input name="jurusan" title="Jurusan" type="text" />
+                    <Input name="jurusan" title="Instansi" type="text" />
                   </div>
                   <div className="sm:col-span-full">
                     <Input name="ttl" title="Tanggal Lahir" type="date" />
