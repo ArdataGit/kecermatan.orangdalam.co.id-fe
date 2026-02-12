@@ -66,6 +66,80 @@ export default function Empty() {
     }
   }, [account]);
 
+  // === Wilayah State ===
+  const [provinces, setProvinces] = useState<any[]>([]);
+  const [regencies, setRegencies] = useState<any[]>([]);
+  const [districts, setDistricts] = useState<any[]>([]);
+
+  const [selectedProvId, setSelectedProvId] = useState<string>("");
+  const [selectedRegencyId, setSelectedRegencyId] = useState<string>("");
+
+  // Load Provinces
+  useEffect(() => {
+    fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')
+      .then(res => {
+        console.log("Raw response status:", res.status);
+        return res.json();
+      })
+      .then(data => {
+        console.log("Provinces loaded:", data);
+        // Emsifa returns array directly: [{id: "11", name: "ACEH"}, ...]
+        if (Array.isArray(data)) {
+          setProvinces(data.map((p: any) => ({ label: p.name, value: p.name, code: p.id })));
+        }
+      })
+      .catch(err => console.error("Error loading provinces", err));
+  }, []);
+
+  // Initialize region selection from account data
+  useEffect(() => {
+    if (account?.provinsi && provinces.length > 0 && !selectedProvId) {
+       const prov = provinces.find(p => p.label === account.provinsi);
+       if (prov) setSelectedProvId(prov.code);
+    }
+  }, [account, provinces]);
+
+  useEffect(() => {
+    if (account?.kabupaten && regencies.length > 0 && !selectedRegencyId) {
+       const reg = regencies.find(r => r.label === account.kabupaten);
+       if (reg) setSelectedRegencyId(reg.code);
+    }
+  }, [account, regencies]);
+
+  // Load Regencies when Province changes
+  useEffect(() => {
+    if (!selectedProvId) {
+      setRegencies([]);
+      return;
+    }
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvId}.json`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("Regencies loaded:", data);
+        if (Array.isArray(data)) {
+          setRegencies(data.map((r: any) => ({ label: r.name, value: r.name, code: r.id })));
+        }
+      })
+      .catch(err => console.error("Error loading regencies", err));
+  }, [selectedProvId]);
+
+  // Load Districts when Regency changes
+  useEffect(() => {
+    if (!selectedRegencyId) {
+      setDistricts([]);
+      return;
+    }
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegencyId}.json`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("Districts loaded:", data);
+        if (Array.isArray(data)) {
+          setDistricts(data.map((d: any) => ({ label: d.name, value: d.name, code: d.id })));
+        }
+      })
+      .catch(err => console.error("Error loading districts", err));
+  }, [selectedRegencyId]);
+
   // === Fetch SALDO saat modal withdraw dibuka ===
   useEffect(() => {
     if (withdrawVisible && account?.id) {
@@ -384,15 +458,49 @@ const onSubmitProfil = async (data: any) => {
                     <Input name="alamat" title="Alamat Lengkap" type="text" validation={{ required: 'Alamat wajib diisi' }} />
                   </div>
                   <div className="sm:col-span-2">
-                    <Input name="provinsi" title="Provinsi" type="text" validation={{ required: 'Provinsi wajib diisi' }} />
+                    {/* Debug log */}
+                    {console.log("Provinces passed to Input:", provinces)}
+                    <Input 
+                      name="provinsi" 
+                      title="Provinsi" 
+                      type="select" 
+                      options={provinces}
+                      validation={{ required: 'Provinsi wajib diisi' }} 
+                      onChange={(val: string) => {
+                        console.log("Province changed:", val);
+                        const selected = provinces.find(p => p.value === val);
+                        console.log("Selected province object:", selected);
+                        setSelectedProvId(selected?.code || "");
+                        setSelectedRegencyId(""); // reset child
+                        setRegencies([]); // reset child list
+                        setDistricts([]); // reset child list
+                      }}
+                    />
                   </div>
 
                   <div className="sm:col-span-2">
-                    <Input name="kabupaten" title="Kabupaten/Kota" type="text" validation={{ required: 'Kabupaten wajib diisi' }} />
+                    <Input 
+                      name="kabupaten" 
+                      title="Kabupaten/Kota" 
+                      type="select" 
+                      options={regencies}
+                      validation={{ required: 'Kabupaten wajib diisi' }} 
+                      onChange={(val: string) => {
+                        const selected = regencies.find(r => r.value === val);
+                        setSelectedRegencyId(selected?.code || "");
+                        setDistricts([]); // reset child list
+                      }}
+                    />
                   </div>
 
                   <div className="sm:col-span-2">
-                    <Input name="kecamatan" title="Kecamatan" type="text" validation={{ required: 'Kecamatan wajib diisi' }} />
+                    <Input 
+                      name="kecamatan" 
+                      title="Kecamatan" 
+                      type="select" 
+                      options={districts}
+                      validation={{ required: 'Kecamatan wajib diisi' }} 
+                    />
                   </div>
                   <div className="sm:col-span-3">
                     <Input name="jurusan" title="Instansi" type="text" />
