@@ -105,6 +105,7 @@ export default function LatihanKecermatan() {
                 { label: 'Durasi 60 Menit', value: '3600' }
               ]}
               className="w-full md:w-[300px] select-orange"
+              disabled
             />
           </div>
           <div className="flex justify-end">
