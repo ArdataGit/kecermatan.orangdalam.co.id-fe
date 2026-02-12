@@ -11,7 +11,8 @@ export default function LatihanKecermatan() {
   const [showAutoModal, setShowAutoModal] = useState(false);
   const [autoOptions, setAutoOptions] = useState({
     huruf: true,
-    angka: true
+    angka: true,
+    simbol: false
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ export default function LatihanKecermatan() {
     let pool: string[] = [];
     if (options.huruf !== false) pool = pool.concat('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''));
     if (options.angka !== false) pool = pool.concat('0123456789'.split(''));
+    if (options.simbol === true) pool = pool.concat('!@#$%^&*()+{}|:<>?-=[]\\;\',./'.split(''));
 
     if (pool.length === 0 || pool.length < length) return '';
 
@@ -258,24 +260,32 @@ export default function LatihanKecermatan() {
              Kolom soal akan terisi otomatis berdasarkan huruf dan angka yang dipilih.
            </p>
 
-           <div className="flex justify-center gap-8 mb-8">
-              <div className="flex flex-col items-center gap-2">
-                 <span className="font-medium text-gray-700">Huruf</span>
-                 <Switch 
-                   size="large"
-                   value={autoOptions.huruf} 
-                   onChange={(val) => setAutoOptions({...autoOptions, huruf: val})}
-                 />
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                 <span className="font-medium text-gray-700">Angka</span>
-                 <Switch 
-                   size="large"
-                   value={autoOptions.angka} 
-                   onChange={(val) => setAutoOptions({...autoOptions, angka: val})}
-                 />
-              </div>
-           </div>
+            <div className="flex justify-center gap-8 mb-8">
+               <div className="flex flex-col items-center gap-2">
+                  <span className="font-medium text-gray-700">Huruf</span>
+                  <Switch 
+                    size="large"
+                    value={autoOptions.huruf} 
+                    onChange={(val) => setAutoOptions({...autoOptions, huruf: val})}
+                  />
+               </div>
+               <div className="flex flex-col items-center gap-2">
+                  <span className="font-medium text-gray-700">Angka</span>
+                  <Switch 
+                    size="large"
+                    value={autoOptions.angka} 
+                    onChange={(val) => setAutoOptions({...autoOptions, angka: val})}
+                  />
+               </div>
+               <div className="flex flex-col items-center gap-2">
+                  <span className="font-medium text-gray-700">Simbol</span>
+                  <Switch 
+                    size="large"
+                    value={autoOptions.simbol} 
+                    onChange={(val) => setAutoOptions({...autoOptions, simbol: val})}
+                  />
+               </div>
+            </div>
 
            <div className="flex justify-center gap-4">
               <Button 
