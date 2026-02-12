@@ -26,7 +26,7 @@ enum AlignType {
 const statusNameListMap: StatusNameListMap = {
   PAID: {
     label: 'Berhasil',
-    theme: 'warning',
+    theme: 'success',
     icon: <IconCircleCheckFilled />,
   },
   GAGAL: { label: 'Gagal', theme: 'danger', icon: <IconCircleXFilled /> },
@@ -85,7 +85,7 @@ export default function UserIndex() {
       },
     },
     {
-      title: 'Nama Paket',
+      title: 'Status',
       colKey: 'status',
       align: AlignType.Center,
       cell: ({ row }: any) => (
