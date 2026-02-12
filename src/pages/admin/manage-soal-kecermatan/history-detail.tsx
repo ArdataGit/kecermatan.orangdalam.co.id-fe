@@ -1,5 +1,6 @@
 
 import useGetList from '@/hooks/use-get-list';
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
 import moment from 'moment/min/moment-with-locales';
@@ -232,11 +233,100 @@ export default function HistoryDetailKecermatanAdmin() {
   };
   //#endregion
 
-  const panker = listHistory.metadata ? getPankerCategory(listHistory.metadata.pankerScore || 0) : null;
-  const tianker = listHistory.metadata ? getTiankerCategory(listHistory.metadata.tiankerScore || 0) : null;
-  const janker = listHistory.metadata ? getJankerCategory(listHistory.metadata.jankerScore || 0) : null;
-  const hanker = listHistory.metadata ? getHankerCategory(listHistory.metadata.hankerScore || 0) : null;
-  const finalCategory = listHistory.metadata ? getFinalCategory(listHistory.metadata.finalScore || 0) : null;
+  // Calculate stats from history
+  const stats = useMemo(() => {
+    if (!listHistory.list || listHistory.list.length === 0) return null;
+
+    // Group by kiasanId to identify columns
+    const kiasanGroups = listHistory.list.reduce((acc: any, item: any) => {
+      // Handle potential different structure if needed, but based on existing code:
+      const kiasanId = item.kiasan?.id;
+      if (!kiasanId) return acc;
+      
+      if (!acc[kiasanId]) acc[kiasanId] = [];
+      acc[kiasanId].push(item);
+      return acc;
+    }, {});
+
+    const totalColumns = Object.keys(kiasanGroups).length;
+    let totalCorrectAll = 0;
+    let totalQuestionsAll = listHistory.list.length;
+    let sumCorrectPerColumn = 0;
+    const correctCounts: number[] = [];
+
+    // Sort groups by some criteria if order matters for HANKER (assuming list is sorted or we rely on insertion order)
+    // The listHistory is sorted by createdAt descending, but for HANKER first vs last column matters.
+    // If the list is mixed, we might need to be careful.
+    // Ideally we sort columns by time. Kiasan IDs might not be sequential.
+    // Let's assume the columns were done in sequence. We need to identify the chronological order of columns.
+    // Since listHistory is by createdAt DESC, the LAST items in the list are the FIRST columns attempted?
+    // Wait, the charts code does: `return Array.from(kiasanMap.values())`.
+    // Let's iterate groups based on a representative timestamp (e.g. earliest created item in group).
+    
+    // Convert groups to array and sort by time (earliest first)
+    const sortedGroups = Object.values(kiasanGroups).map((group: any) => {
+        // find earliest timestamp in group
+        const minTime = Math.min(...group.map((i: any) => new Date(i.createdAt).getTime()));
+        return { group, minTime };
+    }).sort((a: any, b: any) => a.minTime - b.minTime);
+
+    // Now calculate stats based on sorted columns
+    sortedGroups.forEach(({ group }: any) => {
+      const correctInColumn = group.filter((item: any) => item.jawaban === item.soalKecermatan?.jawaban).length;
+      correctCounts.push(correctInColumn);
+      sumCorrectPerColumn += correctInColumn;
+      totalCorrectAll += correctInColumn;
+    });
+
+    const rawScore = totalColumns > 0 ? (sumCorrectPerColumn / totalColumns) : 0;
+    // Assuming 50 questions per column usually, but let's calculate avg questions
+    const avgQuestionsPerColumn = totalColumns > 0 ? (totalQuestionsAll / totalColumns) : 1;
+    
+    let convertedScore = (rawScore / avgQuestionsPerColumn) * 100;
+    convertedScore = Math.min(Math.max(convertedScore, 0), 100);
+
+    const totalWrong = totalQuestionsAll - totalCorrectAll;
+    const rawScoreTianker = totalQuestionsAll > 0 ? (totalWrong / totalQuestionsAll) : 0;
+    const convertedScoreTianker = Math.min(100, Math.max(0, (1 - rawScoreTianker) * 100));
+
+    let variance = 0;
+    if (totalColumns > 1) {
+      const sumSqDiff = correctCounts.reduce((acc, val) => acc + Math.pow(val - rawScore, 2), 0);
+      variance = sumSqDiff / (totalColumns - 1);
+    }
+    const rawScoreJanker = Math.sqrt(variance);
+    const jankerDenominator = 26.3523138347; // normalization factor
+    let convertedScoreJanker = (1 - (rawScoreJanker / jankerDenominator)) * 100;
+    convertedScoreJanker = Math.min(100, Math.max(0, convertedScoreJanker));
+
+    let rawScoreHanker = 0;
+    if (totalColumns >= 3) {
+      const avgFirst3 = (correctCounts[0] + correctCounts[1] + correctCounts[2]) / 3;
+      const avgLast3 = (correctCounts[totalColumns - 1] + correctCounts[totalColumns - 2] + correctCounts[totalColumns - 3]) / 3;
+      rawScoreHanker = avgLast3 - avgFirst3;
+    }
+    // HANKER score normalization attempt
+    let convertedScoreHanker = Math.min(100, Math.max(0, rawScoreHanker + 50));
+
+    const finalScore = (convertedScore * 0.35) + (convertedScoreTianker * 0.35) + (convertedScoreJanker * 0.20) + (convertedScoreHanker * 0.10);
+
+    return {
+      totalBenar: totalCorrectAll,
+      totalSalah: totalWrong,
+      totalSoal: totalQuestionsAll,
+      finalScore,
+      pankerScore: convertedScore,
+      tiankerScore: convertedScoreTianker,
+      jankerScore: convertedScoreJanker,
+      hankerScore: convertedScoreHanker,
+    };
+  }, [listHistory.list]);
+
+  const panker = stats ? getPankerCategory(stats.pankerScore || 0) : null;
+  const tianker = stats ? getTiankerCategory(stats.tiankerScore || 0) : null;
+  const janker = stats ? getJankerCategory(stats.jankerScore || 0) : null;
+  const hanker = stats ? getHankerCategory(stats.hankerScore || 0) : null;
+  const finalCategory = stats ? getFinalCategory(stats.finalScore || 0) : null;
 
   return (
     <section className="p-4 md:p-8 bg-gray-50 min-h-screen font-['Poppins']">
@@ -258,7 +348,7 @@ export default function HistoryDetailKecermatanAdmin() {
         </div>
 
         {/* Ranking Scores Summary */}
-        {listHistory.metadata && (
+        {stats && (
           <div className="mb-8 bg-gradient-to-br from-orange-50 to-white p-6 rounded-xl border-2 border-orange-200">
             <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
               <span className="text-orange-600">📊</span> Analisis & Nilai
@@ -268,29 +358,29 @@ export default function HistoryDetailKecermatanAdmin() {
               {/* PANKER */}
               <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
                 <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">PANKER (Kecepatan)</p>
-                <p className="text-2xl font-bold text-orange-600">{listHistory.metadata.pankerScore?.toFixed(2) || '0.00'}</p>
-                <p className="text-sm font-semibold text-gray-600 mt-1">{listHistory.metadata.pankerCategory || '-'}</p>
+                <p className="text-2xl font-bold text-orange-600">{stats.pankerScore?.toFixed(2) || '0.00'}</p>
+                <p className="text-sm font-semibold text-gray-600 mt-1">{panker?.label || '-'}</p>
               </div>
 
               {/* TIANKER */}
               <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
                 <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">TIANKER (Ketelitian)</p>
-                <p className="text-2xl font-bold text-orange-600">{listHistory.metadata.tiankerScore?.toFixed(2) || '0.00'}</p>
-                <p className="text-sm font-semibold text-gray-600 mt-1">{listHistory.metadata.tiankerCategory || '-'}</p>
+                <p className="text-2xl font-bold text-orange-600">{stats.tiankerScore?.toFixed(2) || '0.00'}</p>
+                <p className="text-sm font-semibold text-gray-600 mt-1">{tianker?.label || '-'}</p>
               </div>
 
               {/* JANKER */}
               <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
                 <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">JANKER (Keajegan)</p>
-                <p className="text-2xl font-bold text-orange-600">{listHistory.metadata.jankerScore?.toFixed(2) || '0.00'}</p>
-                <p className="text-sm font-semibold text-gray-600 mt-1">{listHistory.metadata.jankerCategory || '-'}</p>
+                <p className="text-2xl font-bold text-orange-600">{stats.jankerScore?.toFixed(2) || '0.00'}</p>
+                <p className="text-sm font-semibold text-gray-600 mt-1">{janker?.label || '-'}</p>
               </div>
 
               {/* HANKER */}
               <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
                 <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">HANKER (Ketahanan)</p>
-                <p className="text-2xl font-bold text-orange-600">{listHistory.metadata.hankerScore?.toFixed(2) || '0.00'}</p>
-                <p className="text-sm font-semibold text-gray-600 mt-1">{listHistory.metadata.hankerCategory || '-'}</p>
+                <p className="text-2xl font-bold text-orange-600">{stats.hankerScore?.toFixed(2) || '0.00'}</p>
+                <p className="text-sm font-semibold text-gray-600 mt-1">{hanker?.label || '-'}</p>
               </div>
 
               {/* Total Scores */}
@@ -298,20 +388,20 @@ export default function HistoryDetailKecermatanAdmin() {
                 <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Total</p>
                 <div className="flex items-baseline gap-2">
                   <p className="text-sm text-gray-600">Benar:</p>
-                  <p className="text-lg font-bold text-green-600">{listHistory.metadata.totalBenar || 0}</p>
-                  <p className="text-sm text-gray-600">/ {listHistory.metadata.totalSoal || 0}</p>
+                  <p className="text-lg font-bold text-green-600">{stats.totalBenar || 0}</p>
+                  <p className="text-sm text-gray-600">/ {stats.totalSoal || 0}</p>
                 </div>
                 <div className="flex items-baseline gap-2 mt-1">
                   <p className="text-sm text-gray-600">Salah:</p>
-                  <p className="text-lg font-bold text-red-600">{listHistory.metadata.totalSalah || 0}</p>
+                  <p className="text-lg font-bold text-red-600">{stats.totalSalah || 0}</p>
                 </div>
               </div>
 
               {/* Final Score */}
               <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-lg shadow-md text-white">
                 <p className="text-xs uppercase tracking-wide mb-1 opacity-90">Nilai Akhir</p>
-                <p className="text-3xl font-bold">{listHistory.metadata.finalScore?.toFixed(2) || '0.00'}</p>
-                <p className="text-sm font-semibold mt-1">{listHistory.metadata.finalCategory || '-'}</p>
+                <p className="text-3xl font-bold">{stats.finalScore?.toFixed(2) || '0.00'}</p>
+                <p className="text-sm font-semibold mt-1">{finalCategory?.label || '-'}</p>
               </div>
             </div>
 
@@ -322,7 +412,7 @@ export default function HistoryDetailKecermatanAdmin() {
         )}
 
         {/* Detailed Descriptions and Suggestions */}
-        {listHistory.metadata && panker && tianker && janker && hanker && (
+        {stats && panker && tianker && janker && hanker && (
           <div className="mb-8 space-y-4">
             <h3 className="text-md font-bold text-gray-700 mb-4 border-b border-gray-200 pb-2">Analisis Detail & Saran Perbaikan</h3>
             
