@@ -458,8 +458,6 @@ const onSubmitProfil = async (data: any) => {
                     <Input name="alamat" title="Alamat Lengkap" type="text" validation={{ required: 'Alamat wajib diisi' }} />
                   </div>
                   <div className="sm:col-span-2">
-                    {/* Debug log */}
-                    {console.log("Provinces passed to Input:", provinces)}
                     <Input 
                       name="provinsi" 
                       title="Provinsi" 
@@ -467,9 +465,7 @@ const onSubmitProfil = async (data: any) => {
                       options={provinces}
                       validation={{ required: 'Provinsi wajib diisi' }} 
                       onChange={(val: string) => {
-                        console.log("Province changed:", val);
                         const selected = provinces.find(p => p.value === val);
-                        console.log("Selected province object:", selected);
                         setSelectedProvId(selected?.code || "");
                         setSelectedRegencyId(""); // reset child
                         setRegencies([]); // reset child list

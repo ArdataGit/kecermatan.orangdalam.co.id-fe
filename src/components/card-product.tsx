@@ -1,6 +1,6 @@
 import { imageLink } from '@/utils/image-link';
 import { formatCurrency } from '@/utils/number-format';
-import { IconCheck } from '@tabler/icons-react';
+import { IconCheck, IconClock } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { countDiscount } from '@/const';
@@ -64,6 +64,13 @@ export default function CardProduct({
           className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700"
           dangerouslySetInnerHTML={{ __html: item?.keterangan }}
         />
+
+        {item?.durasi > 0 && (
+          <div className="flex items-center gap-2 mt-3 text-gray-600">
+            <IconClock size={18} />
+            <span className="text-sm font-medium">Durasi: {item.durasi} Hari</span>
+          </div>
+        )}
 
         {item?.paketPembelianFitur.length ? (
           <ul className="flex flex-col gap-1 mt-5">
