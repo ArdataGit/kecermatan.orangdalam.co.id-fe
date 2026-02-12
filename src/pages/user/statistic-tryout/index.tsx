@@ -182,7 +182,7 @@ export default function PembahasanTryout({ isBimbel }: any) {
                 <Tag
                   variant="light-outline"
                   theme={'warning'}
-                  className={`flex mb-5 w-full justify-center rounded-2xl h-14 bg-white bg-clip-border px-3 py-4 border shadow-md border-[#F97316]`}
+                  className={`flex mb-5 w-full justify-center rounded-2xl h-14 bg-white bg-clip-border px-3 py-4 border shadow-md border-[#ffb22c]`}
                 >
                   <p className=" text-lg font-medium text-navy-700 text-center w-full flex">
                     <IconCircleCheck size={24} className="mr-1 mt-0.5" />
@@ -233,7 +233,7 @@ export default function PembahasanTryout({ isBimbel }: any) {
                     theme={e.all_point >= e?.kkm ? 'warning' : 'danger'}
                     className={`flex mb-5 w-full justify-center rounded-2xl h-20 bg-white bg-clip-border px-3 py-4 border shadow-md ${
                       e.all_point >= e?.kkm
-                        ? 'border-[#F97316]'
+                        ? 'border-[#ffb22c]'
                         : '!border-red-500'
                     }`}
                   >
@@ -288,7 +288,7 @@ export default function PembahasanTryout({ isBimbel }: any) {
                               {e.paketRekomendasi.deskripsi}
                             </p>
                           )}
-                          <p className="text-base font-bold text-[#F97316]">
+                          <p className="text-base font-bold text-[#ffb22c]">
                             Rp {e.paketRekomendasi.harga?.toLocaleString("id-ID")}
                           </p>
                         </div>
@@ -329,7 +329,7 @@ export default function PembahasanTryout({ isBimbel }: any) {
                       Jumlah Soal: {e.count_soal}{' '}
                     </p>
                     {e.tipe_penilaian === 'BENAR_SALAH' && (
-                      <p className="text-[#F97316]">Benar: {e.answer_right}</p>
+                      <p className="text-[#ffb22c]">Benar: {e.answer_right}</p>
                     )}
                   </div>
                   <div className="flex justify-between w-full ">

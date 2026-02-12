@@ -168,14 +168,14 @@ const TicketForm: React.FC<TicketFormProps> = ({ closeModal }) => {
           <button
             type="button"
             onClick={closeModal}
-            className="py-2 px-4 border border-[#F97316] text-[#F97316] rounded-md hover:bg-[#F97316] hover:text-white transition-all"
+            className="py-2 px-4 border border-[#ffb22c] text-[#ffb22c] rounded-md hover:bg-[#ffb22c] hover:text-white transition-all"
             disabled={isLoading}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className={`py-2 px-4 bg-[#F97316] text-white rounded-md hover:bg-[#EA580C] transition-all ${
+            className={`py-2 px-4 bg-[#ffb22c] text-white rounded-md hover:bg-[#ffb22c]/90 transition-all ${
               isLoading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
             disabled={isLoading}

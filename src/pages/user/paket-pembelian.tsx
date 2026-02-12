@@ -70,8 +70,8 @@ export default function PaketPembelian() {
       {/* header section */}
       <div className="flex flex-col gap-y-5 md:flex-row md:items-center justify-start md:justify-between header-section w-full">
         <div className="title flex justify-between w-full items-start">
-          <h1 className="text-2xl text-[#F97316] font-bold mb-5">
-            Paket Tryout
+          <h1 className="text-2xl text-[#ffb22c] font-bold mb-5">
+            Paket Pembelian
           </h1>
           <Link
             to={"riwayat"}
@@ -82,22 +82,22 @@ export default function PaketPembelian() {
         </div>
       </div>
       {/* category filter */}
-      <div className="flex flex-nowrap overflow-x-auto pb-2 scrollbar-hide sm:flex-wrap sm:pb-0 gap-x-3 mb-5">
+      {/* <div className="flex flex-nowrap overflow-x-auto pb-2 scrollbar-hide sm:flex-wrap sm:pb-0 gap-x-3 mb-5">
         <button
           className={`
             py-3 px-6
             border
             rounded
             rounded
-            text-[#F97316]
-            border-[#F97316]
-            hover:bg-[#F97316]
-            hover:shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)]
+            text-[#ffb22c]
+            border-[#ffb22c]
+            hover:bg-[#ffb22c]
+            hover:shadow-[5px_5px_rgb(255,_178,_44,_0.4),_10px_10px_rgb(255,_178,_44,_0.22)]
             whitespace-nowrap flex-shrink-0
             sm:whitespace-normal sm:flex-shrink sm:mr-2 sm:mb-5
             ${
               getClass.params.category === ""
-                ? " shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)] bg-[#F97316] text-white"
+                ? " shadow-[5px_5px_rgb(255,_178,_44,_0.4),_10px_10px_rgb(255,_178,_44,_0.22)] bg-[#ffb22c] text-white"
                 : " bg-white"
             }
             hover:text-white`}
@@ -123,15 +123,15 @@ export default function PaketPembelian() {
               py-3 px-6
               border
               rounded
-              text-[#F97316]
-              border-[#F97316]
-              hover:bg-[#F97316]
-              hover:shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)]
+              text-[#ffb22c]
+              border-[#ffb22c]
+              hover:bg-[#ffb22c]
+              hover:shadow-[5px_5px_rgb(255,_178,_44,_0.4),_10px_10px_rgb(255,_178,_44,_0.22)]
               whitespace-nowrap flex-shrink-0
               sm:whitespace-normal sm:flex-shrink sm:mr-2 sm:mb-5
               ${
                 getClass.params.category === item.nama
-                  ? " shadow-[5px_5px_rgb(255,_115,_22,_0.4),_10px_10px_rgb(255,_115,_22,_0.22)] bg-[#F97316] text-white"
+                  ? " shadow-[5px_5px_rgb(255,_178,_44,_0.4),_10px_10px_rgb(255,_178,_44,_0.22)] bg-[#ffb22c] text-white"
                   : " bg-white"
               }
               hover:text-white`}
@@ -139,7 +139,7 @@ export default function PaketPembelian() {
             {item.nama}
           </button>
         ))}
-      </div>
+      </div> */}
       {/* search bar */}
       <div className="flex *:bg-slate-200 mt-4 mb-8 rounded-md border border-slate-300 mx-sm:w-fit w-full max-w-[25rem] overflow-hidden items-stretch">
         <input

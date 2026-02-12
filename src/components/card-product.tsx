@@ -42,7 +42,7 @@ export default function CardProduct({
                     transition={{ repeat: Infinity, duration: 1 }}
                     key={alumniVoucher?.value}
                   >
-                    <p className="font-semibold text-[#F97316]">
+                    <p className="font-semibold text-[#ffb22c]">
                       {formatCurrency(
                         item?.harga -
                           countDiscount(
@@ -76,8 +76,8 @@ export default function CardProduct({
           <ul className="flex flex-col gap-1 mt-5">
             {item?.paketPembelianFitur.map((item: any) => (
               <li className="flex gap-2">
-                <span className=" h-fit mt-0.5 border rounded-full  bg-orange-100">
-                  <IconCheck size={14} className="text-[#F97316]" />
+                <span className=" h-fit mt-0.5 border rounded-full  bg-[#ffb22c]/10">
+                  <IconCheck size={14} className="text-[#ffb22c]" />
                 </span>
                 <p className="block font-sans text-sm antialiased font-normal leading-relaxed text-inherit">
                   {item?.nama}
@@ -90,7 +90,7 @@ export default function CardProduct({
       <div className="p-6 pt-3">
         {!isPurchasing ? (
           <button
-            className="block w-full select-none rounded-lg bg-[#F97316] py-3.5 px-7 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            className="block w-full select-none rounded-lg bg-[#ffb22c] py-3.5 px-7 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
             type="button"
             disabled={item._count.Pembelian}
             onClick={() => {

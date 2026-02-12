@@ -76,22 +76,22 @@ export default function LatihanKecermatan() {
             <label className="block text-sm font-semibold text-gray-700 mb-2">Pilih Waktu</label>
             <style>{`
               .select-orange .t-input {
-                border: 1px solid #F97316 !important;
-                color: #F97316 !important;
+                border: 1px solid #ffb22c !important;
+                color: #ffb22c !important;
                 transition: all 0.2s linear;
               }
               .select-orange .t-input:hover, 
               .select-orange .t-input--focused,
               .select-orange.t-select-input--focused .t-input {
-                border-color: #F97316 !important;
-                box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important;
+                border-color: #ffb22c !important;
+                box-shadow: 0 0 0 2px rgba(255, 178, 44, 0.2) !important;
               }
               .select-orange .t-input__inner {
-                color: #F97316 !important;
+                color: #ffb22c !important;
                 font-weight: 500;
               }
               .select-orange .t-fake-arrow {
-                color: #F97316 !important;
+                color: #ffb22c !important;
               }
             `}</style>
             <Select 
@@ -123,7 +123,7 @@ export default function LatihanKecermatan() {
                  <div className="flex justify-between items-center">
                     <span className="font-semibold text-gray-800">Soal {index + 1}</span>
                     <button 
-                      className="text-xs bg-orange-100 hover:bg-orange-200 text-[#C2410C] px-3 py-1 rounded transition-colors"
+                      className="text-xs bg-[#ffb22c]/10 hover:bg-[#ffb22c]/20 text-[#ffb22c] px-3 py-1 rounded transition-colors"
                       onClick={() => handleRandomizeSoal(index)}
                     >
                       Acak Karakter
@@ -131,8 +131,8 @@ export default function LatihanKecermatan() {
                  </div>
                  <div className={`
                     border-2 rounded-lg px-3 h-12 flex items-center justify-between transition-colors
-                    ${item.filled ? 'border-[#F97316] bg-white' : 'border-gray-200 bg-white'}
-                    focus-within:border-[#F97316]
+                    ${item.filled ? 'border-[#ffb22c] bg-white' : 'border-gray-200 bg-white'}
+                    focus-within:border-[#ffb22c]
                  `}>
                     <input
                       type="text"
@@ -165,7 +165,7 @@ export default function LatihanKecermatan() {
                       placeholder="Input manual..."
                     />
                     {item.filled && (
-                      <div className="w-5 h-5 bg-[#F97316] rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+                      <div className="w-5 h-5 bg-[#ffb22c] rounded-full flex items-center justify-center flex-shrink-0 ml-2">
                          <IconCheck size={14} className="text-white" stroke={3} />
                       </div>
                     )}
@@ -177,18 +177,18 @@ export default function LatihanKecermatan() {
 
       {/* Footer Actions */}
       <div className="flex flex-col md:flex-row justify-end items-center gap-4">
-         <Button variant="outline" theme="warning" onClick={handleReset} icon={<IconRotateClockwise />}>
+         <Button variant="outline" theme="warning" onClick={handleReset} icon={<IconRotateClockwise />} className="!text-[#ffb22c] !border-[#ffb22c] hover:!bg-[#ffb22c] hover:!text-white">
             Reset
          </Button>
-         <Button variant="outline" theme="warning" onClick={() => setShowAutoModal(true)} icon={<IconRobot />}>
+         <Button variant="outline" theme="warning" onClick={() => setShowAutoModal(true)} icon={<IconRobot />} className="!text-[#ffb22c] !border-[#ffb22c] hover:!bg-[#ffb22c] hover:!text-white">
             Soal otomatis
          </Button>
-         <Button variant="outline" theme="warning">
+         <Button variant="outline" theme="warning" className="!text-[#ffb22c] !border-[#ffb22c] hover:!bg-[#ffb22c] hover:!text-white">
             Gunakan Soal Sebelumnya?
          </Button>
          <Button 
             theme="warning" 
-            className="bg-[#F97316] border-[#F97316]" 
+            className="!bg-[#ffb22c] !border-[#ffb22c] hover:!bg-[#ffb22c] hover:!border-[#ffb22c]" 
             icon={<IconPlayerPlay />}
             loading={loading}
             onClick={async () => {
@@ -251,8 +251,8 @@ export default function LatihanKecermatan() {
         destroyOnClose
       >
         <div className="text-center p-4">
-           <div className="w-16 h-16 rounded-full border-4 border-[#F97316] flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl font-bold text-[#F97316]">!</span>
+           <div className="w-16 h-16 rounded-full border-4 border-[#ffb22c] flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl font-bold text-[#ffb22c]">!</span>
            </div>
            
            <h2 className="text-xl font-bold text-black mb-4">Soal Otomatis</h2>
@@ -298,7 +298,7 @@ export default function LatihanKecermatan() {
               </Button>
               <Button 
                 theme="warning" 
-                className="bg-[#F97316] border-[#F97316] min-w-[100px]"
+                className="bg-[#ffb22c] border-[#ffb22c] min-w-[100px]"
                 onClick={handleConfirmAuto}
               >
                 Lanjut

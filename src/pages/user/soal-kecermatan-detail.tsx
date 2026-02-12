@@ -301,80 +301,90 @@ export default function SoalKecermatanExam() {
       return (
           <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-8 font-['Poppins']">
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-6 text-center">
-                  <h2 className="text-3xl font-bold mb-6 text-indigo-900">Hasil Ujian Kecermatan</h2>
-                  {/* <div className="flex justify-center mb-8">
-                       <div className="w-48 h-48 rounded-full border-4 border-indigo-100 flex flex-col items-center justify-center bg-indigo-50">
-                           <span className="text-4xl font-extrabold text-indigo-700">{finalScore.toFixed(0)}</span>
-                           <span className="text-sm font-bold text-gray-500 uppercase mt-1 tracking-wider">Nilai Akhir</span>
-                       </div>
-                  </div> */}
-
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
-                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
-                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">PANKER</p>
-                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScore.toFixed(0)}</div>
+                  <h2 className="text-3xl font-bold mb-6 text-[#000000]">Hasil Ujian Kecermatan</h2>
+                  {/* Final Score Section */}
+                  <div className={`mb-8 p-6 rounded-xl border ${finalCategory.bg} ${finalCategory.border} flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm`}>
+                      <div className="text-center md:text-left min-w-[200px]">
+                          <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-2">NILAI AKHIR</p>
+                          <div className="text-6xl font-extrabold text-[#d97706]">{finalScore.toFixed(0)}</div>
                       </div>
-                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
-                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">TIANKER</p>
-                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreTianker.toFixed(0)}</div>
-                      </div>
-                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
-                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">JANKER</p>
-                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreJanker.toFixed(0)}</div>
-                      </div>
-                      <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
-                           <p className="text-[10px] text-gray-500 mb-1 font-bold tracking-wider uppercase">HANKER</p>
-                           <div className="text-xl lg:text-2xl font-bold text-indigo-600">{convertedScoreHanker.toFixed(0)}</div>
+                      <div className="text-center md:text-right flex-1 border-l-0 md:border-l border-gray-200/50 pl-0 md:pl-8">
+                           <div className={`text-2xl font-bold ${finalCategory.color} mb-3`}>{finalCategory.label}</div>
+                           <p className="text-gray-700 text-base leading-relaxed">{finalCategory.desc}</p>
                       </div>
                   </div>
 
-                   <div className="grid grid-cols-1 gap-4 mb-6 text-left">
-                      <div className={`p-5 rounded-lg border ${panker.bg} ${panker.border}`}>
-                           <h3 className={`font-bold text-md mb-2 ${panker.color} flex items-center gap-2`}>
-                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">PANKER</span> {panker.label}
-                           </h3>
-                           <p className="text-gray-700 text-sm mb-2">{panker.desc}</p>
-                           <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {panker.saran}</p>
-                      </div>
-                      <div className={`p-5 rounded-lg border ${tianker.bg} ${tianker.border}`}>
-                           <h3 className={`font-bold text-md mb-2 ${tianker.color} flex items-center gap-2`}>
-                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">TIANKER</span> {tianker.label}
-                           </h3>
-                           <p className="text-gray-700 text-sm mb-2">{tianker.desc}</p>
-                           <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {tianker.saran}</p>
+                  {/* Detailed Stats Rows */}
+                  <div className="flex flex-col gap-6 mb-8">
+                      {/* PANKER */}
+                      <div className="flex flex-col md:flex-row gap-4">
+                          <div className="w-full md:w-48 bg-gray-50 rounded-xl border border-gray-100 p-6 flex flex-col items-center justify-center shadow-sm shrink-0">
+                              <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">PANKER</p>
+                              <div className="text-4xl font-bold text-[#000000]">{convertedScore.toFixed(0)}</div>
+                          </div>
+                          <div className={`flex-1 p-6 rounded-xl border ${panker.bg} ${panker.border} text-left`}>
+                              <div className="flex items-center gap-3 mb-3">
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${panker.color.replace('text-', 'border-')} ${panker.color} bg-white uppercase tracking-wider`}>PANKER</span>
+                                  <span className={`font-bold text-lg ${panker.color}`}>{panker.label}</span>
+                              </div>
+                              <p className="text-gray-700 text-sm mb-3 leading-relaxed">{panker.desc}</p>
+                              <p className="text-gray-500 text-xs"><span className="font-bold text-gray-600">Saran:</span> <span className="italic">{panker.saran}</span></p>
+                          </div>
                       </div>
 
-                      <div className={`p-5 rounded-lg border ${janker.bg} ${janker.border}`}>
-                           <h3 className={`font-bold text-md mb-2 ${janker.color} flex items-center gap-2`}>
-                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">JANKER</span> {janker.label}
-                           </h3>
-                           <p className="text-gray-700 text-sm mb-2">{janker.desc}</p>
-                           <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {janker.saran}</p>
+                      {/* TIANKER */}
+                      <div className="flex flex-col md:flex-row gap-4">
+                          <div className="w-full md:w-48 bg-gray-50 rounded-xl border border-gray-100 p-6 flex flex-col items-center justify-center shadow-sm shrink-0">
+                              <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">TIANKER</p>
+                              <div className="text-4xl font-bold text-[#000000]">{convertedScoreTianker.toFixed(0)}</div>
+                          </div>
+                          <div className={`flex-1 p-6 rounded-xl border ${tianker.bg} ${tianker.border} text-left`}>
+                              <div className="flex items-center gap-3 mb-3">
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${tianker.color.replace('text-', 'border-')} ${tianker.color} bg-white uppercase tracking-wider`}>TIANKER</span>
+                                  <span className={`font-bold text-lg ${tianker.color}`}>{tianker.label}</span>
+                              </div>
+                              <p className="text-gray-700 text-sm mb-3 leading-relaxed">{tianker.desc}</p>
+                              <p className="text-gray-500 text-xs"><span className="font-bold text-gray-600">Saran:</span> <span className="italic">{tianker.saran}</span></p>
+                          </div>
                       </div>
-                      <div className={`p-5 rounded-lg border ${hanker.bg} ${hanker.border}`}>
-                           <h3 className={`font-bold text-md mb-2 ${hanker.color} flex items-center gap-2`}>
-                                <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">HANKER</span> {hanker.label}
-                           </h3>
-                           <p className="text-gray-700 text-sm mb-2">{hanker.desc}</p>
-                           <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {hanker.saran}</p>
-                      </div>
-                  </div>
 
-                  <div className={`mb-8 p-6 rounded-xl border-2 ${finalCategory.border} ${finalCategory.bg} flex flex-col md:flex-row items-center justify-between gap-6`}>
-                      <div className="text-center md:text-left">
-                          <p className="text-sm text-gray-600 font-bold uppercase tracking-wider mb-1">Nilai Akhir</p>
-                          <div className={`text-5xl font-extrabold ${finalCategory.color}`}>{finalScore.toFixed(0)}</div>
+                      {/* JANKER */}
+                      <div className="flex flex-col md:flex-row gap-4">
+                          <div className="w-full md:w-48 bg-gray-50 rounded-xl border border-gray-100 p-6 flex flex-col items-center justify-center shadow-sm shrink-0">
+                              <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">JANKER</p>
+                              <div className="text-4xl font-bold text-[#000000]">{convertedScoreJanker.toFixed(0)}</div>
+                          </div>
+                          <div className={`flex-1 p-6 rounded-xl border ${janker.bg} ${janker.border} text-left`}>
+                              <div className="flex items-center gap-3 mb-3">
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${janker.color.replace('text-', 'border-')} ${janker.color} bg-white uppercase tracking-wider`}>JANKER</span>
+                                  <span className={`font-bold text-lg ${janker.color}`}>{janker.label}</span>
+                              </div>
+                              <p className="text-gray-700 text-sm mb-3 leading-relaxed">{janker.desc}</p>
+                              <p className="text-gray-500 text-xs"><span className="font-bold text-gray-600">Saran:</span> <span className="italic">{janker.saran}</span></p>
+                          </div>
                       </div>
-                      <div className="text-center md:text-right flex-1">
-                           <div className={`text-2xl font-bold ${finalCategory.color} mb-2`}>{finalCategory.label}</div>
-                           <p className="text-gray-700 text-lg">{finalCategory.desc}</p>
+
+                      {/* HANKER */}
+                      <div className="flex flex-col md:flex-row gap-4">
+                          <div className="w-full md:w-48 bg-gray-50 rounded-xl border border-gray-100 p-6 flex flex-col items-center justify-center shadow-sm shrink-0">
+                              <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">HANKER</p>
+                              <div className="text-4xl font-bold text-[#000000]">{convertedScoreHanker.toFixed(0)}</div>
+                          </div>
+                          <div className={`flex-1 p-6 rounded-xl border ${hanker.bg} ${hanker.border} text-left`}>
+                              <div className="flex items-center gap-3 mb-3">
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${hanker.color.replace('text-', 'border-')} ${hanker.color} bg-white uppercase tracking-wider`}>HANKER</span>
+                                  <span className={`font-bold text-lg ${hanker.color}`}>{hanker.label}</span>
+                              </div>
+                              <p className="text-gray-700 text-sm mb-3 leading-relaxed">{hanker.desc}</p>
+                              <p className="text-gray-500 text-xs"><span className="font-bold text-gray-600">Saran:</span> <span className="italic">{hanker.saran}</span></p>
+                          </div>
                       </div>
                   </div>
               </div>
 
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
                       <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                          <span className="text-orange-600">📈</span> Grafik Performa Pengerjaan
+                          <span className="text-[#000000]">📈</span> Grafik Performa Pengerjaan
                       </h3>
                       <div className="h-80">
                           <ResponsiveContainer width="100%" height="100%">
@@ -420,9 +430,9 @@ export default function SoalKecermatanExam() {
                                <h3 className="text-xl font-bold text-gray-800">Pembahasan</h3>
                                <div className="w-full md:w-64">
                                     <style>{`
-                                        .select-orange .t-input { border: 1px solid #F97316 !important; color: #F97316 !important; }
-                                        .select-orange .t-input__inner { color: #F97316 !important; font-weight: 600; }
-                                        .select-orange .t-fake-arrow { color: #F97316 !important; }
+                                        .select-orange .t-input { border: 1px solid #ffb22c !important; color: #ffb22c !important; }
+                                        .select-orange .t-input__inner { color: #ffb22c !important; font-weight: 600; }
+                                        .select-orange .t-fake-arrow { color: #ffb22c !important; }
                                     `}</style>
                                     <Select 
                                         value={reviewColumnIndex}
@@ -442,7 +452,7 @@ export default function SoalKecermatanExam() {
                                             <div key={idx} className="bg-gray-50 p-2 text-center font-bold text-xs text-gray-700 border-b border-gray-200">{char}</div>
                                         ))}
                                         {data[reviewColumnIndex]?.kiasan?.map((sym: string, idx: number) => (
-                                            <div key={idx} className="p-2 text-center font-bold text-xl text-indigo-600">{sym}</div>
+                                            <div key={idx} className="p-2 text-center font-bold text-xl text-[#000000]">{sym}</div>
                                         ))}
                                     </div>
                                 </div>
@@ -467,9 +477,9 @@ export default function SoalKecermatanExam() {
                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400 font-medium">{idx + 1}</td>
                                                    <td className="px-6 py-4 whitespace-nowrap text-2xl font-bold text-gray-800 tracking-widest">{Array.isArray(ans.soal) ? ans.soal.join(' ') : ans.soal}</td>
                                                    <td className="px-6 py-4 whitespace-nowrap text-center text-lg font-bold text-gray-700">{ans.userAnswer}</td>
-                                                   <td className="px-6 py-4 whitespace-nowrap text-center text-lg font-bold text-indigo-600">{ans.correctAnswer}</td>
+                                                   <td className="px-6 py-4 whitespace-nowrap text-center text-lg font-bold text-[#000000]">{ans.correctAnswer}</td>
                                                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                                                       <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${ans.isCorrect ? 'bg-orange-100 text-[#F97316]' : 'bg-red-100 text-red-600'}`}>{ans.isCorrect ? 'Benar' : 'Salah'}</span>
+                                                       <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${ans.isCorrect ? 'bg-orange-100 text-[#ffb22c]' : 'bg-red-100 text-red-600'}`}>{ans.isCorrect ? 'Benar' : 'Salah'}</span>
                                                    </td>
                                                </tr>
                                            );
@@ -528,7 +538,7 @@ export default function SoalKecermatanExam() {
            </div>
            
            <div className="flex flex-col items-center">
-                <div className="text-3xl font-bold text-indigo-600 flex items-center gap-2">
+                <div className="text-3xl font-bold text-[#000000] flex items-center gap-2">
                     <IconClock /> {formatTime(timer)}
                 </div>
            </div>
@@ -549,7 +559,7 @@ export default function SoalKecermatanExam() {
                 ))}
                 {/* Values (Kiasan/Keys) */}
                 {currentKiasan.kiasan.map((key: string, idx: number) => (
-                    <div key={`key-${idx}`} className="p-3 text-center font-bold text-2xl text-indigo-600 bg-white">
+                    <div key={`key-${idx}`} className="p-3 text-center font-bold text-2xl text-[#000000] bg-white">
                         {key}
                     </div>
                 ))}
@@ -583,7 +593,7 @@ export default function SoalKecermatanExam() {
                    <button 
                         key={idx}
                         onClick={() => handleAnswer(key)}
-                        className="py-4 rounded-xl bg-indigo-600 text-white font-bold text-2xl hover:bg-indigo-700 active:scale-95 transition-all shadow-lg hover:shadow-indigo-200"
+                        className="py-4 rounded-xl bg-[#000000] text-white font-bold text-2xl hover:bg-[#333333] active:scale-95 transition-all shadow-lg hover:shadow-gray-200"
                    >
                        {key}
                    </button>

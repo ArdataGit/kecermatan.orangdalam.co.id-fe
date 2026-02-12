@@ -263,7 +263,7 @@ export default function OnGoingTryout({ isPembahasan, isBimbel }: any) {
                   <p
                     className={`
                     mt-2 px-2 text-base text-gray-600 text-center ${
-                      allPoint.isPassing ? 'text-[#F97316]' : 'text-red-500'
+                      allPoint.isPassing ? 'text-[#ffb22c]' : 'text-red-500'
                     }`}
                   >
                     {allPoint.isPassing
@@ -277,7 +277,7 @@ export default function OnGoingTryout({ isPembahasan, isBimbel }: any) {
                     theme={allPoint.isPassing ? 'warning' : 'danger'}
                     className={`flex  h-full w-full justify-center rounded-2xl bg-white bg-clip-border py-4 border shadow-md ${
                       allPoint.isPassing
-                        ? 'border-[#F97316]'
+                        ? 'border-[#ffb22c]'
                         : '!border-red-500'
                     }`}
                   >
@@ -296,7 +296,7 @@ export default function OnGoingTryout({ isPembahasan, isBimbel }: any) {
                       theme={e.all_point >= e.kkm ? 'warning' : 'danger'}
                       className={`flex  h-full w-[48%] !m-0 justify-center rounded-2xl bg-white bg-clip-border py-4 border shadow-md ${
                         e.all_point >= e.kkm
-                          ? 'border-[#F97316]'
+                          ? 'border-[#ffb22c]'
                           : '!border-red-500'
                       }`}
                     >
@@ -336,7 +336,7 @@ export default function OnGoingTryout({ isPembahasan, isBimbel }: any) {
                     <p className="self-center">Salah</p>
                   </div>
                   <div className="flex mb-5 gap-2">
-                    <div className="w-[30px] h-[30px] bg-[#F97316]"></div>
+                    <div className="w-[30px] h-[30px] bg-[#ffb22c]"></div>
                     <p className="self-center">Benar</p>
                   </div>
                   <div className="flex mb-5 gap-2">
@@ -356,7 +356,7 @@ export default function OnGoingTryout({ isPembahasan, isBimbel }: any) {
                       soalId?.[onShow]?.id === item.id
                         ? 'bg-[#1e1b4b] text-white border border-[#1e1b4b]'
                         : item.status === 'BENAR'
-                        ? '!bg-[#F97316] text-white'
+                        ? '!bg-[#ffb22c] text-white'
                         : item.status === 'SALAH' && item.isAnswer
                         ? 'bg-red-500 border border-red-500 text-white'
                         : soalId?.[onShow]?.id === item.id
@@ -364,7 +364,7 @@ export default function OnGoingTryout({ isPembahasan, isBimbel }: any) {
                         : item.status === 'SALAH' && !item.isAnswer
                         ? 'bg-gray-300 text-white'
                         : soalId?.[onShow]?.id !== item.id && item.isAnswer
-                        ? 'border border-[#F97316] text-white bg-[#F97316]'
+                        ? 'border border-[#ffb22c] text-white bg-[#ffb22c]'
                         : ' border border-gray-300'
                     }
                   `}
@@ -376,7 +376,7 @@ export default function OnGoingTryout({ isPembahasan, isBimbel }: any) {
               </ul>
               {!isPembahasan && (
                 <button
-                  className="bg-[#F97316] text-white w-full py-3 mt-4 text-sm rounded-md hover:shadow-md"
+                  className="bg-[#ffb22c] text-white w-full py-3 mt-4 text-sm rounded-md hover:shadow-md"
                   onClick={() => {
                     setIsFinish(true);
                   }}
@@ -416,7 +416,7 @@ export default function OnGoingTryout({ isPembahasan, isBimbel }: any) {
                   <div
                     key={index}
                     className={`w-full flex mb-3 justify-start ${
-                      isPembahasan && item.isCorrect ? 'text-[#F97316]' : ''
+                      isPembahasan && item.isCorrect ? 'text-[#ffb22c]' : ''
                     }
                   ${
                     isPembahasan && item.id === selected ? 'text-red-500' : ''
@@ -449,7 +449,7 @@ export default function OnGoingTryout({ isPembahasan, isBimbel }: any) {
                     >
                       <p
                         className={`font-semibold mr-2 ${
-                          isPembahasan && item.isCorrect ? 'text-[#F97316]' : ''
+                          isPembahasan && item.isCorrect ? 'text-[#ffb22c]' : ''
                         }`}
                       >
                         {String.fromCharCode(65 + index)}.{' '}

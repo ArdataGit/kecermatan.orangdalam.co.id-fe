@@ -490,9 +490,9 @@ export default function RiwayatLatihanKecermatanDetail() {
             <h3 className="text-md font-bold text-gray-700">Detail Jawaban</h3>
             <div className="flex flex-wrap items-center gap-4">
                 <style>{`
-                    .select-orange-small .t-input { border: 1px solid #F97316 !important; height: 32px !important; width: 140px !important; }
-                    .select-orange-small .t-input__inner { color: #F97316 !important; font-size: 12px !important; font-weight: 600; }
-                    .select-orange-small .t-fake-arrow { color: #F97316 !important; }
+                    .select-orange-small .t-input { border: 1px solid #ffb22c !important; height: 32px !important; width: 140px !important; }
+                    .select-orange-small .t-input__inner { color: #ffb22c !important; font-size: 12px !important; font-weight: 600; }
+                    .select-orange-small .t-fake-arrow { color: #ffb22c !important; }
                 `}</style>
                 {showDetailJawaban && (
                     <Select 

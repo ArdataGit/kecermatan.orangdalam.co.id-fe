@@ -88,7 +88,7 @@ export default function SideMenu({
                   hover:bg-indigo-100 dark:hover:bg-gray-800
                   ${
                     checkRouteActive(page.link, location.pathname, 0, page.exact) &&
-                    'bg-[#F97316] text-white'
+                    'bg-[#ffb22c] text-white'
                   }`}
                 to={page.link}
                 onClick={() => {
@@ -104,11 +104,11 @@ export default function SideMenu({
                 {page.count && data?.[page.count] ? (
                   <span
                     className={`text-xs w-[22px] h-[22px] flex justify-center items-center rounded-full 
-                      bg-[#F97316] text-white
-                      dark:bg-[#F97316] dark:text-gray-900
+                      bg-[#ffb22c] text-white
+                      dark:bg-[#ffb22c] dark:text-gray-900
                       ${
                         checkRouteActive(page.link, location.pathname, 0, page.exact) &&
-                        'bg-white text-[#F97316] dark:bg-gray-100'
+                        'bg-white text-[#ffb22c] dark:bg-gray-100'
                       }`}
                   >
                     {data?.[page.count]}
@@ -143,7 +143,7 @@ export default function SideMenu({
                   hover:bg-indigo-100 dark:hover:bg-gray-800
                   ${
                     checkRouteActive('/affiliate', location.pathname) &&
-                    'bg-[#F97316] text-white'
+                    'bg-[#ffb22c] text-white'
                   }`}
                 onClick={() => {
                   if (window.innerWidth < 768) {
@@ -163,7 +163,7 @@ export default function SideMenu({
                   hover:bg-indigo-100 dark:hover:bg-gray-800
                   ${
                     checkRouteActive('/affiliate-commission', location.pathname) &&
-                    'bg-[#F97316] text-white'
+                    'bg-[#ffb22c] text-white'
                   }`}
                 onClick={() => {
                   if (window.innerWidth < 768) {
@@ -194,7 +194,7 @@ export default function SideMenu({
                   hover:bg-indigo-100 dark:hover:bg-gray-800
                   ${
                     location.pathname === '/profile' && location.search.includes('tab=affiliate') &&
-                    'bg-[#F97316] text-white'
+                    'bg-[#ffb22c] text-white'
                   }`}
                 onClick={() => {
                   if (window.innerWidth < 768) {
@@ -242,7 +242,7 @@ export default function SideMenu({
                             `my-class/${item.paketPembelianId}`,
                             location.pathname,
                             item.paketPembelianId
-                          ) && 'bg-[#F97316] text-white'
+                          ) && 'bg-[#ffb22c] text-white'
                         }`}
                       onClick={() => {
                         if (menuOpened?.includes(item.paketPembelianId)) {
@@ -293,7 +293,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/materi`,
                                   location.pathname
-                                ) && 'text-[#F97316]'
+                                ) && 'text-[#ffb22c]'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">
@@ -314,7 +314,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/bimbel`,
                                   location.pathname
-                                ) && 'text-[#F97316] bg-gray-50 dark:bg-gray-800'
+                                ) && 'text-[#ffb22c] bg-gray-50 dark:bg-gray-800'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">
@@ -335,7 +335,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/tryout`,
                                   location.pathname
-                                ) && 'text-[#F97316] bg-gray-50 dark:bg-gray-800'
+                                ) && 'text-[#ffb22c] bg-gray-50 dark:bg-gray-800'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">
@@ -356,7 +356,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/kecermatan`,
                                   location.pathname
-                                ) && 'text-[#F97316] bg-gray-50 dark:bg-gray-800'
+                                ) && 'text-[#ffb22c] bg-gray-50 dark:bg-gray-800'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">
@@ -377,7 +377,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/bacaan`,
                                   location.pathname
-                                ) && 'text-[#F97316] bg-gray-50 dark:bg-gray-800'
+                                ) && 'text-[#ffb22c] bg-gray-50 dark:bg-gray-800'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">
@@ -398,7 +398,7 @@ export default function SideMenu({
                                 checkRouteActive(
                                   `my-class/${item.paketPembelianId}/isian`,
                                   location.pathname
-                                ) && 'text-[#F97316] bg-gray-50 dark:bg-gray-800'
+                                ) && 'text-[#ffb22c] bg-gray-50 dark:bg-gray-800'
                               }`}
                           >
                             <div className="flex items-center gap-x-3">

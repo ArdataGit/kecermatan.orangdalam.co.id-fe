@@ -104,7 +104,7 @@ export default function RiwayatPembelianPage() {
               (daysLeft < 0 ? (
                 <span className="block text-red-500 text-xs">Sudah Berakhir</span>
               ) : (
-                <span className="block text-[#F97316] text-xs">
+                <span className="block text-[#ffb22c] text-xs">
                   Tersisa: {daysLeft} Hari
                 </span>
               ))}

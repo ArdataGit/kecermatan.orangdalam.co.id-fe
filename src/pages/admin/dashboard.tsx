@@ -62,7 +62,7 @@ export default function DashboardAdmin() {
           </div>
           <div className="item-stat bg-white rounded-2xl p-5">
             <div className="flex flex-row mb-7 justify-between">
-              <div className="bg-orange-500 rounded-full w-fit p-3">
+              <div className="bg-[#ffb22c] rounded-full w-fit p-3">
                 <svg
                   width="24"
                   height="24"

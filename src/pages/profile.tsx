@@ -567,7 +567,7 @@ const onSubmitProfil = async (data: any) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-orange-100 p-4 rounded text-center">
                     <h5>Saldo Komisi Saat Ini</h5>
-                    <h3 className="text-[#F97316]">Rp {balanceFormatted}</h3>
+                    <h3 className="text-[#ffb22c]">Rp {balanceFormatted}</h3>
                   </div>
                   <div className="bg-blue-100 p-4 rounded text-center">
                     <h5>Total Sudah Dicairkan</h5>
@@ -576,7 +576,7 @@ const onSubmitProfil = async (data: any) => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                  <Button theme="primary" onClick={() => setWithdrawVisible(true)} className="w-full sm:w-auto flex-1 !bg-[#F97316] !border-[#F97316]">
+                  <Button theme="primary" onClick={() => setWithdrawVisible(true)} className="w-full sm:w-auto flex-1 !bg-[#ffb22c] !border-[#ffb22c]">
                     Ajukan Pencairan Komisi
                   </Button>
                   <Button theme="default" onClick={() => setHistoryVisible(true)} className="w-full sm:w-auto flex-1">
@@ -607,7 +607,7 @@ const onSubmitProfil = async (data: any) => {
       {/* === MODAL WITHDRAW === */}
       <Modal visible={withdrawVisible} onClose={() => setWithdrawVisible(false)} title={<div className="text-lg font-semibold">Ajukan Pencairan Komisi</div>}>
         <div className="space-y-4">
-          <div className="bg-orange-50 border border-orange-200 text-[#F97316] p-3 rounded-md text-sm">
+          <div className="bg-orange-50 border border-orange-200 text-[#ffb22c] p-3 rounded-md text-sm">
             Saldo tersedia: <strong>Rp {balanceFormatted}</strong>
           </div>
 
@@ -668,7 +668,7 @@ const onSubmitProfil = async (data: any) => {
           <Button onClick={() => setWithdrawVisible(false)}>Batal</Button>
           <Button
             theme="primary"
-            className="!bg-[#F97316] !border-[#F97316]"
+            className="!bg-[#ffb22c] !border-[#ffb22c]"
             loading={isSubmitting}
             disabled={pendingWithdrawals.length > 0 || isAmountExceedsBalance || !withdrawAmount || isDestinationEmpty || isSubmitting}
             onClick={handleWithdrawSubmit}
@@ -683,8 +683,8 @@ const onSubmitProfil = async (data: any) => {
         <div className="space-y-4">
           
             <div className="bg-orange-50 border border-orange-200 p-3 rounded-md text-center">
-              <h5 className="text-sm text-[#F97316]">Total Disetujui</h5>
-              <h3 className="text-lg font-semibold text-[#F97316]">Rp {summary.total_approved_formatted}</h3>
+              <h5 className="text-sm text-[#ffb22c]">Total Disetujui</h5>
+              <h3 className="text-lg font-semibold text-[#ffb22c]">Rp {summary.total_approved_formatted}</h3>
             </div>
 
           {withdrawHistory.length > 0 ? (

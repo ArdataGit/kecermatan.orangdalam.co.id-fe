@@ -420,9 +420,9 @@ export default function DetailRiwayatKecermatanUser() {
             <h3 className="text-md font-bold text-gray-700">Detail Jawaban</h3>
             <div className="flex flex-wrap items-center gap-4">
                 <style>{`
-                    .select-orange-small .t-input { border: 1px solid #F97316 !important; height: 32px !important; width: 140px !important; }
-                    .select-orange-small .t-input__inner { color: #F97316 !important; font-size: 12px !important; font-weight: 600; }
-                    .select-orange-small .t-fake-arrow { color: #F97316 !important; }
+                    .select-orange-small .t-input { border: 1px solid #ffb22c !important; height: 32px !important; width: 140px !important; }
+                    .select-orange-small .t-input__inner { color: #ffb22c !important; font-size: 12px !important; font-weight: 600; }
+                    .select-orange-small .t-fake-arrow { color: #ffb22c !important; }
                 `}</style>
                 {showDetailJawaban && (() => {
                     // Get unique kiasan IDs to create column options
@@ -522,7 +522,7 @@ export default function DetailRiwayatKecermatanUser() {
                                             <span className="font-bold text-gray-500 mr-2">No. {index + 1}</span>
                                             <span className="text-sm text-gray-400">{moment(item.createdAt).locale('id').format('LL HH:mm:ss')}</span>
                                         </div>
-                                        <div className={`px-3 py-1 rounded-full text-xs font-bold ${item.jawaban === item.soalKecermatan?.jawaban ? 'bg-orange-100 text-[#F97316]' : 'bg-red-100 text-red-600'}`}>
+                                        <div className={`px-3 py-1 rounded-full text-xs font-bold ${item.jawaban === item.soalKecermatan?.jawaban ? 'bg-orange-100 text-[#ffb22c]' : 'bg-red-100 text-red-600'}`}>
                                             {item.jawaban === item.soalKecermatan?.jawaban ? 'Benar' : 'Salah'}
                                         </div>
                                     </div>

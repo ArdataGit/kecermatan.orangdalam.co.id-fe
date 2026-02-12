@@ -10,7 +10,7 @@ const CardKecermatan = ({ data, id }: any) => (
     <div className="text-center text-2xl mb-4 font-semibold">
       {data?.kategoriSoalKecermatan?.judul_kategori}
     </div>
-    <div className="h-1 w-2/3 bg-[#F97316] mx-auto mb-6"></div>
+    <div className="h-1 w-2/3 bg-[#ffb22c] mx-auto mb-6"></div>
 
     <div className="flex justify-between items-center mb-4">
       <span className="font-semibold">Jumlah:</span>
@@ -46,13 +46,13 @@ const CardKecermatan = ({ data, id }: any) => (
       <Link
         to={`/soal-kecermatan/${data?.kategoriSoalKecermatan?.id}`}
         state={{ classId: id }}
-        className="w-full bg-[#F97316] text-white py-2 rounded-md transition-all hover:bg-orange-600 text-center font-semibold"
+        className="w-full bg-[#ffb22c] text-white py-2 rounded-md transition-all hover:bg-[#ffb22c]/90 text-center font-semibold"
       >
         Kerjakan
       </Link>
       <Link
         to={`/my-class/${id}/kecermatan/${data?.kategoriSoalKecermatan?.id}/riwayat`}
-        className="w-full border border-[#F97316] text-[#F97316] py-2 rounded-md transition-all hover:bg-[#F97316] hover:text-white text-center font-semibold"
+        className="w-full border border-[#ffb22c] text-[#ffb22c] py-2 rounded-md transition-all hover:bg-[#ffb22c] hover:text-white text-center font-semibold"
       >
         Riwayat
       </Link>
@@ -110,7 +110,7 @@ export default function ListKecermatan() {
                   className="self-center p-0 m-0 relative mt-2 rounded-xl text-primary hover:underline flex items-center"
                   onClick={() => setVisible(true)}
                 >
-                  <span className="text-xs relative text-[#F97316]">
+                  <span className="text-xs relative text-[#ffb22c]">
                     Masuk group dan baca petunjuk Kecermatan
                   </span>
                 </button>
@@ -138,13 +138,13 @@ export default function ListKecermatan() {
             border 
             rounded
             mr-4
-            border-[#F97316]
-            hover:bg-[#F97316]
-            hover:shadow-[5px_5px_rgba(249,115,22,0.3)]         
+            border-[#ffb22c]
+            hover:bg-[#ffb22c]
+            hover:shadow-[5px_5px_rgba(255,178,44,0.3)]         
             ${
               searchParams.get('type') === item
-                ? ' shadow-[5px_5px_rgba(249,115,22,0.3)] bg-[#F97316] text-white'
-                : ' bg-white text-[#F97316]'
+                ? ' shadow-[5px_5px_rgba(255,178,44,0.3)] bg-[#ffb22c] text-white'
+                : ' bg-white text-[#ffb22c]'
             }   
             hover:text-white transition-all font-semibold`}
           >

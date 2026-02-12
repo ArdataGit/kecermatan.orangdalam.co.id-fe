@@ -20,7 +20,7 @@ const menuList = [
 
       {
         icon: <IconBuildingStore />,
-        title: 'COBA TES KECERMATAN, GRATIS!',
+        title: 'COBA TES KECERMATAN',
         link: '/latihan-kecermatan',
         count: 'latihan-kecermatan',
       },
@@ -49,22 +49,23 @@ const menuList = [
         count: 'pembelian',
         exact: true,
       },
-	  {
-        link: '/my-tickets',
-        title: 'My Tickets',
-        icon: <IconTicket size={20} />,
-      },
+	  // {
+    //     link: '/my-tickets',
+    //     title: 'My Tickets',
+    //     icon: <IconTicket size={20} />,
+    //   },
       // {
       //   icon: <IconBrandTrello />,
       //   title: 'Kelas saya',
       //   link: '/my-class',
       // },
+      // {
+      //   icon: <IconCalendarEvent />,
+      //   title: 'Event',
+      //   link: '/event',
+      //   count: 'event',
+      // },      
       {
-        icon: <IconCalendarEvent />,
-        title: 'Event',
-        link: '/event',
-        count: 'event',
-      },      {
         icon: <IconBrandCashapp />,
         title: 'Riwayat Pembelian',
         link: '/paket-pembelian/riwayat',

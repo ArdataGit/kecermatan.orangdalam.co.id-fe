@@ -59,7 +59,7 @@ export default function RiwayatIsianUser() {
         colKey: 'totalScore',
         align: AlignType.Center,
         width: 150,
-        cell: ({ row }: any) => <span className="font-bold text-lg text-[#F97316]">{row.totalScore}</span>,
+        cell: ({ row }: any) => <span className="font-bold text-lg text-[#ffb22c]">{row.totalScore}</span>,
     },
     {
       title: 'Waktu Pengerjaan',

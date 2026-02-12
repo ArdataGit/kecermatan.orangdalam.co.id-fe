@@ -144,14 +144,14 @@ export default function Example() {
                     // },
                   }}
                 />
-                <Button type="submit" isLoading={isLoading} className="!bg-[#F97316] !border-[#F97316]">
+                <Button type="submit" isLoading={isLoading} className="!bg-[#ffb22c] !border-[#ffb22c]">
                   Register
                 </Button>
                 <div className="mt-3 text-center">
                   <p className="mt-10 text-center text-sm text-gray-500">
                     <span
                       style={{
-                        color: "#F97316",
+                        color: "#ffb22c",
                         padding: "0 4px",
                         borderRadius: "4px",
                       }}
@@ -162,7 +162,7 @@ export default function Example() {
                         className="font-semibold leading-6 hover:text-gray-300"
                         style={{
                           textDecoration: "underline",
-                          color: "#F97316",
+                          color: "#ffb22c",
                         }}
                       >
                         Login sekarang

@@ -232,7 +232,7 @@ export default function PaymentModal({
               </div>
               <div className="flex items-center justify-between py-4">
                 <dt className="text-base font-semibold text-gray-900">Total</dt>
-                <dd className="text-base font-semibold text-[#F97316] mr-4">
+                <dd className="text-base font-semibold text-[#ffb22c] mr-4">
                   {itemDetail.harga != isFree && PotonganDiscount ? (
                     <span className="line-through mr-4 font-medium text-xs text-gray-900">
                       {formatCurrency(itemDetail.harga)}

@@ -37,11 +37,11 @@ const menuList = [
         title: 'Feedback User',
         icon: <IconInfoCircle size={20} />,
       },
-      {
-        link: '/manage-ticket',
-        title: 'Manage Ticket',
-        icon: <IconTicket size={20} />,
-      },
+      // {
+      //   link: '/manage-ticket',
+      //   title: 'Manage Ticket',
+      //   icon: <IconTicket size={20} />,
+      // },
     ],
   },
   {
@@ -62,16 +62,16 @@ const menuList = [
         title: 'Latihan Kecermatan',
         link: '/manage-latihan-kecermatan',
       },
-      {
-        icon: <IconEye />,
-        title: 'Bank Soal Ya atau Tidak',
-        link: '/manage-soal-bacaan',
-      },
-      {
-        icon: <IconNotebook />,
-        title: 'Bank Soal Isian',
-        link: '/manage-soal-isian',
-      },
+      // {
+      //   icon: <IconEye />,
+      //   title: 'Bank Soal Ya atau Tidak',
+      //   link: '/manage-soal-bacaan',
+      // },
+      // {
+      //   icon: <IconNotebook />,
+      //   title: 'Bank Soal Isian',
+      //   link: '/manage-soal-isian',
+      // },
       {
         icon: <IconClipboardData />,
         title: 'Paket Latihan',
@@ -108,11 +108,11 @@ const menuList = [
         title: 'Rekap Penjualan',
         link: '/rekap-penjualan',
       },
-      {
-        icon: <IconCalendarEvent />,
-        title: 'Event',
-        link: '/manage-event',
-      },
+      // {
+      //   icon: <IconCalendarEvent />,
+      //   title: 'Event',
+      //   link: '/manage-event',
+      // },
       {
         icon: <IconDeviceAnalytics />,
         title: 'User',

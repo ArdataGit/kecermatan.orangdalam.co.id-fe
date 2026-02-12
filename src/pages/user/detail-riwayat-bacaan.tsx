@@ -95,7 +95,7 @@ export default function DetailRiwayatBacaanUser() {
 
                                     <div className="p-4 border rounded-lg bg-white min-w-[200px] text-center shrink-0">
                                         <p className="text-xs text-gray-500 uppercase mb-2">Jawaban Anda</p>
-                                        <p className="text-base font-bold text-[#F97316] whitespace-pre-wrap text-left">
+                                        <p className="text-base font-bold text-[#ffb22c] whitespace-pre-wrap text-left">
                                             {item.jawaban}
                                         </p>
                                     </div>

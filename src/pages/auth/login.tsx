@@ -212,7 +212,7 @@ export default function Example() {
                 >
                   Lupa password?
                 </Link>
-                <Button type="submit" isLoading={isLoading} className="!bg-[#F3BD02] !border-[#F3BD02]">
+                <Button type="submit" isLoading={isLoading} className="!bg-[#ffb22c] !border-[#ffb22c] shadow-[#ffb22c]/20 hover:shadow-[#ffb22c]/40">
                   Login
                 </Button>
 
@@ -257,7 +257,7 @@ export default function Example() {
                   <p className="mt-10 text-center text-sm text-gray-500">
                     <span
                       style={{
-                        color: "#F3BD02",
+                        color: "#ffb22c",
                         padding: "0 4px",
                         borderRadius: "4px",
                       }}
@@ -268,7 +268,7 @@ export default function Example() {
                         className="font-semibold leading-6 hover:text-gray-300"
                         style={{
                           textDecoration: "underline",
-                          color: "#F3BD02",
+                          color: "#ffb22c",
                         }}
                       >
                         Daftar sekarang

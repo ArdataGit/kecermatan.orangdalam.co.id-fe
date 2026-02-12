@@ -119,7 +119,7 @@ export default function UserIndex() {
               moment(row.expiredAt).diff(moment(), 'days') < 0 ? (
                 <span className="text-red-500">Sudah Berakhir</span>
               ) : (
-                <span className="text-[#F97316]">
+                <span className="text-[#ffb22c]">
                   Tersisa: {moment(row.expiredAt).diff(moment(), 'days')} Hari
                 </span>
               )
@@ -155,7 +155,7 @@ export default function UserIndex() {
                 shape="circle"
                 theme="primary"
                 variant="outline"
-                className="!border-[#F97316] !text-[#F97316] hover:!bg-[#F97316] hover:!text-white"
+                className="!border-[#ffb22c] !text-[#ffb22c] hover:!bg-[#ffb22c] hover:!text-white"
                 onClick={() => {
                   window.open(row.paymentUrl, '_blank');
                 }}
@@ -168,7 +168,7 @@ export default function UserIndex() {
                 disabled={row.status !== 'PAID'}
                 shape="circle"
                 theme="primary"
-                className="!bg-[#F97316] !border-[#F97316]"
+                className="!bg-[#ffb22c] !border-[#ffb22c]"
                 onClick={() => {
                   navigate(`/my-class`);
                 }}
@@ -198,12 +198,12 @@ export default function UserIndex() {
             <Button
               theme="default"
               size="large"
-              className="!border-[#F97316] hover:!bg-[#F97316] hover:text-white group"
+              className="!border-[#ffb22c] hover:!bg-[#ffb22c] hover:text-white group"
               // onClick={() => setVisible(true)}
             >
               <IconPlus
                 size={20}
-                className="text-[#F97316] group-hover:text-white"
+                className="text-[#ffb22c] group-hover:text-white"
               />
             </Button>
           </div>

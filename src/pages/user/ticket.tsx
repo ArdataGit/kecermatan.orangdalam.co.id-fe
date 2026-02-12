@@ -74,7 +74,7 @@ const TicketList: React.FC = () => {
         <h1 className="text-2xl font-bold text-indigo-950">My Tickets</h1>
         <button
           onClick={openModal}
-          className="py-2 px-4 bg-[#F97316] text-white rounded-md hover:bg-[#EA580C] transition-all"
+          className="py-2 px-4 bg-[#ffb22c] text-white rounded-md hover:bg-[#EA580C] transition-all"
         >
           Create New Ticket
         </button>

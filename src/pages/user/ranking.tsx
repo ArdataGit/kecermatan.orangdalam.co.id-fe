@@ -115,7 +115,7 @@ export default function Ranking({ isBimbel }: any) {
           colKey: "totalScore",
           width: 130,
           align: AlignType.Center,
-          cell: ({ row }: any) => <div className="font-bold text-[#F97316]">{row.totalScore}</div>,
+          cell: ({ row }: any) => <div className="font-bold text-[#ffb22c]">{row.totalScore}</div>,
         },
     ] : [
         {
