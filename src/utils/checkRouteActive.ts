@@ -1,13 +1,18 @@
 const checkRouteActive = (
   path: string,
   currentPath: string = '',
-  id: number = 0
+  id: number = 0,
+  exact: boolean = false
 ) => {
   if (currentPath === '') {
     currentPath = window.location.pathname;
   }
   if (path === '/') {
     return path === currentPath;
+  }
+  
+  if (exact) {
+    return currentPath === path;
   }
 
   if (id) {

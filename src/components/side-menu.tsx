@@ -24,6 +24,7 @@ type MenuItem = {
   title: string;
   icon: JSX.Element;
   count?: 'pembelian' | 'event';
+  exact?: boolean;
 };
 
 interface SideMenuProps {
@@ -86,7 +87,7 @@ export default function SideMenu({
                   text-gray-700 dark:text-gray-300 
                   hover:bg-indigo-100 dark:hover:bg-gray-800
                   ${
-                    checkRouteActive(page.link, location.pathname) &&
+                    checkRouteActive(page.link, location.pathname, 0, page.exact) &&
                     'bg-[#F97316] text-white'
                   }`}
                 to={page.link}
@@ -106,7 +107,7 @@ export default function SideMenu({
                       bg-[#F97316] text-white
                       dark:bg-[#F97316] dark:text-gray-900
                       ${
-                        checkRouteActive(page.link, location.pathname) &&
+                        checkRouteActive(page.link, location.pathname, 0, page.exact) &&
                         'bg-white text-[#F97316] dark:bg-gray-100'
                       }`}
                   >

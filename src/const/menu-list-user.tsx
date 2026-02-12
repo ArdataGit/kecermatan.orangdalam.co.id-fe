@@ -47,6 +47,7 @@ const menuList = [
         title: 'Paket Pembelian',
         link: '/paket-pembelian',
         count: 'pembelian',
+        exact: true,
       },
 	  {
         link: '/my-tickets',
