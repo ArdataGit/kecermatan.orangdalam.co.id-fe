@@ -96,9 +96,10 @@ export default function SideMenu({
               return (
                 <div key={page.link}>
                   {isLocked ? (
-                    <div
+                    <Link
+                      to={page.link}
                       className={`flex items-center group !mb-4 px-4 py-3 justify-between transition-colors duration-300 transform rounded-lg 
-                      text-gray-400 dark:text-gray-600 cursor-not-allowed`}
+                      text-gray-400 dark:text-gray-600`}
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-lg">{page.icon}</span>
@@ -106,7 +107,7 @@ export default function SideMenu({
                           {page.title} <span className="text-xs">(Locked)</span>
                         </span>
                       </div>
-                    </div>
+                    </Link>
                   ) : (
                     <Link
                       className={`flex items-center group !mb-4 px-4 py-3 justify-between transition-colors duration-300 transform rounded-lg 

@@ -1,10 +1,11 @@
 
-import { IconCheck, IconRotateClockwise, IconRobot, IconPlayerPlay, IconHistory } from '@tabler/icons-react';
-import { useState } from 'react';
+import { IconCheck, IconRotateClockwise, IconRobot, IconPlayerPlay, IconHistory, IconLock } from '@tabler/icons-react';
+import { useState, useEffect } from 'react';
 import { Button, Select, Dialog, Switch } from 'tdesign-react';
 import toast from 'react-hot-toast';
 import { postData } from '@/utils/axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/stores/auth-store';
 
 export default function LatihanKecermatan() {
   const [metronom, setMetronom] = useState('60');
@@ -16,6 +17,12 @@ export default function LatihanKecermatan() {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const myClass = useAuthStore((state) => state.myClass);
+
+  // Check access
+  const hasAccess = myClass?.some(
+    (item: any) => item.paketPembelian?.includeLatihanKecermatan === true
+  );
 
   // Mock data for 10 soal slots
   const [soalList, setSoalList] = useState(Array(10).fill({
@@ -66,7 +73,30 @@ export default function LatihanKecermatan() {
   };
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen font-['Poppins']">
+    <div className="p-4 md:p-8 bg-gray-50 min-h-screen font-['Poppins'] relative">
+      {!hasAccess && (
+        <div className="absolute inset-0 z-50 bg-gray-900/90 flex flex-col items-center justify-center p-4 backdrop-blur-sm">
+           <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <IconLock size={40} className="text-gray-500" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">Akses Terkunci</h2>
+              <p className="text-gray-600 mb-8">
+                Fitur ini hanya tersedia untuk paket pembelian tertentu. <br/>
+                <span className="font-semibold text-[#ffb22c]">Harap melakukan pembelian paket yang sesuai.</span>
+              </p>
+              <Button 
+                theme="warning"
+                size="large" 
+                block
+                className="!bg-[#ffb22c] !border-[#ffb22c] font-medium"
+                onClick={() => navigate('/paket-pembelian')}
+              >
+                Lihat Paket
+              </Button>
+           </div>
+        </div>
+      )}
        {/* Breadcrumb would go here if needed, but mockup shows clean header */}
       
       {/* Header Filters */}
