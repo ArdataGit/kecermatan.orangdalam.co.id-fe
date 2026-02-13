@@ -251,7 +251,7 @@ export default function UserIndex() {
       colKey: 'action',
       cell: ({ row }: any) => {
         const handleCopyLink = () => {
-          const url = `https://bimbel.fungsional.id/paket-pembelian?search=${row.nama}`;
+          const url = `https://kecermatan.orangdalam.co.id/paket-pembelian?search=${row.nama}`;
           navigator.clipboard.writeText(url);
           toast.success('Link berhasil disalin!');
         };
