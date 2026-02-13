@@ -117,6 +117,15 @@ export default function ManagePaketPembelian({
           }}
         />
         <small>*isi 0 untuk selamanya</small>
+        <Input
+          title="Include Latihan Kecermatan"
+          name="includeLatihanKecermatan"
+          type="select"
+          options={[
+            { label: 'Ya', value: '1' },
+            { label: 'Tidak', value: '0' },
+          ]}
+        />
         <div className="">
           <label
             className={`block text-sm font-medium leading-6 text-gray-900 `}

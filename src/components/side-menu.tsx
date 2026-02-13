@@ -80,42 +80,81 @@ export default function SideMenu({
       <div className="flex flex-col justify-between mt-0">
         <nav className="-mx-3 space-y-4">
           {menuList.map((menu: any) => {
-            const menuItem = menu.pages.map((page: MenuItem) => (
-              <Link
-                key={page.link}
-                className={`flex items-center group !mb-4 px-4 py-3 justify-between transition-colors duration-300 transform rounded-lg 
-                  text-gray-700 dark:text-gray-300 
-                  hover:bg-indigo-100 dark:hover:bg-gray-800
-                  ${
-                    checkRouteActive(page.link, location.pathname, 0, page.exact) &&
-                    'bg-[#ffb22c] text-white'
-                  }`}
-                to={page.link}
-                onClick={() => {
-                  if (window.innerWidth < 768) {
-                    toggleMenu && toggleMenu();
-                  }
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg">{page.icon}</span>
-                  <span className="text-base font-medium">{page.title}</span>
-                </div>
-                {page.count && data?.[page.count] ? (
-                  <span
-                    className={`text-xs w-[22px] h-[22px] flex justify-center items-center rounded-full 
-                      bg-[#ffb22c] text-white
-                      dark:bg-[#ffb22c] dark:text-gray-900
+            const menuItem = menu.pages.map((page: MenuItem) => {
+              // Logic check Latihan Kecermatan lock
+              let isLocked = false;
+              if (page.link === '/latihan-kecermatan') {
+                const hasKecermatan = myClass?.some(
+                  (item: any) =>
+                    item.paketPembelian?.includeLatihanKecermatan === true
+                );
+                if (!hasKecermatan) {
+                  isLocked = true;
+                }
+              }
+
+              return (
+                <div key={page.link}>
+                  {isLocked ? (
+                    <div
+                      className={`flex items-center group !mb-4 px-4 py-3 justify-between transition-colors duration-300 transform rounded-lg 
+                      text-gray-400 dark:text-gray-600 cursor-not-allowed`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{page.icon}</span>
+                        <span className="text-base font-medium">
+                          {page.title} <span className="text-xs">(Locked)</span>
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <Link
+                      className={`flex items-center group !mb-4 px-4 py-3 justify-between transition-colors duration-300 transform rounded-lg 
+                      text-gray-700 dark:text-gray-300 
+                      hover:bg-indigo-100 dark:hover:bg-gray-800
                       ${
-                        checkRouteActive(page.link, location.pathname, 0, page.exact) &&
-                        'bg-white text-[#ffb22c] dark:bg-gray-100'
+                        checkRouteActive(
+                          page.link,
+                          location.pathname,
+                          0,
+                          page.exact
+                        ) && 'bg-[#ffb22c] text-white'
                       }`}
-                  >
-                    {data?.[page.count]}
-                  </span>
-                ) : null}
-              </Link>
-            ));
+                      to={page.link}
+                      onClick={() => {
+                        if (window.innerWidth < 768) {
+                          toggleMenu && toggleMenu();
+                        }
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{page.icon}</span>
+                        <span className="text-base font-medium">
+                          {page.title}
+                        </span>
+                      </div>
+                      {page.count && data?.[page.count] ? (
+                        <span
+                          className={`text-xs w-[22px] h-[22px] flex justify-center items-center rounded-full 
+                          bg-[#ffb22c] text-white
+                          dark:bg-[#ffb22c] dark:text-gray-900
+                          ${
+                            checkRouteActive(
+                              page.link,
+                              location.pathname,
+                              0,
+                              page.exact
+                            ) && 'bg-white text-[#ffb22c] dark:bg-gray-100'
+                          }`}
+                        >
+                          {data?.[page.count]}
+                        </span>
+                      ) : null}
+                    </Link>
+                  )}
+                </div>
+              );
+            });
 
             menuItem.unshift(
               <h6
