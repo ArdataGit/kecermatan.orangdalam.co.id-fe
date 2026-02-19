@@ -107,7 +107,7 @@ export default function LatihanKecermatan() {
             <style>{`
               .select-orange .t-input {
                 border: 1px solid #ffb22c !important;
-                color: #ffb22c !important;
+                color: #000000 !important;
                 transition: all 0.2s linear;
               }
               .select-orange .t-input:hover, 
@@ -117,11 +117,11 @@ export default function LatihanKecermatan() {
                 box-shadow: 0 0 0 2px rgba(255, 178, 44, 0.2) !important;
               }
               .select-orange .t-input__inner {
-                color: #ffb22c !important;
+                color: #000000 !important;
                 font-weight: 500;
               }
               .select-orange .t-fake-arrow {
-                color: #ffb22c !important;
+                color: #000000 !important;
               }
             `}</style>
             <Select 
@@ -154,7 +154,7 @@ export default function LatihanKecermatan() {
                  <div className="flex justify-between items-center">
                     <span className="font-semibold text-gray-800">Soal {index + 1}</span>
                     <button 
-                      className="text-xs bg-[#ffb22c]/10 hover:bg-[#ffb22c]/20 text-[#ffb22c] px-3 py-1 rounded transition-colors"
+                      className="text-xs bg-[#ffb22c]/10 hover:bg-[#ffb22c]/20 text-black px-3 py-1 rounded transition-colors"
                       onClick={() => handleRandomizeSoal(index)}
                     >
                       Acak Karakter
