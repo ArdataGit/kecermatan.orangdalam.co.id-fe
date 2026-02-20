@@ -128,16 +128,20 @@ export default function LatihanSoalKecermatanExam() {
       let totalQuestionsAll = 0;
       
       // Standardize into 10 buckets (columns) for performance analysis
-      const buckets = Array.from({ length: 10 }, () => ({ sumCorrect: 0, count: 0 }));
+      const buckets = Array.from({ length: 10 }, () => ({ sumCorrect: 0, sumAnswered: 0, count: 0 }));
       
       data.forEach((kiasan, kiasanIndex) => {
           let correctInKiasan = 0;
+          let answeredInKiasan = 0;
           const questionsInKiasan = kiasan.soalLatihanKecermatan?.length || 0;
 
           for (let i = 0; i < questionsInKiasan; i++) {
               const key = `${kiasanIndex}-${i}`;
-              if (answers[key]?.isCorrect) {
-                  correctInKiasan++;
+              if (answers[key]) {
+                  answeredInKiasan++;
+                  if (answers[key].isCorrect) {
+                      correctInKiasan++;
+                  }
               }
           }
 
@@ -147,9 +151,19 @@ export default function LatihanSoalKecermatanExam() {
           const bucketIdx = Math.floor((kiasanIndex / totalColumns) * 10);
           if (bucketIdx < 10) {
               buckets[bucketIdx].sumCorrect += correctInKiasan;
+              buckets[bucketIdx].sumAnswered += answeredInKiasan;
               buckets[bucketIdx].count++;
           }
       });
+
+      // Standard Deviation Helper
+      const calculateStdev = (array: number[]) => {
+          const n = array.length;
+          if (n === 0) return 0;
+          const mean = array.reduce((a, b) => a + b, 0) / n;
+          const variance = array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / n;
+          return Math.sqrt(variance);
+      };
 
       // 1. PANKER (Kecepatan)
       // Formula: MIN(100;MAX(0;AVERAGE(average(jawaban benar dari kolom 1 hingga 10)/50*100)))
@@ -168,12 +182,12 @@ export default function LatihanSoalKecermatanExam() {
       const panker = getPankerCategory(convertedScore);
 
       // 2. TIANKER (Ketelitian)
-      const totalAnswered = Object.keys(answers).length;
-      const totalWrong = totalAnswered - totalCorrectAll;
+      const totalAnsweredAcrossAll = Object.keys(answers).length;
+      const totalWrong = totalAnsweredAcrossAll - totalCorrectAll;
       // Formula TIANKER: MAX(0;((sum(jawaban benar)/sum(jawaban terjawab))*100) - (SUM(jawaban salah)*2))
       let convertedScoreTianker = 0;
-      if (totalAnswered > 0) {
-          convertedScoreTianker = ((totalCorrectAll / totalAnswered) * 100) - (totalWrong * 2);
+      if (totalAnsweredAcrossAll > 0) {
+          convertedScoreTianker = ((totalCorrectAll / totalAnsweredAcrossAll) * 100) - (totalWrong * 2);
       }
       convertedScoreTianker = Math.max(0, convertedScoreTianker);
 
@@ -187,12 +201,16 @@ export default function LatihanSoalKecermatanExam() {
       const tianker = getTiankerCategory(convertedScoreTianker);
 
       // 3. HANKER (Ketahanan)
-      // Formula: 100-(MAX(0;AVERAGE(benar 1-3)-AVERAGE(benar last 3))/50*100)
-      const avgFirst3 = (bucketAverages[0] + bucketAverages[1] + bucketAverages[2]) / 3;
-      const avgLast3 = (bucketAverages[9] + bucketAverages[8] + bucketAverages[7]) / 3;
-      const diffHanker = Math.max(0, avgFirst3 - avgLast3);
-      let convertedScoreHanker = 100 - ((diffHanker / 50) * 100);
-      convertedScoreHanker = Math.min(100, Math.max(0, convertedScoreHanker));
+      // Formula: MAX(0; (MIN(100; (AVERAGE(soal terjawab)/45)*100)) - (STDEV(soal terjawab)*8))
+      const bucketAnsweredAverages = buckets.map(b => b.count > 0 ? (b.sumAnswered / b.count) : 0);
+      const avgAnswered = bucketAnsweredAverages.reduce((a, b) => a + b, 0) / 10;
+      const stdevAnswered = calculateStdev(bucketAnsweredAverages);
+      
+      let normalizedAvg = (avgAnswered / 45) * 100;
+      normalizedAvg = Math.min(100, normalizedAvg);
+      
+      let convertedScoreHanker = normalizedAvg - (stdevAnswered * 8);
+      convertedScoreHanker = Math.max(0, convertedScoreHanker);
 
       const getHankerCategory = (score: number) => {
            if (score >= 88) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Ketahanan kerja Anda tinggi. Ritme konstan dari awal hingga akhir tanpa penurunan berarti. Anda mampu menjaga fokus and kecepatan dalam waktu yang lama.", saran: "Pertahankan stamina and metode kerja yang terbukti efektif. Jika tugas lebih berat, atur istirahat mikro yang singkat tanpa mengganggu konsentrasi penuh." };

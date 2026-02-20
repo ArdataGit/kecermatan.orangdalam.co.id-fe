@@ -73,18 +73,29 @@ export default function HistoryDetailKecermatanAdmin() {
     const totalColumnsFound = kiasanIds.length;
     
     // Standardize into 10 buckets
-    const buckets = Array.from({ length: 10 }, () => ({ sumCorrect: 0, count: 0 }));
+    const buckets = Array.from({ length: 10 }, () => ({ sumCorrect: 0, sumAnswered: 0, count: 0 }));
     
     kiasanIds.forEach((kid, idx) => {
         const group = kiasanGroups[kid];
         const correctInColumn = group.filter((item: any) => item.jawaban === item.soalKecermatan?.jawaban).length;
+        const answeredInColumn = group.length;
         
         const bucketIdx = Math.floor((idx / totalColumnsFound) * 10);
         if (bucketIdx < 10) {
             buckets[bucketIdx].sumCorrect += correctInColumn;
+            buckets[bucketIdx].sumAnswered += answeredInColumn;
             buckets[bucketIdx].count++;
         }
     });
+
+    // Standard Deviation Helper
+    const calculateStdev = (array: number[]) => {
+        const n = array.length;
+        if (n === 0) return 0;
+        const mean = array.reduce((a, b) => a + b, 0) / n;
+        const variance = array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / n;
+        return Math.sqrt(variance);
+    };
 
     // 1. PANKER (Kecepatan)
     const bucketAverages = buckets.map(b => b.count > 0 ? (b.sumCorrect / b.count) : 0);
@@ -103,11 +114,16 @@ export default function HistoryDetailKecermatanAdmin() {
     convertedScoreTianker = Math.max(0, convertedScoreTianker);
 
     // 3. HANKER (Ketahanan)
-    const avgFirst3 = (bucketAverages[0] + bucketAverages[1] + bucketAverages[2]) / 3;
-    const avgLast3 = (bucketAverages[9] + bucketAverages[8] + bucketAverages[7]) / 3;
-    const diffHanker = Math.max(0, avgFirst3 - avgLast3);
-    let convertedScoreHanker = 100 - ((diffHanker / 50) * 100);
-    convertedScoreHanker = Math.min(100, Math.max(0, convertedScoreHanker));
+    // Formula: MAX(0; (MIN(100; (AVERAGE(soal terjawab)/45)*100)) - (STDEV(soal terjawab)*8))
+    const bucketAnsweredAverages = buckets.map(b => b.count > 0 ? (b.sumAnswered / b.count) : 0);
+    const avgAnswered = bucketAnsweredAverages.reduce((a, b) => a + b, 0) / 10;
+    const stdevAnswered = calculateStdev(bucketAnsweredAverages);
+    
+    let normalizedAvg = (avgAnswered / 45) * 100;
+    normalizedAvg = Math.min(100, normalizedAvg);
+    
+    let convertedScoreHanker = normalizedAvg - (stdevAnswered * 8);
+    convertedScoreHanker = Math.max(0, convertedScoreHanker);
 
     const finalScore = (convertedScore * 0.45) + (convertedScoreTianker * 0.45) + (convertedScoreHanker * 0.10);
 
