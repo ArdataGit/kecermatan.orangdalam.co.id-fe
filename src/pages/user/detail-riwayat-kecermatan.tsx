@@ -105,10 +105,10 @@ export default function DetailRiwayatKecermatanUser() {
     const totalAnswered = listHistory.list.length;
     const totalWrong = totalAnswered - totalCorrectAcrossAll;
     let convertedScoreTianker = 0;
-    if (totalCorrectAcrossAll > 0) {
-        convertedScoreTianker = (1 - (totalWrong / totalCorrectAcrossAll)) * 100;
+    if (totalAnswered > 0) {
+        convertedScoreTianker = ((totalCorrectAcrossAll / totalAnswered) * 100) - (totalWrong * 2);
     }
-    convertedScoreTianker = Math.min(100, Math.max(0, convertedScoreTianker));
+    convertedScoreTianker = Math.max(0, convertedScoreTianker);
 
     // 3. HANKER (Ketahanan)
     const avgFirst3 = (bucketAverages[0] + bucketAverages[1] + bucketAverages[2]) / 3;

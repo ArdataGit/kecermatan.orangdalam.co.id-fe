@@ -109,12 +109,12 @@ export default function SoalKecermatanExam() {
       // 2. TIANKER (Ketelitian)
       const totalAnswered = Object.keys(answers).length;
       const totalWrong = totalAnswered - totalCorrectAll;
-      // Formula TIANKER: MIN(100;MAX(0;(1-(SUM(jawaban salah)/SUM(jawaban benar)))*100))
+      // Formula TIANKER: MAX(0;((sum(jawaban benar)/sum(jawaban terjawab))*100) - (SUM(jawaban salah)*2))
       let convertedScoreTianker = 0;
-      if (totalCorrectAll > 0) {
-          convertedScoreTianker = (1 - (totalWrong / totalCorrectAll)) * 100;
+      if (totalAnswered > 0) {
+          convertedScoreTianker = ((totalCorrectAll / totalAnswered) * 100) - (totalWrong * 2);
       }
-      convertedScoreTianker = Math.min(100, Math.max(0, convertedScoreTianker));
+      convertedScoreTianker = Math.max(0, convertedScoreTianker);
 
       const getTiankerCategory = (score: number) => {
            if (score >= 88) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Ketelitian kerja Anda tinggi. Kesalahan sangat sedikit, menunjukkan fokus and kontrol yang baik saat mengerjakan.", saran: "Pertahankan cara kerja yang rapi and konsisten. Saat meningkatkan kecepatan, pastikan pola kerja tetap sama agar ketelitian tidak turun." };
