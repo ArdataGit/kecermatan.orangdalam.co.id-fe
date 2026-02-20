@@ -357,7 +357,6 @@ export default function SoalKecermatanExam() {
                           </div>
                       </div>
 
-
                       {/* HANKER */}
                       <div className="flex flex-col md:flex-row gap-4">
                           <div className="w-full md:w-48 bg-gray-50 rounded-xl border border-gray-100 p-6 flex flex-col items-center justify-center shadow-sm shrink-0">

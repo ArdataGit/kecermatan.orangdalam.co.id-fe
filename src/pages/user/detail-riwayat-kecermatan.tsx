@@ -198,7 +198,6 @@ export default function DetailRiwayatKecermatanUser() {
                   <p className="text-sm font-semibold text-gray-600 mt-1">{tianker.label || '-'}</p>
                 </div>
 
-
                 {/* HANKER */}
                 <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
                   <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">HANKER (Ketahanan)</p>
@@ -255,7 +254,6 @@ export default function DetailRiwayatKecermatanUser() {
                 <p className="text-gray-700 text-sm mb-2">{tianker.desc}</p>
                 <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {tianker.saran}</p>
               </div>
-
 
               {/* HANKER Details */}
               <div className={`p-5 rounded-lg border ${hanker.bg} ${hanker.border}`}>
