@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useGetList from '@/hooks/use-get-list';
 import { useParams } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
@@ -6,12 +6,27 @@ import moment from 'moment/min/moment-with-locales';
 import { useAuthStore } from '@/stores/auth-store';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Switch, Select } from 'tdesign-react';
+import { getData } from '@/utils/axios';
 
 export default function RiwayatLatihanKecermatanDetail() {
   const { id } = useParams(); // This is the Kategori ID
   const { user } = useAuthStore();
   const [showDetailJawaban, setShowDetailJawaban] = useState(false);
   const [selectedColumnIndex, setSelectedColumnIndex] = useState(0);
+  const [configKiasans, setConfigKiasans] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (id) {
+      const filter = JSON.stringify({ kategoriLatihanKecermatanId: Number(id) });
+      getData(`latihan-kiasan/get?filters=${filter}&includeSoal=false`)
+        .then((res) => {
+          if (res?.list) {
+            setConfigKiasans(res.list);
+          }
+        })
+        .catch((err) => console.error("Failed to fetch kiasans config", err));
+    }
+  }, [id]);
 
   const listHistory = useGetList({
     url: 'kategori-latihan-kecermatan/history/detail',
@@ -383,108 +398,112 @@ export default function RiwayatLatihanKecermatanDetail() {
         )}
 
         {/* Performance Progression Chart */}
-        {listHistory.list.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
-              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                  <span className="text-orange-600">📈</span> Grafik Performa Pengerjaan
-              </h3>
-              <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                          data={(() => {
-                              // Group answers by kiasan to calculate stats per column
-                              const kiasanMap = new Map();
-                              
-                              listHistory.list.forEach((item: any) => {
-                                  const kiasanId = item.latihanKiasan?.id;
-                                  if (!kiasanId) return;
-                                  
-                                  if (!kiasanMap.has(kiasanId)) {
-                                      kiasanMap.set(kiasanId, {
-                                          kiasan: item.latihanKiasan,
-                                          answered: 0,
-                                          correct: 0,
-                                          wrong: 0
-                                      });
-                                  }
-                                  
-                                  const stats = kiasanMap.get(kiasanId);
-                                  stats.answered++;
-                                  
-                                  if (item.jawaban === item.soalLatihanKecermatan?.jawaban) {
-                                      stats.correct++;
-                                  } else {
-                                      stats.wrong++;
-                                  }
-                              });
-                              
-                              // Convert to array and sort by kiasan order
-                              return Array.from(kiasanMap.values())
-                                  .map((stats, idx) => ({
-                                      name: `Kolom ${idx + 1}`,
-                                      'Soal Terjawab': stats.answered,
-                                      'Soal Benar': stats.correct,
-                                      'Soal Salah': stats.wrong
-                                  }));
-                          })()}
-                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                      >
-                          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                          <XAxis 
-                              dataKey="name" 
-                              stroke="#666"
-                              style={{ fontSize: '12px' }}
-                              label={{ value: 'Jumlah Kolom', position: 'insideBottom', offset: -5, style: { fontSize: '12px', fill: '#666' } }}
-                          />
-                          <YAxis 
-                              stroke="#666"
-                              style={{ fontSize: '12px' }}
-                              label={{ value: 'Jumlah Soal', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#666' } }}
-                          />
-                          <Tooltip 
-                              contentStyle={{ 
-                                  backgroundColor: 'white', 
-                                  border: '1px solid #ccc', 
-                                  borderRadius: '8px',
-                                  fontSize: '12px'
-                              }}
-                          />
-                          <Legend 
-                              wrapperStyle={{ fontSize: '12px' }}
-                              iconType="line"
-                          />
-                          <Line 
-                              type="monotone" 
-                              dataKey="Soal Terjawab" 
-                              stroke="#3B82F6" 
-                              strokeWidth={2.5}
-                              dot={{ fill: '#3B82F6', r: 4 }}
-                              activeDot={{ r: 6 }}
-                          />
-                          <Line 
-                              type="monotone" 
-                              dataKey="Soal Benar" 
-                              stroke="#10B981" 
-                              strokeWidth={2.5}
-                              dot={{ fill: '#10B981', r: 4 }}
-                              activeDot={{ r: 6 }}
-                          />
-                          <Line 
-                              type="monotone" 
-                              dataKey="Soal Salah" 
-                              stroke="#EF4444" 
-                              strokeWidth={2.5}
-                              dot={{ fill: '#EF4444', r: 4 }}
-                              activeDot={{ r: 6 }}
-                          />
-                      </LineChart>
-                  </ResponsiveContainer>
-              </div>
-              <p className="text-xs text-gray-500 italic mt-4 text-center">
-                  * Grafik menunjukkan perbandingan soal terjawab, benar, dan salah per kolom
-              </p>
-          </div>
-        )}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span className="text-orange-600">📈</span> Grafik Performa Pengerjaan
+            </h3>
+            <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                        data={(() => {
+                            // Ensure exactly 10 columns
+                            const chartData = [];
+                            
+                            // Map existing history to their kiasan IDs for easier lookup
+                            const historyByKiasanId = new Map();
+                            listHistory.list.forEach((item: any) => {
+                                const kiasanId = item.latihanKiasan?.id;
+                                if (!kiasanId) return;
+                                
+                                if (!historyByKiasanId.has(kiasanId)) {
+                                    historyByKiasanId.set(kiasanId, { correct: 0, answered: 0 });
+                                }
+                                
+                                const stats = historyByKiasanId.get(kiasanId);
+                                stats.answered++;
+                                if (item.jawaban === item.soalLatihanKecermatan?.jawaban) {
+                                    stats.correct++;
+                                }
+                            });
+
+                            // Always create 10 data points
+                            for (let i = 0; i < 10; i++) {
+                                // Attempt to find the corresponding kiasan by order
+                                const kiasan = configKiasans[i];
+                                let correct = 0;
+                                let answered = 0;
+
+                                if (kiasan && historyByKiasanId.has(kiasan.id)) {
+                                    const stats = historyByKiasanId.get(kiasan.id);
+                                    correct = stats.correct;
+                                    answered = stats.answered;
+                                }
+
+                                chartData.push({
+                                    name: `Kolom ${i + 1}`,
+                                    'Soal Terjawab': answered,
+                                    'Soal Benar': correct,
+                                    'Soal Salah': answered - correct
+                                });
+                            }
+
+                            return chartData;
+                        })()}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis 
+                            dataKey="name" 
+                            stroke="#666"
+                            style={{ fontSize: '12px' }}
+                        />
+                        <YAxis 
+                            stroke="#666"
+                            style={{ fontSize: '12px' }}
+                        />
+                        <Tooltip 
+                            contentStyle={{ 
+                                backgroundColor: 'white', 
+                                border: '1px solid #ccc', 
+                                borderRadius: '8px',
+                                fontSize: '12px'
+                            }}
+                        />
+                        <Legend 
+                            wrapperStyle={{ fontSize: '12px' }}
+                            iconType="line"
+                        />
+                        <Line 
+                            type="monotone" 
+                            dataKey="Soal Terjawab" 
+                            stroke="#3B82F6" 
+                            strokeWidth={2.5}
+                            dot={{ fill: '#3B82F6', r: 4 }}
+                            activeDot={{ r: 6 }}
+                        />
+                        <Line 
+                            type="monotone" 
+                            dataKey="Soal Benar" 
+                            stroke="#10B981" 
+                            strokeWidth={2.5}
+                            dot={{ fill: '#10B981', r: 4 }}
+                            activeDot={{ r: 6 }}
+                        />
+                        <Line 
+                            type="monotone" 
+                            dataKey="Soal Salah" 
+                            stroke="#EF4444" 
+                            strokeWidth={2.5}
+                            dot={{ fill: '#EF4444', r: 4 }}
+                            activeDot={{ r: 6 }}
+                        />
+                    </LineChart>
+                </ResponsiveContainer>
+            </div>
+            <p className="text-xs text-gray-500 italic mt-4 text-center">
+                * Grafik menunjukkan perbandingan soal terjawab, benar, dan salah per kolom
+            </p>
+        </div>
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-200 pb-2 mb-4 gap-4">
             <h3 className="text-md font-bold text-gray-700">Detail Jawaban</h3>

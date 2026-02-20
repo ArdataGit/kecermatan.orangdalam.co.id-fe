@@ -519,7 +519,7 @@ export default function LatihanSoalKecermatanExam() {
        <div className="bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-100">
            <div className="grid grid-cols-5 divide-x divide-gray-200 border border-gray-200 rounded-lg overflow-hidden mb-6">
                 {keys.map((char: string, idx: number) => (<div key={`char-${idx}`} className="bg-gray-50 p-3 text-center font-bold text-lg text-gray-700">{char}</div>))}
-                {symbols.map((key: string, idx: number) => (<div key={`key-${idx}`} className="p-3 text-center font-bold text-2xl text-[#000000] bg-white">{key}</div>))}
+                {symbols.map((key: string, idx: number) => (<div key={`key-${idx}`} className="p-3 text-center font-bold text-8xl text-[#000000] bg-white">{key}</div>))}
            </div>
            <div className="flex justify-center mb-8">
                <div className="flex flex-wrap gap-3 justify-center bg-gray-50 p-6 rounded-xl border border-dashed border-gray-300">

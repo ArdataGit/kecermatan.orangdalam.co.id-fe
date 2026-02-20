@@ -98,7 +98,7 @@ export default function CardProduct({
               setItemDetail(item);
             }}
           >
-            {item._count.Pembelian ? 'Sudah Diambil' : 'Ambil Sekarang!'}
+            {item._count.Pembelian ? 'Sudah Dibeli' : 'Beli Sekarang!'}
           </button>
         ) : (
           <div

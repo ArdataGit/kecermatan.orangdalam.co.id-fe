@@ -32,11 +32,11 @@ const menuList = [
         title: 'Dashboard Notification',
         icon: <IconBell size={20} />,
       },
-      {
-        link: '/feedbacks',
-        title: 'Feedback User',
-        icon: <IconInfoCircle size={20} />,
-      },
+      // {
+      //   link: '/feedbacks',
+      //   title: 'Feedback User',
+      //   icon: <IconInfoCircle size={20} />,
+      // },
       // {
       //   link: '/manage-ticket',
       //   title: 'Manage Ticket',
@@ -47,16 +47,16 @@ const menuList = [
   {
     title: 'Master',
     pages: [
-      {
-        icon: <IconNotebook />,
-        title: 'Bank Soal',
-        link: '/manage-soal-category',
-      },
-      {
-        icon: <IconEye />,
-        title: 'Bank Soal Kecermatan',
-        link: '/manage-soal-kecermatan',
-      },
+      // {
+      //   icon: <IconNotebook />,
+      //   title: 'Bank Soal',
+      //   link: '/manage-soal-category',
+      // },
+      // {
+      //   icon: <IconEye />,
+      //   title: 'Bank Soal Kecermatan',
+      //   link: '/manage-soal-kecermatan',
+      // },
       {
         icon: <IconEye />,
         title: 'Latihan Kecermatan',
@@ -72,11 +72,11 @@ const menuList = [
       //   title: 'Bank Soal Isian',
       //   link: '/manage-soal-isian',
       // },
-      {
-        icon: <IconClipboardData />,
-        title: 'Paket Latihan',
-        link: '/manage-latihan',
-      },
+      // {
+      //   icon: <IconClipboardData />,
+      //   title: 'Paket Latihan',
+      //   link: '/manage-latihan',
+      // },
       {
         icon: <IconCreditCardPay />,
         title: 'Paket Pembelian',

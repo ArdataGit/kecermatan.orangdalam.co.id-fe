@@ -170,7 +170,7 @@ export default function SideMenu({
         </nav>
 
         {/* Affiliate Section (admin only) */}
-        {account?.role === 'ADMIN' && (
+        {/* {account?.role === 'ADMIN' && (
           <div>
             <h6 className="text-sm text-gray-500 dark:text-gray-400 ml-3 mt-6 mb-3 uppercase tracking-wide">
               Affiliate
@@ -218,10 +218,10 @@ export default function SideMenu({
               </Link>
             </nav>
           </div>
-        )}
+        )} */}
 
         {/* Affiliate Section (user only) - ✅ BARU */}
-        {account?.role === 'USER' && account?.affiliateCode && (
+        {/* {account?.role === 'USER' && account?.affiliateCode && (
           <div>
             <h6 className="text-sm text-gray-500 dark:text-gray-400 ml-3 mt-6 mb-3 uppercase tracking-wide">
               Affiliate
@@ -249,7 +249,7 @@ export default function SideMenu({
               </Link>
             </nav>
           </div>
-        )}
+        )} */}
             {/* Riwayat Pembelian (user only) */}
       
 

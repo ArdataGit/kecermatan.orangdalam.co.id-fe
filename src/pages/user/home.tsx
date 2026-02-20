@@ -2,7 +2,7 @@ import CKeditor from "@/components/ckeditor";
 import { useHomeStore } from "@/stores/home-stores";
 import { useAuthStore } from "@/stores/auth-store";
 import { imageLink } from "@/utils/image-link";
-import { IconBuildingBank, IconUsersGroup } from "@tabler/icons-react";
+import { IconBook, IconNotebook, IconPackage, IconUsers } from "@tabler/icons-react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { getData, postData } from "@/utils/axios";
@@ -216,84 +216,58 @@ export default function HomePage() {
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-x-7 gap-y-7 mx-5">
   {/* Paket Saya */}
         <div
-          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition"
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-row items-center gap-x-4"
           onClick={() => navigate("/my-class")}
         >
-          <div className="flex flex-row mb-7 justify-between">
-            <div className="bg-[#ffb22c] rounded-full w-fit p-3">
-              <IconBuildingBank className="text-white" />
-            </div>
+          <div className="bg-[#ffb22c] rounded-full w-fit p-3 flex-shrink-0">
+            <IconBook className="text-white" />
           </div>
-          <h3 className="text-2xl text-indigo-950 font-bold">{data?.paketSaya}</h3>
-          <p className="text-sm text-gray-500">Paket Saya</p>
+          <div>
+            <h3 className="text-2xl text-indigo-950 font-bold">{data?.paketSaya}</h3>
+            <p className="text-sm text-gray-500">Paket Saya</p>
+          </div>
         </div>
 
         {/* Paket Tersedia */}
         <div
-          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition"
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-row items-center gap-x-4"
           onClick={() => navigate("/paket-pembelian")}
         >
-          <div className="flex flex-row mb-7 justify-between">
-            <div className="bg-[#ffb22c] rounded-full w-fit p-3">
-              <IconUsersGroup className="text-white" />
-            </div>
+          <div className="bg-[#ffb22c] rounded-full w-fit p-3 flex-shrink-0">
+            <IconPackage className="text-white" />
           </div>
-          <h3 className="text-2xl text-indigo-950 font-bold">{data?.paketTersedia}</h3>
-          <p className="text-sm text-gray-500">Paket Tersedia</p>
+          <div>
+            <h3 className="text-2xl text-indigo-950 font-bold">{data?.paketTersedia}</h3>
+            <p className="text-sm text-gray-500">Paket Tersedia</p>
+          </div>
         </div>
 
         {/* Event */}
         <div
-          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition"
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-row items-center gap-x-4"
           onClick={() => navigate("/paket-pembelian")}
         >
-          <div className="flex flex-row mb-7 justify-between">
-            <div className="bg-[#ffb22c] rounded-full w-fit p-3">
-              <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="#fff"
-        strokeWidth="2"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 6v12m8-6H4m2-7h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2z"
-        />
-      </svg>
-            </div>
+          <div className="bg-[#ffb22c] rounded-full w-fit p-3 flex-shrink-0">
+            <IconNotebook className="text-white" />
           </div>
-          <h3 className="text-2xl text-indigo-950 font-bold">{data?.soal}</h3>
-          <p className="text-sm text-gray-500">Bank Soal</p>
+          <div>
+            <h3 className="text-2xl text-indigo-950 font-bold">{data?.soal}</h3>
+            <p className="text-sm text-gray-500">Bank Soal</p>
+          </div>
         </div>
 
         {/* Riwayat Pembelian */}
         <div
-          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition"
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-row items-center gap-x-4"
           
         >
-          <div className="flex flex-row mb-7 justify-between">
-            <div className="bg-[#ffb22c] rounded-full w-fit p-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="#fff"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17 20v-2a4 4 0 00-3-3.87m-7 5.87v-2a4 4 0 013-3.87m10-4a4 4 0 11-8 0 4 4 0 018 0zm-10 0a4 4 0 11-8 0 4 4 0 018 0z"
-                />
-              </svg>
-            </div>
+          <div className="bg-[#ffb22c] rounded-full w-fit p-3 flex-shrink-0">
+            <IconUsers className="text-white" />
           </div>
-          <h3 className="text-2xl text-indigo-950 font-bold">{data?.user}</h3>
-          <p className="text-sm text-gray-500"> Siswa Tergabung</p>
+          <div>
+            <h3 className="text-2xl text-indigo-950 font-bold">{data?.user}</h3>
+            <p className="text-sm text-gray-500"> Siswa Tergabung</p>
+          </div>
         </div>
       </div>
       <div className="grid rounded-xl md:grid-cols-2 gap-2">

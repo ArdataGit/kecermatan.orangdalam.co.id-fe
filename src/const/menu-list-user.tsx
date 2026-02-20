@@ -20,7 +20,7 @@ const menuList = [
 
       {
         icon: <IconBuildingStore />,
-        title: 'COBA TES KECERMATAN',
+        title: 'TES KECERMATAN',
         link: '/latihan-kecermatan',
         count: 'latihan-kecermatan',
       },
