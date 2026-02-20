@@ -64,43 +64,49 @@ export default function SoalKecermatanExam() {
       const totalColumns = data.length;
       let totalCorrectAll = 0;
       let totalQuestionsAll = 0;
-      let sumCorrectPerColumn = 0; 
-      let sumQuestionsPerColumn = 0;
-      const correctCounts: number[] = [];
-
+      
+      // Standardize into 10 buckets (columns) for performance analysis
+      const buckets = Array.from({ length: 10 }, () => ({ sumCorrect: 0, count: 0 }));
+      
       data.forEach((kiasan, kiasanIndex) => {
-          let correctInColumn = 0;
+          let correctInKiasan = 0;
           // Note: Property name is SoalKecermatan in this component, not soalLatihanKecermatan
-          const questionsInColumn = kiasan.SoalKecermatan?.length || 0;
+          const questionsInKiasan = kiasan.SoalKecermatan?.length || 0;
 
-          for (let i = 0; i < questionsInColumn; i++) {
+          for (let i = 0; i < questionsInKiasan; i++) {
               const key = `${kiasanIndex}-${i}`;
               if (answers[key]?.isCorrect) {
-                  correctInColumn++;
+                  correctInKiasan++;
               }
           }
 
-          correctCounts.push(correctInColumn);
-          sumCorrectPerColumn += correctInColumn;
-          sumQuestionsPerColumn += questionsInColumn;
-          totalCorrectAll += correctInColumn;
-          totalQuestionsAll += questionsInColumn;
+          totalCorrectAll += correctInKiasan;
+          totalQuestionsAll += questionsInKiasan;
+
+          const bucketIdx = Math.floor((kiasanIndex / totalColumns) * 10);
+          if (bucketIdx < 10) {
+              buckets[bucketIdx].sumCorrect += correctInKiasan;
+              buckets[bucketIdx].count++;
+          }
       });
 
-      const rawScore = totalColumns > 0 ? (sumCorrectPerColumn / totalColumns) : 0;
-      // Formula PANKER: MIN(100;MAX(0;AVERAGE(jumlah jawaban benar per kolom)/50*100))
-      let convertedScore = (rawScore / 50) * 100;
+      // 1. PANKER (Kecepatan)
+      // Formula: MIN(100;MAX(0;AVERAGE(average(jawaban benar dari kolom 1 hingga 10)/50*100)))
+      const bucketAverages = buckets.map(b => b.count > 0 ? (b.sumCorrect / b.count) : 0);
+      const bucketScoresPanker = bucketAverages.map(avg => (avg / 50) * 100);
+      let convertedScore = bucketScoresPanker.reduce((sum, s) => sum + s, 0) / 10;
       convertedScore = Math.min(Math.max(convertedScore, 0), 100);
 
       const getPankerCategory = (score: number) => {
           if (score >= 88) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Kecepatan kerja Anda tinggi. Ritme kerja cepat dan alur pengerjaan lancar sehingga output dapat dicapai dengan baik.", saran: "Pertahankan tempo dan jaga konsistensi dari awal hingga akhir. Pastikan kecepatan tidak menurunkan ketelitian." };
           if (score >= 77) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Kecepatan kerja Anda sudah baik. Namun masih ada bagian yang melambat sehingga hasil belum maksimal.", saran: "Kurangi jeda-jeda kecil dan perkuat ritme yang stabil. Tingkatkan target secara bertahap agar tempo naik tanpa mengganggu kontrol." };
           if (score >= 60) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Kecepatan kerja Anda berada pada tingkat cukup. Anda mampu menyelesaikan tugas, tetapi tempo masih mudah turun saat ragu atau ketika ritme tidak stabil.", saran: "Bangun alur kerja yang konsisten dan hindari berhenti untuk memeriksa di tengah pengerjaan. Setelah ritme stabil, tingkatkan output sedikit demi sedikit." };
-          if (score >= 50) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Kecepatan kerja Anda masih rendah. Tempo cenderung lambat sehingga hasil mudah tertinggal.", saran: "Fokus pada kelancaran dan ritme. Kurangi kebiasaan berhenti, jaga tempo yang sama, dan lakukan latihan rutin dengan target peningkatan kecil namun konsisten." };
-          return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Kecepatan kerja Anda masih di bawah harapan. Terdapat jeda singkat yang sering berulang sehingga menghambat tempo.", saran: "Latih transisi yang lebih cepat dan kurangi jeda. Tetapkan target minimal yang realistis, stabilkan ritme terlebih dahulu, lalu tingkatkan secara bertahap." };
+          if (score >= 50) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Kecepatan kerja Anda masih rendah. Tempo cenderung lambat sehingga hasil mudah tertinggal.", saran: "Fokus pada kelancaran dan ritme. Kurangi kebiasaan berhenti, jaga tempo yang sama, and lakukan latihan rutin dengan target peningkatan kecil namun konsisten." };
+          return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Kecepatan kerja Anda masih di bawah harapan. Terdapat jeda singkat yang sering berulang sehingga menghambat tempo.", saran: "Latih transisi yang lebih cepat and kurangi jeda. Tetapkan target minimal yang realistis, stabilkan ritme terlebih dahulu, lalu tingkatkan secara bertahap." };
       };
       const panker = getPankerCategory(convertedScore);
 
+      // 2. TIANKER (Ketelitian)
       const totalAnswered = Object.keys(answers).length;
       const totalWrong = totalAnswered - totalCorrectAll;
       // Formula TIANKER: MIN(100;MAX(0;(1-(SUM(jawaban salah)/SUM(jawaban benar)))*100))
@@ -111,29 +117,28 @@ export default function SoalKecermatanExam() {
       convertedScoreTianker = Math.min(100, Math.max(0, convertedScoreTianker));
 
       const getTiankerCategory = (score: number) => {
-           if (score >= 88) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Ketelitian kerja Anda tinggi. Kesalahan sangat sedikit, menunjukkan fokus dan kontrol yang baik saat mengerjakan.", saran: "Pertahankan cara kerja yang rapi dan konsisten. Saat meningkatkan kecepatan, pastikan pola kerja tetap sama agar ketelitian tidak turun." };
-           if (score >= 77) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Ketelitian kerja Anda sudah baik. Masih ada beberapa kesalahan, tetapi secara umum akurasi terjaga.", saran: "Identifikasi jenis kesalahan yang paling sering dilakukan. Kurangi sumber kesalahan itu dengan menjaga ritme dan fokus, tanpa terlalu lama berhenti." };
-           if (score >= 60) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Ketelitian kerja Anda cukup, namun kesalahan masih muncul cukup sering sehingga akurasi belum stabil.", saran: "Prioritaskan ketelitian dulu sebelum menaikkan tempo. Gunakan alur kerja yang konsisten dan hindari tergesa-gesa pada bagian yang sering menimbulkan salah." };
-           if (score >= 50) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Ketelitian kerja Anda rendah. Kesalahan relatif banyak, menandakan fokus mudah terpecah atau kontrol pengerjaan belum kuat.", saran: "Turunkan tempo sedikit agar lebih terkontrol, lalu latih akurasi. Fokus pada satu pola kerja yang sama dan perbaiki penyebab kesalahan utama secara bertahap." };
-           return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Ketelitian kerja Anda masih kurang. Kesalahan terjadi berulang sehingga hasil belum dapat diandalkan.", saran: "Perkuat kebiasaan kerja yang rapi, seperti baca dengan jelas, hitung singkat, lalu jawab. Kurangi kebiasaan menebak atau terburu-buru. Setelah kesalahan turun, baru naikkan kecepatan secara bertahap." };
+           if (score >= 88) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Ketelitian kerja Anda tinggi. Kesalahan sangat sedikit, menunjukkan fokus and kontrol yang baik saat mengerjakan.", saran: "Pertahankan cara kerja yang rapi and konsisten. Saat meningkatkan kecepatan, pastikan pola kerja tetap sama agar ketelitian tidak turun." };
+           if (score >= 77) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Ketelitian kerja Anda sudah baik. Masih ada beberapa kesalahan, tetapi secara umum akurasi terjaga.", saran: "Identifikasi jenis kesalahan yang paling sering dilakukan. Kurangi sumber kesalahan itu with menjaga ritme and fokus, tanpa terlalu lama berhenti." };
+           if (score >= 60) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Ketelitian kerja Anda cukup, namun kesalahan masih muncul cukup sering sehingga akurasi belum stabil.", saran: "Prioritaskan ketelitian dulu sebelum menaikkan tempo. Gunakan alur kerja yang konsisten and hindari tergesa-gesa pada bagian yang sering menimbulkan salah." };
+           if (score >= 50) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Ketelitian kerja Anda rendah. Kesalahan relatif banyak, menandakan fokus mudah terpecah or kontrol pengerjaan belum kuat.", saran: "Turunkan tempo sedikit agar lebih terkontrol, lalu latih akurasi. Fokus pada satu pola kerja yang sama and perbaiki penyebab kesalahan utama secara bertahap." };
+           return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Ketelitian kerja Anda masih kurang. Kesalahan terjadi berulang sehingga hasil belum dapat diandalkan.", saran: "Perkuat kebiasaan kerja yang rapi, seperti baca with jelas, hitung singkat, lalu jawab. Kurangi kebiasaan menebak or terburu-buru. Setelah kesalahan turun, baru naikkan kecepatan secara bertahap." };
       };
       const tianker = getTiankerCategory(convertedScoreTianker);
 
-      let convertedScoreHanker = 100;
-      if (totalColumns >= 3) {
-          const avgFirst3 = (correctCounts[0] + correctCounts[1] + correctCounts[2]) / 3;
-          const avgLast3 = (correctCounts[totalColumns - 1] + correctCounts[totalColumns - 2] + correctCounts[totalColumns - 3]) / 3;
-          const diff = Math.max(0, avgFirst3 - avgLast3);
-          convertedScoreHanker = 100 - ((diff / 50) * 100);
-          convertedScoreHanker = Math.min(100, Math.max(0, convertedScoreHanker));
-      }
+      // 3. HANKER (Ketahanan)
+      // Formula: 100-(MAX(0;AVERAGE(benar 1-3)-AVERAGE(benar last 3))/50*100)
+      const avgFirst3 = (bucketAverages[0] + bucketAverages[1] + bucketAverages[2]) / 3;
+      const avgLast3 = (bucketAverages[9] + bucketAverages[8] + bucketAverages[7]) / 3;
+      const diffHanker = Math.max(0, avgFirst3 - avgLast3);
+      let convertedScoreHanker = 100 - ((diffHanker / 50) * 100);
+      convertedScoreHanker = Math.min(100, Math.max(0, convertedScoreHanker));
 
       const getHankerCategory = (score: number) => {
            if (score >= 88) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Ketahanan kerja Anda tinggi. Ritme konstan dari awal hingga akhir tanpa penurunan berarti. Anda mampu menjaga fokus and kecepatan dalam waktu yang lama.", saran: "Pertahankan stamina and metode kerja yang terbukti efektif. Jika tugas lebih berat, atur istirahat mikro yang singkat tanpa mengganggu konsentrasi penuh." };
-           if (score >= 77) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Ketahanan kerja Anda cukup baik. Ritme cenderung stabil meskipun sedikit menurun di bagian tengah atau akhir.", saran: "Perhatikan bagian mana yang paling sering drop, lalu atur tempo agar tidak terlalu cepat di awal. Jaga fokus secara bertahap agar energi tidak habis lebih awal." };
-           if (score >= 60) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Ketahanan kerja Anda sedang. Ritme mulai turun cukup jelas di bagian tengah atau akhir. Anda mulai butuh istirahat lebih banyak atau konsentrasi yang lebih sering terputus.", saran: "Latih stamina dengan durasi kerja yang lebih panjang secara bertahap. Hindari tempo terlalu cepat di awal agar tidak cepat lelah. Jaga pola kerja yang konsisten agar energi tidak terkuras terlalu cepat." };
-           if (score >= 50) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Ketahanan kerja Anda rendah. Penurunan tempo and ketelitian cukup besar di bagian tengah atau akhir. Stamina cepat tergerus and output menurun signifikan seiring waktu.", saran: "Kurangi beban dari awal dengan tempo yang tidak terlalu tinggi. Latih ketahanan dengan target durasi yang panjang, mulai dari yang ringan. Atur pola makan and tidur agar kondisi fisik mendukung konsentrasi lebih lama." };
-           return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Ketahanan kerja Anda sangat rendah. Penurunan drastis sejak awal atau tengah, menunjukkan stamina mudah habis and konsentrasi cepat terpecah.", saran: "Perbaiki kondisi fisik and mental secara bertahap. Mulai dengan durasi kerja pendek yang dapat diselesaikan dengan baik, lalu tingkatkan perlahan. Jaga pola istirahat and konsumsi gizi yang baik agar energi lebih tahan lama." };
+           if (score >= 77) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Ketahanan kerja Anda cukup baik. Performa umumnya terjaga, meskipun ada sedikit penurunan pada bagian tertentu.", saran: "Perhatikan bagian mana yang paling sering drop, lalu atur tempo agar tidak terlalu cepat di awal. Jaga fokus secara bertahap agar energi tidak habis lebih awal." };
+           if (score >= 60) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Ketahanan kerja Anda sedang. Ritme mulai turun cukup jelas di bagian tengah or akhir. Anda mulai butuh istirahat lebih banyak or konsentrasi yang lebih sering terputus.", saran: "Latih stamina with durasi kerja yang lebih panjang secara bertahap. Hindari tempo terlalu cepat di awal agar tidak cepat lelah. Jaga pola kerja yang konsisten agar energi tidak terkuras terlalu cepat." };
+           if (score >= 50) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Ketahanan kerja Anda rendah. Penurunan tempo and ketelitian cukup besar di bagian tengah or akhir. Stamina cepat tergerus and output menurun signifikan seiring waktu.", saran: "Kurangi beban dari awal with tempo yang tidak terlalu tinggi. Latih ketahanan with target durasi yang panjang, mulai dari yang ringan. Atur pola makan and tidur agar kondisi fisik mendukung konsentrasi lebih lama." };
+           return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Ketahanan kerja Anda sangat rendah. Penurunan drastis sejak awal or tengah, menunjukkan stamina mudah habis and konsentrasi cepat terpecah.", saran: "Perbaiki kondisi fisik and mental secara bertahap. Mulai with durasi kerja pendek yang dapat diselesaikan with baik, lalu tingkatkan perlahan. Jaga pola istirahat and konsumsi gizi yang baik agar energi lebih tahan lama." };
       };
       const hanker = getHankerCategory(convertedScoreHanker);
 
@@ -147,7 +152,7 @@ export default function SoalKecermatanExam() {
       };
       const finalCategory = getFinalCategory(finalScore);
 
-      return { finalScore, finalCategory, panker, tianker, hanker, rawScore, convertedScore, convertedScoreTianker, convertedScoreHanker, totalQuestionsAll, totalCorrectAll, totalWrong };
+      return { finalScore, finalCategory, panker, tianker, hanker, convertedScore, convertedScoreTianker, convertedScoreHanker, totalQuestionsAll, totalCorrectAll, totalWrong };
   };
 
   const submitResult = async () => {
