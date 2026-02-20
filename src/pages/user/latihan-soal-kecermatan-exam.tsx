@@ -180,64 +180,25 @@ export default function LatihanSoalKecermatanExam() {
       };
       const tianker = getTiankerCategory(convertedScoreTianker);
 
-      // Formula JANKER: MIN(100;MAX(0;(1-(STDEV.S(Residuals)/26.3363378928))*100))
-      let convertedScoreJanker = 100;
-      if (totalColumns > 1) {
-          const n = totalColumns;
-          const xValues = Array.from({ length: n }, (_, i) => i + 1); // 1, 2, ... n
-          const yValues = correctCounts;
-
-          const sumX = xValues.reduce((a, b) => a + b, 0);
-          const sumY = yValues.reduce((a, b) => a + b, 0);
-          const sumXY = xValues.reduce((sum, x, i) => sum + x * yValues[i], 0);
-          const sumX2 = xValues.reduce((sum, x) => sum + x * x, 0);
-
-          const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
-          const intercept = (sumY - slope * sumX) / n;
-
-          const residuals = xValues.map((x, i) => {
-              const predictedY = slope * x + intercept;
-              return yValues[i] - predictedY;
-          });
-
-          const meanResiduals = residuals.reduce((a, b) => a + b, 0) / n;
-          const sumSquaredDiffs = residuals.reduce((sum, r) => sum + Math.pow(r - meanResiduals, 2), 0);
-          const stdevS = Math.sqrt(sumSquaredDiffs / (n - 1));
-
-          convertedScoreJanker = (1 - (stdevS / 26.3363378928)) * 100;
-          convertedScoreJanker = Math.min(100, Math.max(0, convertedScoreJanker));
-      }
-
-      const getJankerCategory = (score: number) => {
-          if (score >= 88) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Kestabilan kerja Anda tinggi. Hasil antar bagian cenderung merata and tidak banyak naik-turun, menunjukkan ritme and kontrol kerja yang baik.", saran: "Pertahankan ritme yang konsisten. Saat meningkatkan kecepatan, pastikan kenaikan dilakukan bertahap agar stabilitas tetap terjaga." };
-          if (score >= 77) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Kestabilan kerja Anda sudah baik. Ada sedikit fluktuasi, tetapi secara umum ritme masih terkontrol.", saran: "Perkecil fluktuasi dengan menjaga tempo yang sama and mengurangi jeda saat transisi. Fokus pada konsistensi, bukan mengejar lonjakan output di satu bagian." };
-          if (score >= 60) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Kestabilan kerja Anda cukup. Performa masih naik-turun, sehingga hasil belum sepenuhnya konsisten.", saran: "Bangun ritme yang lebih stabil. Jaga tempo yang sama di setiap bagian, hindari perubahan kecepatan yang terlalu drastis, and fokus pada alur kerja yang terus mengalir." };
-          if (score >= 50) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Kestabilan kerja Anda rendah. Fluktuasi hasil cukup besar, menandakan ritme mudah berubah and fokus belum stabil.", saran: "Prioritaskan konsistensi tempo. Kurangi kebiasaan berhenti atau mempercepat secara tiba-tiba. Latih menjaga ritme konstan and evaluasi bagian yang sering turun." };
-          return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Kestabilan kerja Anda masih kurang. Hasil sering berubah-ubah sehingga kontrol ritme belum terbentuk.", saran: "Latih pola kerja yang sama dari awal sampai akhir. Pertahankan tempo yang realistis and stabil, lalu tingkatkan secara bertahap setelah fluktuasi berkurang." };
-      };
-      const janker = getJankerCategory(convertedScoreJanker);
-
       let convertedScoreHanker = 100;
       if (totalColumns >= 3) {
           const avgFirst3 = (correctCounts[0] + correctCounts[1] + correctCounts[2]) / 3;
           const avgLast3 = (correctCounts[totalColumns - 1] + correctCounts[totalColumns - 2] + correctCounts[totalColumns - 3]) / 3;
-          // Formula HANKER: MIN(100;MAX(0;100-(MAX(0;AVERAGE(benar 1-3)-AVERAGE(benar last 3))/50*100)))
-          // Assuming typo in user prompt "salah" -> "benar" for the second term to measure drop in correct answers.
           const diff = Math.max(0, avgFirst3 - avgLast3);
           convertedScoreHanker = 100 - ((diff / 50) * 100);
           convertedScoreHanker = Math.min(100, Math.max(0, convertedScoreHanker));
       }
 
       const getHankerCategory = (score: number) => {
-           if (score >= 88) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Ketahanan kerja Anda tinggi. Anda mampu menjaga performa sampai akhir tanpa penurunan berarti, menunjukkan daya tahan fokus yang baik.", saran: "Pertahankan pola kerja yang stabil. Pastikan ritme tetap sama dan hindari memaksakan tempo terlalu tinggi di awal agar tidak turun di akhir." };
-           if (score >= 77) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Ketahanan kerja Anda cukup baik. Performa umumnya terjaga, meskipun ada sedikit penurunan pada bagian tertentu.", saran: "Perkuat daya tahan dengan menjaga ritme yang konsisten dan mengurangi jeda kecil saat mulai lelah. Tingkatkan durasi latihan secara bertahap agar fokus lebih tahan." };
-           if (score >= 60) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Ketahanan kerja Anda berada pada tingkat cukup. Performa masih dapat dipertahankan, tetapi mulai terlihat penurunan ketika pekerjaan berlangsung lebih lama.", saran: "Fokus pada menjaga tempo yang realistis sejak awal. Hindari terlalu cepat di awal lalu turun. Latih konsistensi ritme dan perbaiki kebiasaan yang membuat cepat lelah, seperti sering ragu atau berhenti." };
-           if (score >= 50) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Ketahanan kerja Anda rendah. Penurunan performa terlihat jelas pada bagian akhir, menandakan fokus cepat menurun atau mudah lelah.", saran: "Bangun ketahanan bertahap. Mulai dari tempo yang lebih terkontrol, jaga ritme stabil, dan lakukan latihan rutin agar daya tahan meningkat. Evaluasi bagian akhir untuk melihat penyebab turunnya performa." };
-           return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Ketahanan kerja Anda masih kurang. Performa cenderung turun cukup cepat sehingga hasil akhir tidak stabil.", saran: "Terapkan strategi menjaga tenaga, yakni ritme stabil, minim jeda yang tidak perlu, dan tidak memaksakan tempo tinggi di awal. Tingkatkan latihan secara bertahap sampai penurunan di akhir berkurang." };
+           if (score >= 88) return { label: "Tinggi", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "Ketahanan kerja Anda tinggi. Ritme konstan dari awal hingga akhir tanpa penurunan berarti. Anda mampu menjaga fokus and kecepatan dalam waktu yang lama.", saran: "Pertahankan stamina and metode kerja yang terbukti efektif. Jika tugas lebih berat, atur istirahat mikro yang singkat tanpa mengganggu konsentrasi penuh." };
+           if (score >= 77) return { label: "Cukup Tinggi", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "Ketahanan kerja Anda cukup baik. Performa umumnya terjaga, meskipun ada sedikit penurunan pada bagian tertentu.", saran: "Perhatikan bagian mana yang paling sering drop, lalu atur tempo agar tidak terlalu cepat di awal. Jaga fokus secara bertahap agar energi tidak habis lebih awal." };
+           if (score >= 60) return { label: "Sedang", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "Ketahanan kerja Anda sedang. Ritme mulai turun cukup jelas di bagian tengah atau akhir. Anda mulai butuh istirahat lebih banyak atau konsentrasi yang lebih sering terputus.", saran: "Latih stamina dengan durasi kerja yang lebih panjang secara bertahap. Hindari tempo terlalu cepat di awal agar tidak cepat lelah. Jaga pola kerja yang konsisten agar energi tidak terkuras terlalu cepat." };
+           if (score >= 50) return { label: "Rendah", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "Ketahanan kerja Anda rendah. Penurunan tempo and ketelitian cukup besar di bagian tengah atau akhir. Stamina cepat tergerus and output menurun signifikan seiring waktu.", saran: "Kurangi beban dari awal dengan tempo yang tidak terlalu tinggi. Latih ketahanan dengan target durasi yang panjang, mulai dari yang ringan. Atur pola makan and tidur agar kondisi fisik mendukung konsentrasi lebih lama." };
+           return { label: "Sangat Rendah", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "Ketahanan kerja Anda sangat rendah. Penurunan drastis sejak awal atau tengah, menunjukkan stamina mudah habis and konsentrasi cepat terpecah.", saran: "Perbaiki kondisi fisik and mental secara bertahap. Mulai dengan durasi kerja pendek yang dapat diselesaikan dengan baik, lalu tingkatkan perlahan. Jaga pola istirahat and konsumsi gizi yang baik agar energi lebih tahan lama." };
       };
       const hanker = getHankerCategory(convertedScoreHanker);
 
-      const finalScore = (convertedScore * 0.35) + (convertedScoreTianker * 0.35) + (convertedScoreJanker * 0.20) + (convertedScoreHanker * 0.10);
+      const finalScore = (convertedScore * 0.45) + (convertedScoreTianker * 0.45) + (convertedScoreHanker * 0.10);
       const getFinalCategory = (score: number) => {
           if (score >= 88) return { label: "Tinggi", color: "text-green-700", bg: "bg-green-100", border: "border-green-300", desc: "Hasil akhir sangat kuat. Pertahankan konsistensi agar tetap stabil." };
           if (score >= 77) return { label: "Cukup Tinggi", color: "text-blue-700", bg: "bg-blue-100", border: "border-blue-300", desc: "Hasil akhir sudah baik. Sedikit perbaikan pada bagian terlemah akan membuatnya lebih optimal." };
@@ -247,7 +208,7 @@ export default function LatihanSoalKecermatanExam() {
       };
       const finalCategory = getFinalCategory(finalScore);
 
-      return { finalScore, finalCategory, panker, tianker, janker, hanker, rawScore, convertedScore, convertedScoreTianker, convertedScoreJanker, convertedScoreHanker, totalQuestionsAll, totalCorrectAll, totalWrong };
+      return { finalScore, finalCategory, panker, tianker, hanker, rawScore, convertedScore, convertedScoreTianker, convertedScoreHanker, totalQuestionsAll, totalCorrectAll, totalWrong };
   };
 
   const submitResult = () => {
@@ -263,8 +224,6 @@ export default function LatihanSoalKecermatanExam() {
            pankerCategory: stats.panker.label,
            tiankerScore: Number(stats.convertedScoreTianker.toFixed(2)),
            tiankerCategory: stats.tianker.label,
-           jankerScore: Number(stats.convertedScoreJanker.toFixed(2)),
-           jankerCategory: stats.janker.label,
            hankerScore: Number(stats.convertedScoreHanker.toFixed(2)),
            hankerCategory: stats.hanker.label,
            finalScore: Number(stats.finalScore.toFixed(2)),
@@ -300,7 +259,7 @@ export default function LatihanSoalKecermatanExam() {
 
   if (finished) {
       const stats = calculateStats();
-      const { finalScore, finalCategory, panker, tianker, janker, hanker, convertedScore, convertedScoreTianker, convertedScoreJanker, convertedScoreHanker } = stats;
+      const { finalScore, finalCategory, panker, tianker, hanker, convertedScore, convertedScoreTianker, convertedScoreHanker } = stats;
 
       return (
           <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-8 font-['Poppins']">
@@ -353,21 +312,6 @@ export default function LatihanSoalKecermatanExam() {
                           </div>
                       </div>
 
-                      {/* JANKER */}
-                      <div className="flex flex-col md:flex-row gap-4">
-                          <div className="w-full md:w-48 bg-gray-50 rounded-xl border border-gray-100 p-6 flex flex-col items-center justify-center shadow-sm shrink-0">
-                              <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">JANKER</p>
-                              <div className="text-4xl font-bold text-[#000000]">{convertedScoreJanker.toFixed(0)}</div>
-                          </div>
-                          <div className={`flex-1 p-6 rounded-xl border ${janker.bg} ${janker.border} text-left`}>
-                              <div className="flex items-center gap-3 mb-3">
-                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${janker.color.replace('text-', 'border-')} ${janker.color} bg-white uppercase tracking-wider`}>JANKER</span>
-                                  <span className={`font-bold text-lg ${janker.color}`}>{janker.label}</span>
-                              </div>
-                              <p className="text-gray-700 text-sm mb-3 leading-relaxed">{janker.desc}</p>
-                              <p className="text-gray-500 text-xs"><span className="font-bold text-gray-600">Saran:</span> <span className="italic">{janker.saran}</span></p>
-                          </div>
-                      </div>
 
                       {/* HANKER */}
                       <div className="flex flex-col md:flex-row gap-4">

@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
 import { getData } from '@/utils/axios';
 import moment from 'moment/min/moment-with-locales';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
 import { Switch, Select } from 'tdesign-react';
 
 export default function DetailRiwayatKecermatanUser() {
@@ -124,48 +124,6 @@ export default function DetailRiwayatKecermatanUser() {
     };
   };
 
-  const getJankerCategory = (score: number) => {
-    if (score >= 80) return {
-        label: "Tinggi",
-        color: "text-green-600",
-        bg: "bg-green-50",
-        border: "border-green-200",
-        desc: "Kestabilan kerja Anda tinggi. Hasil antar bagian cenderung merata dan tidak banyak naik-turun, menunjukkan ritme dan kontrol kerja yang baik.",
-        saran: "Pertahankan ritme yang konsisten. Saat meningkatkan kecepatan, pastikan kenaikan dilakukan bertahap agar stabilitas tetap terjaga."
-    };
-    if (score >= 60) return {
-        label: "Cukup Tinggi",
-        color: "text-blue-600",
-        bg: "bg-blue-50",
-        border: "border-blue-200",
-        desc: "Kestabilan kerja Anda sudah baik. Ada sedikit fluktuasi, tetapi secara umum ritme masih terkontrol.",
-        saran: "Perkecil fluktuasi dengan menjaga tempo yang sama dan mengurangi jeda saat transisi. Fokus pada konsistensi, bukan mengejar lonjakan output di satu bagian."
-    };
-    if (score >= 40) return {
-        label: "Sedang",
-        color: "text-yellow-600",
-        bg: "bg-yellow-50",
-        border: "border-yellow-200",
-        desc: "Kestabilan kerja Anda cukup. Performa masih naik-turun, sehingga hasil belum sepenuhnya konsisten.",
-        saran: "Bangun ritme yang lebih stabil. Jaga tempo yang sama di setiap bagian, hindari perubahan kecepatan yang terlalu drastis, dan fokus pada alur kerja yang terus mengalir."
-    };
-    if (score >= 20) return {
-        label: "Rendah",
-        color: "text-orange-600",
-        bg: "bg-orange-50",
-        border: "border-orange-200",
-        desc: "Kestabilan kerja Anda rendah. Fluktuasi hasil cukup besar, menandakan ritme mudah berubah dan fokus belum stabil.",
-        saran: "Prioritaskan konsistensi tempo. Kurangi kebiasaan berhenti atau mempercepat secara tiba-tiba. Latih menjaga ritme konstan dan evaluasi bagian yang sering turun."
-    };
-    return {
-        label: "Sangat Rendah",
-        color: "text-red-600",
-        bg: "bg-red-50",
-        border: "border-red-200",
-        desc: "Kestabilan kerja Anda masih kurang. Hasil sering berubah-ubah sehingga kontrol ritme belum terbentuk.",
-        saran: "Latih pola kerja yang sama dari awal sampai akhir. Pertahankan tempo yang realistis dan stabil, lalu tingkatkan secara bertahap setelah fluktuasi berkurang."
-    };
-  };
 
   const getHankerCategory = (score: number) => {
     if (score >= 80) return {
@@ -243,16 +201,6 @@ export default function DetailRiwayatKecermatanUser() {
     const rawScoreTianker = totalQuestionsAll > 0 ? (totalWrong / totalQuestionsAll) : 0;
     const convertedScoreTianker = Math.min(100, Math.max(0, (1 - rawScoreTianker) * 100));
 
-    let variance = 0;
-    if (totalColumns > 1) {
-      const sumSqDiff = correctCounts.reduce((acc, val) => acc + Math.pow(val - rawScore, 2), 0);
-      variance = sumSqDiff / (totalColumns - 1);
-    }
-    const rawScoreJanker = Math.sqrt(variance);
-    const jankerDenominator = 26.3523138347;
-    let convertedScoreJanker = (1 - (rawScoreJanker / jankerDenominator)) * 100;
-    convertedScoreJanker = Math.min(100, Math.max(0, convertedScoreJanker));
-
     let rawScoreHanker = 0;
     if (totalColumns >= 3) {
       const avgFirst3 = (correctCounts[0] + correctCounts[1] + correctCounts[2]) / 3;
@@ -261,7 +209,7 @@ export default function DetailRiwayatKecermatanUser() {
     }
     let convertedScoreHanker = Math.min(100, Math.max(0, rawScoreHanker + 50));
 
-    const finalScore = (convertedScore * 0.35) + (convertedScoreTianker * 0.35) + (convertedScoreJanker * 0.20) + (convertedScoreHanker * 0.10);
+    const finalScore = (convertedScore * 0.45) + (convertedScoreTianker * 0.45) + (convertedScoreHanker * 0.10);
 
     return {
       totalBenar: totalCorrectAll,
@@ -270,14 +218,12 @@ export default function DetailRiwayatKecermatanUser() {
       finalScore,
       pankerScore: convertedScore,
       tiankerScore: convertedScoreTianker,
-      jankerScore: convertedScoreJanker,
       hankerScore: convertedScoreHanker,
     };
   }, [listHistory.list]);
 
   const panker = stats ? getPankerCategory(stats.pankerScore) : null;
   const tianker = stats ? getTiankerCategory(stats.tiankerScore) : null;
-  const janker = stats ? getJankerCategory(stats.jankerScore) : null;
   const hanker = stats ? getHankerCategory(stats.hankerScore) : null;
 
 
@@ -306,7 +252,7 @@ export default function DetailRiwayatKecermatanUser() {
         </div>
 
         {/* Analisis & Nilai Section */}
-        {stats && panker && tianker && janker && hanker && (
+        {stats && panker && tianker && hanker && (
           <>
             <div className="mb-8 bg-gradient-to-br from-orange-50 to-white p-6 rounded-xl border-2 border-orange-200">
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -328,12 +274,6 @@ export default function DetailRiwayatKecermatanUser() {
                   <p className="text-sm font-semibold text-gray-600 mt-1">{tianker.label || '-'}</p>
                 </div>
 
-                {/* JANKER */}
-                <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">JANKER (Keajegan)</p>
-                  <p className="text-2xl font-bold text-orange-600">{stats.jankerScore?.toFixed(2) || '0.00'}</p>
-                  <p className="text-sm font-semibold text-gray-600 mt-1">{janker.label || '-'}</p>
-                </div>
 
                 {/* HANKER */}
                 <div className="bg-white p-4 rounded-lg border border-orange-100 shadow-sm">
@@ -364,7 +304,7 @@ export default function DetailRiwayatKecermatanUser() {
               </div>
 
               <div className="text-xs text-gray-500 italic mt-2">
-                * Skor dihitung berdasarkan: Kecepatan (PANKER), Ketelitian (TIANKER), Keajegan (JANKER), dan Ketahanan (HANKER)
+                * Skor dihitung berdasarkan: Kecepatan (PANKER), Ketelitian (TIANKER), dan Ketahanan (HANKER)
               </div>
             </div>
 
@@ -392,15 +332,6 @@ export default function DetailRiwayatKecermatanUser() {
                 <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {tianker.saran}</p>
               </div>
 
-              {/* JANKER Details */}
-              <div className={`p-5 rounded-lg border ${janker.bg} ${janker.border}`}>
-                <h3 className={`font-bold text-md mb-2 ${janker.color} flex items-center gap-2`}>
-                  <span className="px-2 py-0.5 rounded bg-white/50 text-xs border border-current">JANKER</span> 
-                  {janker.label}
-                </h3>
-                <p className="text-gray-700 text-sm mb-2">{janker.desc}</p>
-                <p className="text-gray-500 text-xs italic"><span className="font-semibold not-italic">Saran:</span> {janker.saran}</p>
-              </div>
 
               {/* HANKER Details */}
               <div className={`p-5 rounded-lg border ${hanker.bg} ${hanker.border}`}>
