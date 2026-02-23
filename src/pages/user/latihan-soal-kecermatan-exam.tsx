@@ -358,9 +358,9 @@ export default function LatihanSoalKecermatanExam() {
                       </h3>
                       <div className="h-80">
                           <ResponsiveContainer width="100%" height="100%">
-                              <LineChart data={data.map((kiasan: any, idx: number) => {
+                              <LineChart data={data.map((_: any, idx: number) => {
                                   const kiasanAnswers = Object.entries(answers).filter(([key]) => key.startsWith(`${idx}-`)).map(([_, value]: any) => value);
-                                  const correctInKiasan = kiasanAnswers.filter((ans: any) => kiasan.soalLatihanKecermatan?.some((soal: any) => soal.jawaban === ans)).length;
+                                  const correctInKiasan = kiasanAnswers.filter((ans: any) => ans.isCorrect).length;
                                   return { name: `Kolom ${idx + 1}`, 'Soal Terjawab': kiasanAnswers.length, 'Soal Benar': correctInKiasan, 'Soal Salah': kiasanAnswers.length - correctInKiasan };
                               })} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
