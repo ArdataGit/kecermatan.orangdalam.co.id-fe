@@ -250,8 +250,8 @@ export default function HomePage() {
             <IconExternalLink className="text-white" />
           </div>
           <div>
-            <h3 className="text-lg text-indigo-950 font-bold leading-tight">Kembali ke aplikasi orangdalam.co.id</h3>
-            {/* <p className="text-sm text-gray-500 font-medium">Kembali ke aplikasi orangdalam.co.id</p> */}
+            {/* <h3 className="text-lg text-indigo-950 font-bold leading-tight">Kembali ke aplikasi orangdalam.co.id</h3> */}
+            <p className="text-sm text-gray-500 font-medium">Kembali ke aplikasi orangdalam.co.id</p>
           </div>
         </div>
 
@@ -264,8 +264,8 @@ export default function HomePage() {
             <IconBrandWhatsapp className="text-white" />
           </div>
           <div>
-            <h3 className="text-lg text-indigo-950 font-bold leading-tight">Hubungi Whatsapp Admin</h3>
-            {/* <p className="text-sm text-gray-500 font-medium">Whatsapp Admin</p> */}
+            {/* <h3 className="text-lg text-indigo-950 font-bold leading-tight">Hubungi Whatsapp Admin</h3> */}
+            <p className="text-sm text-gray-500 font-medium">Hubungi Whatsapp Admin</p>
           </div>
         </div>
       </div>
