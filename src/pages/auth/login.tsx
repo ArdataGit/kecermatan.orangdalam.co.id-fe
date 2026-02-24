@@ -282,7 +282,7 @@ export default function Example() {
         </div>
         {/* WhatsApp floating button */}
         <a
-          href="https://api.whatsapp.com/send/?phone=628567854441&text=Halo+admin%2C+saya+butuh+bantuan+di+Fungsional&type=phone_number&app_absent=0"
+          href="https://api.whatsapp.com/send/?phone=6285158891028&text=Halo+admin%2C+saya+butuh+bantuan+di+Kecermatan&type=phone_number&app_absent=0"
           target="_blank"
           rel="noopener noreferrer"
           className="fixed bottom-6 right-6 z-50"

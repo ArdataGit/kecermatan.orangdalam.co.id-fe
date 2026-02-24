@@ -538,7 +538,7 @@ const onSubmitProfil = async (data: any) => {
         </TabPanel>
 
         {/* === TAB AFFILIATE === */}
-        <TabPanel label="Affiliate" value="affiliate">
+        {/* <TabPanel label="Affiliate" value="affiliate">
           <div className="space-y-6">
             {account?.affiliateCode ? (
               <>
@@ -601,7 +601,7 @@ const onSubmitProfil = async (data: any) => {
               </div>
             )}
           </div>
-        </TabPanel>
+        </TabPanel> */}
       </Tabs>
 
       {/* === MODAL WITHDRAW === */}
