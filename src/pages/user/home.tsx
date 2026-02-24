@@ -2,7 +2,7 @@ import CKeditor from "@/components/ckeditor";
 import { useHomeStore } from "@/stores/home-stores";
 import { useAuthStore } from "@/stores/auth-store";
 import { imageLink } from "@/utils/image-link";
-import { IconBook, IconNotebook, IconPackage, IconUsers } from "@tabler/icons-react";
+import { IconBook, IconBrandWhatsapp, IconExternalLink, IconUsers } from "@tabler/icons-react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { getData, postData } from "@/utils/axios";
@@ -216,7 +216,7 @@ export default function HomePage() {
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-x-7 gap-y-7 mx-5">
   {/* Paket Saya */}
         <div
-          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-row items-center gap-x-4"
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-col items-start gap-y-3 text-left"
           onClick={() => navigate("/my-class")}
         >
           <div className="bg-[#ffb22c] rounded-full w-fit p-3 flex-shrink-0">
@@ -224,49 +224,48 @@ export default function HomePage() {
           </div>
           <div>
             <h3 className="text-2xl text-indigo-950 font-bold">{data?.paketSaya}</h3>
-            <p className="text-sm text-gray-500">Paket Saya</p>
+            <p className="text-sm text-gray-500 font-medium">Paket Saya</p>
           </div>
         </div>
 
-        {/* Paket Tersedia */}
+        {/* Total Pengguna */}
         <div
-          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-row items-center gap-x-4"
-          onClick={() => navigate("/paket-pembelian")}
-        >
-          <div className="bg-[#ffb22c] rounded-full w-fit p-3 flex-shrink-0">
-            <IconPackage className="text-white" />
-          </div>
-          <div>
-            <h3 className="text-2xl text-indigo-950 font-bold">{data?.paketTersedia}</h3>
-            <p className="text-sm text-gray-500">Paket Tersedia</p>
-          </div>
-        </div>
-
-        {/* Event */}
-        <div
-          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-row items-center gap-x-4"
-          onClick={() => navigate("/paket-pembelian")}
-        >
-          <div className="bg-[#ffb22c] rounded-full w-fit p-3 flex-shrink-0">
-            <IconNotebook className="text-white" />
-          </div>
-          <div>
-            <h3 className="text-2xl text-indigo-950 font-bold">{data?.soal}</h3>
-            <p className="text-sm text-gray-500">Bank Soal</p>
-          </div>
-        </div>
-
-        {/* Riwayat Pembelian */}
-        <div
-          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-row items-center gap-x-4"
-          
+          className="item-stat bg-white rounded-2xl p-5 hover:shadow-lg transition flex flex-col items-start gap-y-3 text-left"
         >
           <div className="bg-[#ffb22c] rounded-full w-fit p-3 flex-shrink-0">
             <IconUsers className="text-white" />
           </div>
           <div>
             <h3 className="text-2xl text-indigo-950 font-bold">{data?.user}</h3>
-            <p className="text-sm text-gray-500"> Siswa Tergabung</p>
+            <p className="text-sm text-gray-500 font-medium">Total Pengguna</p>
+          </div>
+        </div>
+
+        {/* Kembali ke Aplikasi Utama */}
+        <div
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-col items-start gap-y-3 text-left"
+          onClick={() => window.open("https://orangdalam.co.id", "_blank")}
+        >
+          <div className="bg-[#ffb22c] rounded-full w-fit p-3 flex-shrink-0">
+            <IconExternalLink className="text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg text-indigo-950 font-bold leading-tight">Kembali ke aplikasi orangdalam.co.id</h3>
+            {/* <p className="text-sm text-gray-500 font-medium">Kembali ke aplikasi orangdalam.co.id</p> */}
+          </div>
+        </div>
+
+        {/* Hubungi Whatsapp Admin */}
+        <div
+          className="item-stat bg-white rounded-2xl p-5 cursor-pointer hover:shadow-lg transition flex flex-col items-start gap-y-3 text-left"
+          onClick={() => window.open("https://api.whatsapp.com/send/?phone=6285158891028&text=Halo+admin%2C+saya+butuh+bantuan+di+Kecermatan&type=phone_number&app_absent=0", "_blank")}
+        >
+          <div className="bg-[#ffb22c] rounded-full w-fit p-3 flex-shrink-0">
+            <IconBrandWhatsapp className="text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg text-indigo-950 font-bold leading-tight">Hubungi Whatsapp Admin</h3>
+            {/* <p className="text-sm text-gray-500 font-medium">Whatsapp Admin</p> */}
           </div>
         </div>
       </div>

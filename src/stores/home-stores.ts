@@ -4,8 +4,10 @@ import { persist } from 'zustand/middleware';
 interface HomeProps {
   setData: (data: Partial<HomeProps>) => void;
   section?: any[];
-  users?: number;
-  pembelian?: number;
+  user?: number;
+  paketSaya?: number;
+  paketTersedia?: number;
+  riwayatPembelian?: number;
   soal?: number;
   event?: number;
   notifikasi?: any[];
