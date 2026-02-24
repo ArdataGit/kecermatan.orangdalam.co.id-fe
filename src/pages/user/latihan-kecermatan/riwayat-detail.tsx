@@ -404,18 +404,10 @@ export default function RiwayatLatihanKecermatanDetail() {
                     <Select 
                         value={selectedColumnIndex}
                         onChange={(val) => setSelectedColumnIndex(Number(val))}
-                        options={(() => {
-                            const columns: any[] = [];
-                            const seen = new Set();
-                            listHistory.list.forEach((item: any) => {
-                                const kiasanId = item.latihanKiasan?.id;
-                                if (kiasanId && !seen.has(kiasanId)) {
-                                    seen.add(kiasanId);
-                                    columns.push({ label: `Kolom ${columns.length + 1}`, value: columns.length, kiasanId });
-                                }
-                            });
-                            return columns;
-                        })()}
+                        options={configKiasans.map((_, idx) => ({ 
+                            label: `Kolom ${idx + 1}`, 
+                            value: idx 
+                        }))}
                         className="select-orange-small"
                         placeholder="Pilih Kolom"
                     />
@@ -433,17 +425,7 @@ export default function RiwayatLatihanKecermatanDetail() {
         {showDetailJawaban && (
             <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
                  {(() => {
-                    const columns: any[] = [];
-                    const seen = new Set();
-                    listHistory.list.forEach((item: any) => {
-                        const kiasanId = item.latihanKiasan?.id;
-                        if (kiasanId && !seen.has(kiasanId)) {
-                            seen.add(kiasanId);
-                            columns.push(item.latihanKiasan);
-                        }
-                    });
-                    
-                    const currentKiasan = columns[selectedColumnIndex];
+                    const currentKiasan = configKiasans[selectedColumnIndex];
                     if (!currentKiasan) return null;
 
                     const kiasanChar = currentKiasan.kiasan || [];
@@ -467,21 +449,14 @@ export default function RiwayatLatihanKecermatanDetail() {
                  })()}
 
                  {listHistory.isLoading && <div>Loading...</div>}
-                 {!listHistory.isLoading && listHistory.list.length === 0 && <div>Belum ada data detail.</div>}
                  
                  {(() => {
-                    const columns: any[] = [];
-                    const seen = new Set();
-                    listHistory.list.forEach((item: any) => {
-                        const kiasanId = item.latihanKiasan?.id;
-                        if (kiasanId && !seen.has(kiasanId)) {
-                            seen.add(kiasanId);
-                            columns.push(item.latihanKiasan?.id);
-                        }
-                    });
-                    
-                    const targetKiasanId = columns[selectedColumnIndex];
+                    const targetKiasanId = configKiasans[selectedColumnIndex]?.id;
                     const filteredList = listHistory.list.filter((item: any) => item.latihanKiasan?.id === targetKiasanId);
+
+                    if (!listHistory.isLoading && filteredList.length === 0) {
+                        return <div className="px-6 py-10 text-center text-gray-500 italic bg-white rounded-lg border border-gray-200">Tidak ada data jawaban untuk kolom ini.</div>;
+                    }
 
                     return filteredList.map((item: any, index: number) => {
                         const kiasanChar = item.latihanKiasan?.kiasan || []; 
