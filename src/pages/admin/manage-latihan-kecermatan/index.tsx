@@ -6,9 +6,9 @@ import { Button, Popconfirm } from 'tdesign-react';
 import ManageLatihanKecermatanModal from './manage';
 import FetchAPI from '@/utils/fetch-api';
 import { deleteData } from '@/utils/axios';
-import moment from 'moment';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
+import { formatDateWithTimezone } from '@/utils/date-format';
 
 enum FilterType {
   Input = 'input',
@@ -120,7 +120,7 @@ export default function ManageLatihanKecermatan() {
       align: AlignType.Center,
       sorter: true,
       cell: ({ row }: any) => {
-        return <span>{moment(row.createdAt).format('DD/MM/YYYY')}</span>;
+        return <span>{formatDateWithTimezone(row.createdAt, 'DD/MM/YYYY')}</span>;
       },
     },
     {

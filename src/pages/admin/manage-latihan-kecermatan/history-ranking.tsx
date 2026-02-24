@@ -3,7 +3,7 @@ import TableWrapper from '@/components/table';
 import useGetList from '@/hooks/use-get-list';
 import { useParams } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
-import moment from 'moment';
+import { formatDateWithTimezone } from '@/utils/date-format';
 
 enum AlignType {
   Center = 'center',
@@ -84,7 +84,7 @@ export default function HistoryLatihanKecermatanAdmin() {
       align: AlignType.Center,
       sorter: true,
       cell: ({ row }: any) => {
-        return <span>{moment(row.lastAttempt).format('DD/MM/YYYY HH:mm')}</span>;
+        return <span>{formatDateWithTimezone(row.lastAttempt, 'DD/MM/YYYY HH:mm')}</span>;
       },
     },
     {

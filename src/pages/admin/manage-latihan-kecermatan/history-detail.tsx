@@ -3,9 +3,9 @@ import { useState, useEffect, useMemo } from 'react';
 import useGetList from '@/hooks/use-get-list';
 import { useParams } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
-import moment from 'moment/min/moment-with-locales';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { getData } from '@/utils/axios';
+import { formatDateWithTimezone } from '@/utils/date-format';
 
 export default function HistoryDetailLatihanKecermatanAdmin() {
   const { id, userId } = useParams();
@@ -411,7 +411,7 @@ export default function HistoryDetailLatihanKecermatanAdmin() {
                           <div className="flex justify-between items-start mb-4 border-b border-gray-100 pb-2">
                                <div>
                                    <span className="font-bold text-gray-500 mr-2">No. {index + 1}</span>
-                                   <span className="text-sm text-gray-400">{moment(item.createdAt).locale('id').format('LL HH:mm:ss')}</span>
+                                   <span className="text-sm text-gray-400">{formatDateWithTimezone(item.createdAt, 'LL HH:mm:ss')}</span>
                                </div>
                                <div className={`px-3 py-1 rounded-full text-xs font-bold ${isCorrect ? 'bg-orange-100 text-[#C2410C]' : 'bg-red-100 text-red-800'}`}>
                                    {isCorrect ? 'Benar' : 'Salah'}

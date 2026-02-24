@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
 import { getData } from '@/utils/axios';
-import moment from 'moment/min/moment-with-locales';
 import TableWrapper from '@/components/table';
 import { Button, Tooltip } from 'tdesign-react';
 import { IconEye } from '@tabler/icons-react';
+import { formatDateWithTimezone } from '@/utils/date-format';
 
 enum AlignType {
   Center = 'center',
@@ -87,7 +87,7 @@ export default function RiwayatKecermatan() {
       align: AlignType.Center,
       sorter: true,
       cell: ({ row }: any) => {
-        return <span>{moment(row.createdAt).locale('id').format('LL HH:mm')}</span>;
+        return <span>{formatDateWithTimezone(row.createdAt, 'LL HH:mm')}</span>;
       },
     },
     {

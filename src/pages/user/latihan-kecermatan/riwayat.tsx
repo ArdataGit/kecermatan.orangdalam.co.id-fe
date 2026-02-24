@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import BreadCrumb from '@/components/breadcrumb';
 import TableWrapper from '@/components/table';
 import useGetList from '@/hooks/use-get-list';
-import moment from 'moment';
 import { Button } from 'tdesign-react';
 import { IconEye } from '@tabler/icons-react';
 import { useAuthStore } from '@/stores/auth-store';
+import { formatDateWithTimezone } from '@/utils/date-format';
 
 export default function RiwayatLatihanKecermatan() {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export default function RiwayatLatihanKecermatan() {
     {
       title: 'Tanggal',
       colKey: 'createdAt',
-      cell: ({ row }: any) => moment(row.createdAt).format('DD/MM/YYYY HH:mm'),
+      cell: ({ row }: any) => formatDateWithTimezone(row.createdAt),
     },
     {
         title: 'Action',
