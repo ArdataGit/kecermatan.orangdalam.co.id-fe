@@ -120,11 +120,12 @@ export default function RiwayatLatihanKecermatanDetail() {
 
     // 1. PANKER (Kecepatan)
     const bucketAverages = buckets.map(b => b.count > 0 ? (b.sumCorrect / b.count) : 0);
-    const bucketScoresPanker = bucketAverages.map(avg => (avg / 50) * 100);
+    const bucketScoresPanker = bucketAverages.map(avg => (avg / 45) * 100);
     let pankerScore = bucketScoresPanker.reduce((sum, s) => sum + s, 0) / 10;
     pankerScore = Math.min(Math.max(pankerScore, 0), 100);
 
     // 2. TIANKER (Ketelitian)
+    // Formula: MAX(0;((sum(jawaban benar kolom 1 hingga 10)/sum(soal terjawab kolom 1 hingga 10))*100)-(SUM(jawaban salah kolom 1 hingga 10)*2))
     const totalCorrectAll = listHistory.list.filter((item: any) => item.jawaban === item.soalLatihanKecermatan?.jawaban).length;
     const totalAnsweredAll = listHistory.list.length;
     const totalWrongAll = totalAnsweredAll - totalCorrectAll;
@@ -135,12 +136,13 @@ export default function RiwayatLatihanKecermatanDetail() {
     tiankerScore = Math.max(0, tiankerScore);
 
     // 3. HANKER (Ketahanan)
+    // Formula: MAX(0; (MIN(100; (AVERAGE(soal terjawab)/45)*100)) - (STDEV(soal terjawab)*4))
     const bucketAnsweredAverages = buckets.map(b => b.count > 0 ? (b.sumAnswered / b.count) : 0);
     const avgAnswered = bucketAnsweredAverages.reduce((a, b) => a + b, 0) / 10;
     const stdevAnswered = calculateStdev(bucketAnsweredAverages);
     let normalizedAvg = (avgAnswered / 45) * 100;
     normalizedAvg = Math.min(100, normalizedAvg);
-    let hankerScore = normalizedAvg - (stdevAnswered * 8);
+    let hankerScore = normalizedAvg - (stdevAnswered * 4);
     hankerScore = Math.max(0, hankerScore);
 
     const finalScore = (pankerScore * 0.45) + (tiankerScore * 0.45) + (hankerScore * 0.10);

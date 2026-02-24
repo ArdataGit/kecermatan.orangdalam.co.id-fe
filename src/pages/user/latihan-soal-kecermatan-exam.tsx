@@ -166,9 +166,9 @@ export default function LatihanSoalKecermatanExam() {
       };
 
       // 1. PANKER (Kecepatan)
-      // Formula: MIN(100;MAX(0;AVERAGE(average(jawaban benar dari kolom 1 hingga 10)/50*100)))
+      // Formula: MIN(100;MAX(0;AVERAGE(jawaban benar kolom 1 hingga 10)/45*100))
       const bucketAverages = buckets.map(b => b.count > 0 ? (b.sumCorrect / b.count) : 0);
-      const bucketScoresPanker = bucketAverages.map(avg => (avg / 50) * 100);
+      const bucketScoresPanker = bucketAverages.map(avg => (avg / 45) * 100);
       let convertedScore = bucketScoresPanker.reduce((sum, s) => sum + s, 0) / 10;
       convertedScore = Math.min(Math.max(convertedScore, 0), 100);
 
@@ -182,9 +182,9 @@ export default function LatihanSoalKecermatanExam() {
       const panker = getPankerCategory(convertedScore);
 
       // 2. TIANKER (Ketelitian)
+      // Formula: MAX(0;((sum(jawaban benar kolom 1 hingga 10)/sum(soal terjawab kolom 1 hingga 10))*100)-(SUM(jawaban salah kolom 1 hingga 10)*2))
       const totalAnsweredAcrossAll = Object.keys(answers).length;
       const totalWrong = totalAnsweredAcrossAll - totalCorrectAll;
-      // Formula TIANKER: MAX(0;((sum(jawaban benar)/sum(jawaban terjawab))*100) - (SUM(jawaban salah)*2))
       let convertedScoreTianker = 0;
       if (totalAnsweredAcrossAll > 0) {
           convertedScoreTianker = ((totalCorrectAll / totalAnsweredAcrossAll) * 100) - (totalWrong * 2);
@@ -201,7 +201,7 @@ export default function LatihanSoalKecermatanExam() {
       const tianker = getTiankerCategory(convertedScoreTianker);
 
       // 3. HANKER (Ketahanan)
-      // Formula: MAX(0; (MIN(100; (AVERAGE(soal terjawab)/45)*100)) - (STDEV(soal terjawab)*8))
+      // Formula: MAX(0; (MIN(100; (AVERAGE(soal terjawab)/45)*100)) - (STDEV(soal terjawab)*4))
       const bucketAnsweredAverages = buckets.map(b => b.count > 0 ? (b.sumAnswered / b.count) : 0);
       const avgAnswered = bucketAnsweredAverages.reduce((a, b) => a + b, 0) / 10;
       const stdevAnswered = calculateStdev(bucketAnsweredAverages);
@@ -209,7 +209,7 @@ export default function LatihanSoalKecermatanExam() {
       let normalizedAvg = (avgAnswered / 45) * 100;
       normalizedAvg = Math.min(100, normalizedAvg);
       
-      let convertedScoreHanker = normalizedAvg - (stdevAnswered * 8);
+      let convertedScoreHanker = normalizedAvg - (stdevAnswered * 4);
       convertedScoreHanker = Math.max(0, convertedScoreHanker);
 
       const getHankerCategory = (score: number) => {
