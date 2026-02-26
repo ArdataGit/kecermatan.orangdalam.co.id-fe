@@ -34,7 +34,7 @@ export default function RiwayatLatihanKecermatanDetail() {
       kategoriLatihanKecermatanId: id,
       userId: user?.id,
       skip: 0,
-      take: 100,
+      take: 2500,
       sortBy: 'createdAt',
       descending: true,
     },

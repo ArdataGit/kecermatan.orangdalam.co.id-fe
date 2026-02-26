@@ -33,7 +33,7 @@ export default function HistoryDetailLatihanKecermatanAdmin() {
       kategoriLatihanKecermatanId: id,
       userId: userId,
       skip: 0,
-      take: 100,
+      take: 2500,
       sortBy: 'createdAt',
       descending: true,
     },
