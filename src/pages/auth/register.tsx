@@ -130,20 +130,20 @@ export default function Example() {
                     },
                   }}
                 />
-                <Input
+                {/* <Input
                   title="Kode Affiliate (Opsional)"
                   name="affiliate_code"
                   type="text"
                   placeholder="Masukkan kode affiliate jika ada"
                   defaultValue={affCode || ''} // Auto-fill dari route jika ada
                   validation={{
-                    // Opsional: tambah validasi jika perlu, misal pattern untuk kode tertentu
-                    // pattern: {
-                    // value: /^[A-Z0-9]{16}$/, // Contoh: asumsi format AFF + 16 digit
-                    // message: "Format kode affiliate tidak sesuai",
-                    // },
+                    Opsional: tambah validasi jika perlu, misal pattern untuk kode tertentu
+                    pattern: {
+                    value: /^[A-Z0-9]{16}$/, // Contoh: asumsi format AFF + 16 digit
+                    message: "Format kode affiliate tidak sesuai",
+                    },
                   }}
-                />
+                /> */}
                 <Button type="submit" isLoading={isLoading} className="!bg-[#ffb22c] !border-[#ffb22c]">
                   Register
                 </Button>
