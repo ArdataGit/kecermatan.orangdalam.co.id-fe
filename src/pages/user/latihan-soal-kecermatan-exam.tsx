@@ -496,9 +496,9 @@ export default function LatihanSoalKecermatanExam() {
                    </AnimatePresence>
                </div>
            </div>
-           <div className="grid grid-cols-5 gap-4">
+           <div className="grid grid-cols-5 gap-3 max-w-2xl mx-auto">
                {symbols.map((symbol: string, idx: number) => (
-                   <button key={idx} onClick={() => handleAnswer(symbol)} className="py-4 rounded-xl bg-[#000000] text-white font-bold text-2xl hover:bg-[#333333] active:scale-95 transition-all shadow-lg hover:shadow-gray-200">{keys[idx]}</button>
+                   <button key={idx} onClick={() => handleAnswer(symbol)} className="py-2.5 rounded-xl bg-[#000000] text-white font-bold text-xl hover:bg-[#333333] active:scale-95 transition-all shadow-md hover:shadow-gray-200">{keys[idx]}</button>
                ))}
            </div>
            <Dialog header="Selesai Mengerjakan" body="Apakah anda yakin untuk menyelesaikan latihan ini?" visible={showConfirmFinish} onClose={() => setShowConfirmFinish(false)} onConfirm={() => { setShowConfirmFinish(false); submitResult(); }} />
