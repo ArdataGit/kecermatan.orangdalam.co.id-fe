@@ -167,6 +167,18 @@ export default function ManageVoucher({
             required: detail.id ? false : 'Thumbnail tidak boleh kosong',
           }}
         />
+        <Input
+          title="Stock"
+          name="stock"
+          type="number"
+          validation={{
+            required: 'Stock tidak boleh kosong',
+            min: {
+              value: 0,
+              message: 'Stock tidak boleh kurang dari 0',
+            },
+          }}
+        />
         {tipeDiskon !== 'ALUMNI' ? (
           <div className="">
             <Input

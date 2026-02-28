@@ -145,6 +145,13 @@ export default function VoucherIndex() {
       },
     },
     {
+      title: 'Stock',
+      colKey: 'stock',
+      cell: ({ row }: any) => {
+        return <span className="text-center">{row.stock}</span>;
+      },
+    },
+    {
       title: 'Created At',
       colKey: 'createdAt',
       sorter: true,
