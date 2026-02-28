@@ -474,12 +474,18 @@ export default function LatihanSoalKecermatanExam() {
 
   return (
     <div className="w-full max-w-screen-2xl mx-auto p-4 md:p-6 min-h-screen flex flex-col font-['Poppins']">
-       <div className="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
-           <div className="w-32 font-bold text-gray-700 text-lg">Kolom {currentKiasanIndex + 1} / {data.length}</div>
-           <div className="flex flex-col items-center">
+       <div className="grid grid-cols-3 items-center mb-8 bg-white p-4 rounded-lg shadow-sm">
+           <div className="font-bold text-gray-700 text-lg">Kolom {currentKiasanIndex + 1} / {data.length}</div>
+           <div className="flex flex-col items-center justify-center">
                 <div className="text-3xl font-bold text-[#000000] flex items-center gap-2"><IconClock /> {formatTime(timer)}</div>
            </div>
-           <div className="w-32 text-right"><Button theme="danger" variant="outline" onClick={() => setShowConfirmFinish(true)}>Selesai</Button></div>
+           <div className="flex items-center justify-end gap-8">
+                <div className="text-left flex flex-col justify-center border-r border-gray-100 pr-8">
+                    <div className="text-[10px] font-black text-[#000000] leading-none tracking-tighter italic opacity-70 mb-1">ORANG DALAM</div>
+                    <div className="text-lg font-black text-[#000000] leading-none uppercase">{user?.name || 'PESERTA'}</div>
+                </div>
+                <Button theme="danger" variant="outline" size="small" onClick={() => setShowConfirmFinish(true)}>Selesai</Button>
+           </div>
        </div>
 
        <div className="bg-white p-6 rounded-xl shadow-md mb-8 border border-gray-100">
@@ -496,9 +502,9 @@ export default function LatihanSoalKecermatanExam() {
                    </AnimatePresence>
                </div>
            </div>
-           <div className="grid grid-cols-5 gap-3 max-w-2xl mx-auto">
+           <div className="grid grid-cols-5 gap-2 max-w-xs mx-auto">
                {symbols.map((symbol: string, idx: number) => (
-                   <button key={idx} onClick={() => handleAnswer(symbol)} className="py-2.5 rounded-xl bg-[#000000] text-white font-bold text-xl hover:bg-[#333333] active:scale-95 transition-all shadow-md hover:shadow-gray-200">{keys[idx]}</button>
+                   <button key={idx} onClick={() => handleAnswer(symbol)} className="aspect-square flex items-center justify-center rounded-xl bg-[#000000] text-white font-bold text-lg hover:bg-[#333333] active:scale-95 transition-all shadow-md hover:shadow-gray-200">{keys[idx]}</button>
                ))}
            </div>
            <Dialog header="Selesai Mengerjakan" body="Apakah anda yakin untuk menyelesaikan latihan ini?" visible={showConfirmFinish} onClose={() => setShowConfirmFinish(false)} onConfirm={() => { setShowConfirmFinish(false); submitResult(); }} />
