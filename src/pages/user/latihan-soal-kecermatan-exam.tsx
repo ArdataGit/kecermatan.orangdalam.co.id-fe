@@ -493,7 +493,7 @@ export default function LatihanSoalKecermatanExam() {
                 {keys.map((char: string, idx: number) => (<div key={`char-${idx}`} className="bg-gray-50 p-3 text-center font-bold text-lg text-gray-700">{char}</div>))}
                 {symbols.map((key: string, idx: number) => (<div key={`key-${idx}`} className="p-3 text-center font-bold text-8xl text-[#000000] bg-white">{key}</div>))}
            </div>
-           <div className="flex justify-center mb-8">
+           <div className="flex justify-start mb-8">
                <div className="flex flex-wrap gap-3 justify-center bg-gray-50 p-6 rounded-xl border border-dashed border-gray-300">
                    <AnimatePresence mode='wait'>
                         <motion.div key={`${currentKiasanIndex}-${currentSoalIndex}`} initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }} transition={{ duration: 0.05, ease: "linear" }} className="flex gap-4 md:gap-8">
@@ -502,7 +502,7 @@ export default function LatihanSoalKecermatanExam() {
                    </AnimatePresence>
                </div>
            </div>
-           <div className="grid grid-cols-5 gap-2 max-w-xs mx-auto">
+           <div className="grid grid-cols-5 gap-2 max-w-xs">
                {symbols.map((symbol: string, idx: number) => (
                    <button key={idx} onClick={() => handleAnswer(symbol)} className="aspect-square flex items-center justify-center rounded-xl bg-[#000000] text-white font-bold text-lg hover:bg-[#333333] active:scale-95 transition-all shadow-md hover:shadow-gray-200">{keys[idx]}</button>
                ))}
