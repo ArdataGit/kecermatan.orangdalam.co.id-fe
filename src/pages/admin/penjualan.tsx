@@ -56,6 +56,16 @@ export default function ManagePenjualan() {
       getData.setParams((prev: any) => ({ ...prev }));
     });
   };
+
+  const setStatusFilter = (status: string | undefined) => {
+    getData.setParams((prev: any) => ({
+      ...prev,
+      filters: {
+        ...prev.filters,
+        status: status,
+      },
+    }));
+  };
   const columns = [
     {
       colKey: 'row-select',
@@ -240,6 +250,7 @@ export default function ManagePenjualan() {
         <div className="flex flex-col gap-y-5 md:flex-row md:items-center justify-start md:justify-between header-section w-full">
           <div className="title border-b border-[#ddd] w-full flex justify-between">
             <h1 className="text-2xl text-indigo-950 font-bold mb-5 ">
+              Manage Penjualan
             </h1>
             <div className="flex gap-2 mb-4">
               {selectedRowKeys.length > 0 && (
@@ -255,6 +266,43 @@ export default function ManagePenjualan() {
               )}
             </div>
           </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2 my-5">
+          <Button
+            variant={!getData.params.filters?.status ? 'base' : 'outline'}
+            onClick={() => setStatusFilter(undefined)}
+          >
+            All
+          </Button>
+          <Button
+            theme="success"
+            variant={getData.params.filters?.status === 'PAID' ? 'base' : 'outline'}
+            onClick={() => setStatusFilter('PAID')}
+          >
+            Paid
+          </Button>
+          <Button
+            theme="warning"
+            variant={getData.params.filters?.status === 'UNPAID' ? 'base' : 'outline'}
+            onClick={() => setStatusFilter('UNPAID')}
+          >
+            Unpaid
+          </Button>
+          <Button
+            theme="danger"
+            variant={getData.params.filters?.status === 'EXPIRED' ? 'base' : 'outline'}
+            onClick={() => setStatusFilter('EXPIRED')}
+          >
+            Expired
+          </Button>
+          <Button
+            theme="danger"
+            variant={getData.params.filters?.status === 'OVERDUE' ? 'base' : 'outline'}
+            onClick={() => setStatusFilter('OVERDUE')}
+          >
+            Overdue
+          </Button>
         </div>
         <TableWrapper
           data={{ ...getData, selectedRowKeys, onSelectChange }}
