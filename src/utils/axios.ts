@@ -167,10 +167,11 @@ export async function putData(url: string, payload: any): Promise<AxiosResponse 
  * Generic DELETE request.
  * Returns AxiosResponse on success, error object on failure.
  */
-export async function deleteData(url: string): Promise<AxiosResponse | { error: true; status: number; message: string }> {
+export async function deleteData(url: string, payload?: any): Promise<AxiosResponse | { error: true; status: number; message: string }> {
   try {
     const token = useAuthStore.getState().token || '';
     const response: AxiosResponse = await axios.delete(`${SERVER_URL_API}/${url}`, {
+      data: payload,
       headers: {
         Authorization: `Bearer ${token}`,
       },

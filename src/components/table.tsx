@@ -35,7 +35,7 @@ export default function TableWrapper({ data, columns }: any) {
     <div className="overflow-auto">
       <Table
         loading={data.isLoading}
-        rowKey="key"
+        rowKey="id"
         data={data?.list}
         columns={columns}
         onFilterChange={onFilterChange}
@@ -56,6 +56,8 @@ export default function TableWrapper({ data, columns }: any) {
             }));
           },
         }}
+        selectedRowKeys={data.selectedRowKeys}
+        onSelectChange={data.onSelectChange}
         lazyLoad
       />
     </div>

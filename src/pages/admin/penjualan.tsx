@@ -9,7 +9,9 @@ import { formatCurrency } from '@/utils/number-format';
 import { IconCheck } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import FetchAPI from '@/utils/fetch-api';
-import { postData } from '@/utils/axios';
+import { deleteData, postData } from '@/utils/axios';
+import { useState } from 'react';
+import { IconTrash } from '@tabler/icons-react';
 
 enum FilterType {
   Input = 'input',
@@ -30,6 +32,23 @@ export default function ManagePenjualan() {
     },
   });
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
+
+  const onSelectChange = (keys: any[]) => {
+    setSelectedRowKeys(keys);
+  };
+
+  const handleBulkDelete = async () => {
+    FetchAPI(
+      deleteData('admin/paket-latihan/penjualan/bulk-delete', {
+        ids: selectedRowKeys,
+      })
+    ).then(() => {
+      setSelectedRowKeys([]);
+      getData.refresh();
+    });
+  };
+
   const finishPayment = async (id: number) => {
     FetchAPI(
       postData('admin/paket-latihan/penjualan/finish-payment', { id })
@@ -38,6 +57,11 @@ export default function ManagePenjualan() {
     });
   };
   const columns = [
+    {
+      colKey: 'row-select',
+      type: 'multiple',
+      width: 50,
+    },
     {
       colKey: 'applicant',
       title: '#',
@@ -216,22 +240,26 @@ export default function ManagePenjualan() {
         <div className="flex flex-col gap-y-5 md:flex-row md:items-center justify-start md:justify-between header-section w-full">
           <div className="title border-b border-[#ddd] w-full flex justify-between">
             <h1 className="text-2xl text-indigo-950 font-bold mb-5 ">
-              Manage Penjualan
             </h1>
-            {/* <Button
-              theme="default"
-              size="large"
-              className="border-success hover:bg-success hover:text-white group"
-              onClick={() => setVisible(true)}
-            >
-              <IconPlus
-                size={20}
-                className="text-success group-hover:text-white"
-              />
-            </Button> */}
+            <div className="flex gap-2 mb-4">
+              {selectedRowKeys.length > 0 && (
+                <Popconfirm
+                  content={`Apakah kamu yakin ingin menghapus ${selectedRowKeys.length} data ?`}
+                  theme="danger"
+                  onConfirm={handleBulkDelete}
+                >
+                  <Button theme="danger" variant="base" icon={<IconTrash size={16} />}>
+                    Hapus Terpilih
+                  </Button>
+                </Popconfirm>
+              )}
+            </div>
           </div>
         </div>
-        <TableWrapper data={getData} columns={columns} />
+        <TableWrapper
+          data={{ ...getData, selectedRowKeys, onSelectChange }}
+          columns={columns}
+        />
       </div>
     </section>
   );
