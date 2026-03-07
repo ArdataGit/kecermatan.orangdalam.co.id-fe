@@ -24,6 +24,9 @@ export default function LatihanSoalKecermatanExam() {
   const [showPembahasan, setShowPembahasan] = useState(false);
   const hasSubmitted = useRef(false);
   const [showConfirmFinish, setShowConfirmFinish] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [nextKiasanIndex, setNextKiasanIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (id) fetchData();
@@ -31,7 +34,7 @@ export default function LatihanSoalKecermatanExam() {
 
   useEffect(() => {
     let interval: any;
-    if (!finished && timer > 0) {
+    if (!finished && timer > 0 && !isTransitioning) {
       interval = setInterval(() => {
         setTimer((prev) => {
              if (prev <= 0) return 0;
@@ -40,12 +43,28 @@ export default function LatihanSoalKecermatanExam() {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [finished, timer]);
+  }, [finished, timer, isTransitioning]);
+
+  useEffect(() => {
+    let interval: any;
+    if (isTransitioning && countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (isTransitioning && countdown === 0) {
+      if (nextKiasanIndex !== null) {
+        setIsTransitioning(false);
+        prepareKiasan(nextKiasanIndex, data, false);
+        setNextKiasanIndex(null);
+      }
+    }
+    return () => clearInterval(interval);
+  }, [isTransitioning, countdown, nextKiasanIndex, data]);
 
   useEffect(() => {
       if (timer === 0 && !finished && data.length > 0) {
           if (currentKiasanIndex < data.length - 1) {
-              prepareKiasan(currentKiasanIndex + 1);
+              prepareKiasan(currentKiasanIndex + 1, data, true);
           } else {
               setFinished(true);
           }
@@ -79,7 +98,14 @@ export default function LatihanSoalKecermatanExam() {
     }
   };
 
-  const prepareKiasan = (index: number, listData: any[] = data) => {
+  const prepareKiasan = (index: number, listData: any[] = data, useCountdown: boolean = false) => {
+      if (useCountdown) {
+          setNextKiasanIndex(index);
+          setCountdown(3);
+          setIsTransitioning(true);
+          return;
+      }
+
       setCurrentKiasanIndex(index);
       setCurrentSoalIndex(0);
       if (listData[index]) {
@@ -267,7 +293,7 @@ export default function LatihanSoalKecermatanExam() {
 
   const handleNextKiasan = () => {
       if (currentKiasanIndex < data.length - 1) {
-          prepareKiasan(currentKiasanIndex + 1);
+          prepareKiasan(currentKiasanIndex + 1, data, true);
       } else {
           setShowConfirmFinish(true);
       }
@@ -509,6 +535,29 @@ export default function LatihanSoalKecermatanExam() {
            </div>
            <Dialog header="Selesai Mengerjakan" body="Apakah anda yakin untuk menyelesaikan latihan ini?" visible={showConfirmFinish} onClose={() => setShowConfirmFinish(false)} onConfirm={() => { setShowConfirmFinish(false); submitResult(); }} />
        </div>
+
+       {/* Countdown Overlay */}
+       <AnimatePresence>
+         {isTransitioning && (
+           <motion.div
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             exit={{ opacity: 0 }}
+             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+           >
+             <motion.div
+               key={countdown}
+               initial={{ scale: 0.5, opacity: 0 }}
+               animate={{ scale: 1, opacity: 1 }}
+               exit={{ scale: 1.5, opacity: 0 }}
+               transition={{ duration: 0.5 }}
+               className="text-white font-black text-9xl italic"
+             >
+               {countdown > 0 ? countdown : "MULAI!"}
+             </motion.div>
+           </motion.div>
+         )}
+       </AnimatePresence>
     </div>
   );
 }
