@@ -68,9 +68,9 @@ export default function Example() {
     <>
       <div
         style={{ backgroundImage: `url('${BG_LOGIN}')` }}
-        className="min-h-[100vh] bg-no-repeat bg-cover bg-center pt-10"
+        className="h-screen bg-no-repeat bg-cover bg-center flex items-center justify-center"
       >
-        <div className="flex min-h-full flex-1 flex-col justify-center py-10 sm:px-6 lg:px-8">
+        <div className="flex flex-col justify-center w-full sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <img
               className="mx-auto w-auto"

@@ -34,8 +34,11 @@ export default function Example() {
 
   return (
     <>
-      <div style={{ backgroundImage: `url('${BG_LOGIN}')` }} className="min-h-[100vh] bg-no-repeat bg-cover bg-center pt-20">
-        <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div
+        style={{ backgroundImage: `url('${BG_LOGIN}')` }}
+        className="h-screen bg-no-repeat bg-cover bg-center flex items-center justify-center"
+      >
+        <div className="flex flex-col justify-center w-full sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <img
               className="mx-auto h-10 w-auto"
