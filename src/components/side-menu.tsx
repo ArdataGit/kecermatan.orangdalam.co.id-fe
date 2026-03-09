@@ -119,7 +119,7 @@ export default function SideMenu({
                           location.pathname,
                           0,
                           page.exact
-                        ) && 'bg-[#ffb22c] text-white'
+                        ) && 'bg-[#ffb22c] text-white dark:text-gray-900'
                       }`}
                       to={page.link}
                       onClick={() => {
@@ -145,7 +145,7 @@ export default function SideMenu({
                               location.pathname,
                               0,
                               page.exact
-                            ) && 'bg-white text-[#ffb22c] dark:bg-gray-100'
+                            ) && 'bg-white text-[#ffb22c] dark:bg-gray-100 dark:text-[#ffb22c]'
                           }`}
                         >
                           {data?.[page.count]}
@@ -282,7 +282,7 @@ export default function SideMenu({
                             `my-class/${item.paketPembelianId}`,
                             location.pathname,
                             item.paketPembelianId
-                          ) && 'bg-[#ffb22c] text-white'
+                          ) && 'bg-[#ffb22c] text-white dark:text-gray-900'
                         }`}
                       onClick={() => {
                         if (menuOpened?.includes(item.paketPembelianId)) {
