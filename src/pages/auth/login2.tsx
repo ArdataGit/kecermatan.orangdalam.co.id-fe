@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import LOGO from '@/assets/Logo.png';
+import BG_LOGIN from '@/assets/login-bg.png';
 
 export default function Example() {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +34,7 @@ export default function Example() {
 
   return (
     <>
-      <div style={{ backgroundImage: `url('/img/bg.jpg')` }} className="min-h-[100vh] bg-no-repeat bg-cover bg-center pt-20">
+      <div style={{ backgroundImage: `url('${BG_LOGIN}')` }} className="min-h-[100vh] bg-no-repeat bg-cover bg-center pt-20">
         <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <img

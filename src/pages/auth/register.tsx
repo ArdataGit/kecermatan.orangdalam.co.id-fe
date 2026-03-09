@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import LOGO from "@/assets/Logo.png";
+import BG_LOGIN from "@/assets/login-bg.png";
 
 export default function Example() {
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +67,7 @@ export default function Example() {
   return (
     <>
       <div
-        style={{ backgroundImage: `url('/img/bg.jpg')` }}
+        style={{ backgroundImage: `url('${BG_LOGIN}')` }}
         className="min-h-[100vh] bg-no-repeat bg-cover bg-center pt-10"
       >
         <div className="flex min-h-full flex-1 flex-col justify-center py-10 sm:px-6 lg:px-8">

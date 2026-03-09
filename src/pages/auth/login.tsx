@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import LOGO from "@/assets/Logo.png";
+import BG_LOGIN from "@/assets/login-bg.png";
 import { useGoogleLogin } from '@react-oauth/google';
 
 export default function Example() {
@@ -164,7 +165,7 @@ export default function Example() {
   return (
     <>
       <div
-        style={{ backgroundImage: `url('/img/bg.jpg')` }}
+        style={{ backgroundImage: `url('${BG_LOGIN}')` }}
         className="min-h-[100vh] bg-no-repeat bg-cover bg-center pt-20"
       >
         <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
