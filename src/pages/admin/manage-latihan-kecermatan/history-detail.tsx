@@ -161,7 +161,7 @@ export default function HistoryDetailLatihanKecermatanAdmin() {
     };
   }, [listHistory.list, configKiasans]);
 
-  const displayStats = stats || listHistory.metadata || {};
+  const displayStats = listHistory.metadata || stats || {};
   const currentPanker = getPankerCategory(displayStats.pankerScore || 0);
   const currentTianker = getTiankerCategory(displayStats.tiankerScore || 0);
   const currentHanker = getHankerCategory(displayStats.hankerScore || 0);
@@ -187,7 +187,7 @@ export default function HistoryDetailLatihanKecermatanAdmin() {
         </div>
 
         {/* Ranking Scores Summary */}
-        {listHistory.metadata && (
+        {displayStats && Object.keys(displayStats).length > 0 && (
           <div className="mb-8 bg-gradient-to-br from-orange-50 to-white p-6 rounded-xl border-2 border-orange-200">
             <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
               <span className="text-orange-600">📊</span> Analisis & Nilai
@@ -244,7 +244,7 @@ export default function HistoryDetailLatihanKecermatanAdmin() {
         )}
 
         {/* Detailed Descriptions and Suggestions */}
-        {listHistory.metadata && (
+        {displayStats && Object.keys(displayStats).length > 0 && (
           <div className="mb-8 space-y-4">
             <h3 className="text-md font-bold text-gray-700 mb-4 border-b border-gray-200 pb-2">Analisis Detail & Saran Perbaikan</h3>
             
