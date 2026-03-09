@@ -86,15 +86,20 @@ export default function PaymentModal({
         'Minimal pembayaran Rp.10.000, silahkan hubungi admin'
       );
     }
-    postData('user/payment-gateway/create-payment', {
-      paketPembelianId: itemDetail.id,
-      code: payment.method || 'GRATIS',
-      discountCode: voucherDetail?.kode,
-    })
-      .then((res) => {
-        if (res.data.data.checkout_url)
+    FetchAPI(
+      postData('user/payment-gateway/create-payment', {
+        paketPembelianId: itemDetail.id,
+        code: payment.method || 'GRATIS',
+        discountCode: voucherDetail?.kode,
+      })
+    )
+      .then((res: any) => {
+        if (res.data?.data?.checkout_url)
           return (window.location.href = res.data.data.checkout_url);
         else navigate('riwayat');
+      })
+      .catch((err) => {
+        console.error('Payment Error:', err);
       })
       .finally(() => {
         setIsLoading(false);
@@ -106,11 +111,15 @@ export default function PaymentModal({
         code: voucher,
         paketId: itemDetail.id,
       })
-    ).then((res: any) => {
-      setVoucherDetail({
-        ...res?.data?.data,
+    )
+      .then((res: any) => {
+        setVoucherDetail({
+          ...res?.data?.data,
+        });
+      })
+      .catch((err) => {
+        console.error('Voucher Error:', err);
       });
-    });
   };
 
   const content = (

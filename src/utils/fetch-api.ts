@@ -12,7 +12,8 @@ const FetchAPI = async (promise: Promise<any>) => {
       return result;
     } else {
       toast.error(
-        result?.data?.msg ||
+        result?.message ||
+          result?.data?.msg ||
           "Cek ulang data anda, jika masih error, hubungi Admin",
         {
           id,
@@ -20,14 +21,15 @@ const FetchAPI = async (promise: Promise<any>) => {
       );
       throw result;
     }
-  } catch (error) {
-      toast.error(
+  } catch (error: any) {
+    toast.error(
+      error?.message ||
         error?.msg ||
-          "Cek ulang data anda, jika masih error, hubungi Admin",
-        {
-          id,
-        }
-      );
+        "Cek ulang data anda, jika masih error, hubungi Admin",
+      {
+        id,
+      }
+    );
     throw error;
   }
 };
