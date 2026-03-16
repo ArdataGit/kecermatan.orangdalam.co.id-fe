@@ -21,6 +21,7 @@ import SideMenu from './components/side-menu';
 import AlertTryout from './components/alert-tryout';
 import { useHomeStore } from '@/stores/home-stores';
 import { getData, postData } from './utils/axios';
+import Footer from './components/footer';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -404,6 +405,7 @@ export default function App({ children }: LayoutProps) {
               </motion.div>
             </AnimatePresence>
           </div>
+          <Footer />
         </div>
       </div>
     </div>

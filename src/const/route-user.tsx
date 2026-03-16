@@ -36,8 +36,16 @@ import LatihanKecermatan from "@/pages/user/latihan-kecermatan";
 import RiwayatLatihanKecermatan from "@/pages/user/latihan-kecermatan/riwayat";
 import RiwayatLatihanKecermatanDetail from "@/pages/user/latihan-kecermatan/riwayat-detail";
 
+import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
+import TermsOfService from "@/pages/legal/TermsOfService";
+import Contact from "@/pages/legal/Contact";
+
 export const userRoutes = [
   <Route path="/" element={<HomeUser />} />,
+  <Route path="/kebijakan-privasi" element={<PrivacyPolicy />} />,
+  <Route path="/ketentuan-layanan" element={<TermsOfService />} />,
+  <Route path="/kontak" element={<Contact />} />,
+  <Route path="/latihan-kecermatan" element={<LatihanKecermatan />} />,
   <Route path="/latihan-kecermatan" element={<LatihanKecermatan />} />,
   <Route path="/latihan-kecermatan/riwayat" element={<RiwayatLatihanKecermatan />} />,
   <Route path="/latihan-kecermatan/riwayat/:id" element={<RiwayatLatihanKecermatanDetail />} />,
